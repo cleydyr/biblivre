@@ -63,3 +63,13 @@ export const unblockCirculationUser = async (
     user_id: String(userId),
   })
 }
+
+export const deleteCirculationUser = async (
+  userId: number,
+): Promise<CirculationUserStatusChangeResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.user',
+    action: 'delete',
+    id: String(userId),
+  })
+}

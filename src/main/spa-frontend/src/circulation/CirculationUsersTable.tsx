@@ -21,6 +21,7 @@ type CirculationUsersTableProps = {
   onUserDetailsClick: (user: User) => void
   onBlockUser: (user: User) => void
   onUnblockUser: (user: User) => void
+  onDeactivateOrDeleteUser: (user: User) => void
   statusChangeUserId?: number | null
   pagination: Pagination | undefined
   onPaginate: (pageIndex: number) => void
@@ -32,6 +33,7 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
   onUserDetailsClick,
   onBlockUser,
   onUnblockUser,
+  onDeactivateOrDeleteUser,
   statusChangeUserId = null,
   pagination,
   onPaginate,
@@ -136,6 +138,33 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
             defaultMessage: 'Desbloquear usuário',
             id: 'circulation.users.table.actions.unblock.description',
           }),
+        },
+        {
+          name: (user: User) =>
+            user.status === 'inactive' ? (
+              <FormattedMessage defaultMessage='Excluir' id='common.delete' />
+            ) : (
+              <FormattedMessage
+                defaultMessage='Desativar'
+                id='circulation.users.table.actions.deactivate'
+              />
+            ),
+          icon: (user: User) =>
+            user.status === 'inactive' ? 'trash' : 'minusInCircle',
+          type: 'icon',
+          color: 'danger',
+          enabled: (user) => statusChangeUserId !== user.id,
+          onClick: onDeactivateOrDeleteUser,
+          description: (user: User) =>
+            user.status === 'inactive'
+              ? formatMessage({
+                  defaultMessage: 'Excluir usuário permanentemente',
+                  id: 'circulation.users.table.actions.delete.description',
+                })
+              : formatMessage({
+                  defaultMessage: 'Marcar usuário como inativo',
+                  id: 'circulation.users.table.actions.deactivate.description',
+                }),
         },
       ],
     },
@@ -273,7 +302,7 @@ const getStatusIcon = (status: User['status']) => {
     case 'active':
       return 'check'
     case 'inactive':
-      return 'close'
+      return 'crossInCircle'
     case 'blocked':
       return 'lock'
     case 'pending_issues':

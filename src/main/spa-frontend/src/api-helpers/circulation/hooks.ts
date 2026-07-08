@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import {
   blockCirculationUser,
+  deleteCirculationUser,
   getCirculationUsersPaginate,
   getCirculationUsersSearch,
   getCirculationUserTabData,
@@ -39,6 +40,12 @@ export const useBlockCirculationUserMutation = () => {
 export const useUnblockCirculationUserMutation = () => {
   return useMutation({
     mutationFn: unblockCirculationUser,
+  })
+}
+
+export const useDeleteCirculationUserMutation = () => {
+  return useMutation({
+    mutationFn: deleteCirculationUser,
   })
 }
 

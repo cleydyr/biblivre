@@ -1,4 +1,10 @@
-import { EuiButton, EuiEmptyPrompt, EuiGlobalToastList } from '@elastic/eui'
+import {
+  EuiButton,
+  EuiConfirmModal,
+  EuiEmptyPrompt,
+  EuiGlobalToastList,
+  useGeneratedHtmlId,
+} from '@elastic/eui'
 import { useCallback, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
@@ -6,6 +12,7 @@ import {
   useBlockCirculationUserMutation,
   useCirculationUsersPaginateMutation,
   useCirculationUsersSearchMutation,
+  useDeleteCirculationUserMutation,
   useUnblockCirculationUserMutation,
 } from '../api-helpers/circulation/hooks'
 import useLatch from '../hooks/useLatch'
@@ -52,12 +59,20 @@ const CirculationUsersControlsAndTable = () => {
     variables: unblockingUserId,
   } = useUnblockCirculationUserMutation()
 
+  const {
+    mutate: deleteUser,
+    isPending: isDeletingUser,
+    variables: deletingUserId,
+  } = useDeleteCirculationUserMutation()
+
   const [usePaginatedResults, setUsePaginatedResults] = useState<boolean>(false)
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [userPendingDelete, setUserPendingDelete] = useState<User | null>(null)
   const [userStatusOverrides, setUserStatusOverrides] = useState<
     Record<number, User['status']>
   >({})
+  const [removedUserIds, setRemovedUserIds] = useState<number[]>([])
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const { value: submitted, latch: latchSubmitted } = useLatch()
@@ -73,20 +88,24 @@ const CirculationUsersControlsAndTable = () => {
       return undefined
     }
 
-    return users.map((user) => {
-      if (user.id in userStatusOverrides) {
-        return { ...user, status: userStatusOverrides[user.id] }
-      }
+    return users
+      .filter((user) => !removedUserIds.includes(user.id))
+      .map((user) => {
+        if (user.id in userStatusOverrides) {
+          return { ...user, status: userStatusOverrides[user.id] }
+        }
 
-      return user
-    })
-  }, [users, userStatusOverrides])
+        return user
+      })
+  }, [users, userStatusOverrides, removedUserIds])
 
   const statusChangeUserId = isBlockingUser
     ? blockingUserId
     : isUnblockingUser
       ? unblockingUserId
-      : null
+      : isDeletingUser
+        ? deletingUserId
+        : null
 
   const removeToast = useCallback((toast: Toast) => {
     setToasts((currentToasts) =>
@@ -151,6 +170,49 @@ const CirculationUsersControlsAndTable = () => {
     [applyUserStatusChange, showStatusChangeToast, unblockUser],
   )
 
+  const onDeactivateOrDeleteUser = useCallback((user: User) => {
+    setUserPendingDelete(user)
+  }, [])
+
+  const onConfirmDeactivateOrDeleteUser = useCallback(() => {
+    if (userPendingDelete === null) {
+      return
+    }
+
+    const user = userPendingDelete
+    const isPermanentDelete = user.status === 'inactive'
+
+    deleteUser(user.id, {
+      onSuccess: (response) => {
+        showStatusChangeToast(response, user.id)
+
+        if (response.success) {
+          if (isPermanentDelete) {
+            setRemovedUserIds((currentRemovedUserIds) => [
+              ...currentRemovedUserIds,
+              user.id,
+            ])
+            setSelectedUser((currentUser) =>
+              currentUser?.id === user.id ? null : currentUser,
+            )
+          } else {
+            applyUserStatusChange(user.id, 'inactive')
+          }
+        }
+
+        setUserPendingDelete(null)
+      },
+      onError: () => {
+        setUserPendingDelete(null)
+      },
+    })
+  }, [
+    applyUserStatusChange,
+    deleteUser,
+    showStatusChangeToast,
+    userPendingDelete,
+  ])
+
   const selectedUserIndex =
     selectedUser && usersWithStatusOverrides
       ? usersWithStatusOverrides.findIndex(
@@ -188,6 +250,7 @@ const CirculationUsersControlsAndTable = () => {
   const onSearchUsers = () => {
     setUsePaginatedResults(false)
     setUserStatusOverrides({})
+    setRemovedUserIds([])
     searchUsers(toCirculationSearchPayload(searchConfig))
     latchSubmitted()
   }
@@ -222,6 +285,7 @@ const CirculationUsersControlsAndTable = () => {
           statusChangeUserId={statusChangeUserId}
           users={usersWithStatusOverrides ?? []}
           onBlockUser={onBlockUser}
+          onDeactivateOrDeleteUser={onDeactivateOrDeleteUser}
           onPaginate={onPaginateUsers}
           onUnblockUser={onUnblockUser}
           onUserDetailsClick={setSelectedUser}
@@ -278,7 +342,89 @@ const CirculationUsersControlsAndTable = () => {
         toastLifeTimeMs={5000}
         toasts={toasts}
       />
+      {userPendingDelete && (
+        <CirculationUserDeleteConfirmModal
+          isLoading={isDeletingUser}
+          user={userPendingDelete}
+          onCancel={() => setUserPendingDelete(null)}
+          onConfirm={onConfirmDeactivateOrDeleteUser}
+        />
+      )}
     </div>
+  )
+}
+
+type CirculationUserDeleteConfirmModalProps = {
+  user: User
+  isLoading: boolean
+  onCancel: () => void
+  onConfirm: () => void
+}
+
+const CirculationUserDeleteConfirmModal = ({
+  user,
+  isLoading,
+  onCancel,
+  onConfirm,
+}: CirculationUserDeleteConfirmModalProps) => {
+  const modalTitleId = useGeneratedHtmlId()
+  const isPermanentDelete = user.status === 'inactive'
+
+  return (
+    <EuiConfirmModal
+      aria-labelledby={modalTitleId}
+      buttonColor='danger'
+      cancelButtonText={
+        <FormattedMessage defaultMessage='Não' id='common.no' />
+      }
+      confirmButtonText={
+        <FormattedMessage defaultMessage='Sim' id='common.yes' />
+      }
+      isLoading={isLoading}
+      title={
+        isPermanentDelete ? (
+          <FormattedMessage
+            defaultMessage='Excluir usuário'
+            id='circulation.user.confirm_delete_record_title.forever'
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage='Marcar usuário como "inativo"'
+            id='circulation.user.confirm_delete_record_title.inactive'
+          />
+        )
+      }
+      titleProps={{ id: modalTitleId }}
+      onCancel={onCancel}
+      onConfirm={onConfirm}
+    >
+      <p>
+        {isPermanentDelete ? (
+          <FormattedMessage
+            defaultMessage='Você realmente deseja excluir este usuário?'
+            id='circulation.user.confirm_delete_record_question.forever'
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage='Você realmente deseja marcar este usuário como "inativo"?'
+            id='circulation.user.confirm_delete_record_question.inactive'
+          />
+        )}
+      </p>
+      <p>
+        {isPermanentDelete ? (
+          <FormattedMessage
+            defaultMessage='Ele será excluído permanentemente do sistema e não poderá ser recuperado'
+            id='circulation.user.confirm_delete_record.forever'
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage='Ele sairá da lista de pesquisas e só poderá ser encontrado através da "pesquisa avançada", de onde poderá ser excluído permanentemente ou recuperado'
+            id='circulation.user.confirm_delete_record.inactive'
+          />
+        )}
+      </p>
+    </EuiConfirmModal>
   )
 }
 
