@@ -10,7 +10,12 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useUserType } from '../api-helpers/user-type/hooks'
 
-import type { Criteria, EuiBasicTableColumn, Pagination } from '@elastic/eui'
+import type {
+  Criteria,
+  EuiBadgeProps,
+  EuiBasicTableColumn,
+  Pagination,
+} from '@elastic/eui'
 import type { FC } from 'react'
 
 import type { User } from '../api-helpers/circulation/response-types'
@@ -249,7 +254,7 @@ const UserStatusCell: FC<{
   )
 }
 
-const getStatusColor = (status: User['status']) => {
+const getStatusColor = (status: User['status']): EuiBadgeProps['color'] => {
   switch (status) {
     case 'active':
       return 'success'
