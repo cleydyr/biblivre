@@ -21,10 +21,18 @@ type CirculationParametrizedLegacyLoadTabDataPayload =
     'id' | 'tab'
   >
 
+type CirculationParametrizedLegacyBlockUserPayload =
+  ParametrizedLegacyEndpointPayload<'circulation.user', 'block', 'user_id'>
+
+type CirculationParametrizedLegacyUnblockUserPayload =
+  ParametrizedLegacyEndpointPayload<'circulation.user', 'unblock', 'user_id'>
+
 declare module '../../registry' {
   interface ParametrizedLegacyEndpointPayloadRegistry {
     CirculationParametrizedLegacySearchPayload: CirculationParametrizedLegacySearchPayload
     CirculationParametrizedLegacyPaginatePayload: CirculationParametrizedLegacyPaginatePayload
     CirculationParametrizedLegacyLoadTabDataPayload: CirculationParametrizedLegacyLoadTabDataPayload
+    CirculationParametrizedLegacyBlockUserPayload: CirculationParametrizedLegacyBlockUserPayload
+    CirculationParametrizedLegacyUnblockUserPayload: CirculationParametrizedLegacyUnblockUserPayload
   }
 }

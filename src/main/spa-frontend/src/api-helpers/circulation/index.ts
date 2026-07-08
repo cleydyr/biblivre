@@ -2,6 +2,7 @@ import { fetchJSONFromLegacyEndpoint } from '..'
 
 import type {
   CirculationUsersSearchResponse,
+  CirculationUserStatusChangeResponse,
   CirculationUserTabDataResponse,
 } from './response-types'
 import type {
@@ -40,5 +41,25 @@ export const getCirculationUserTabData = async <T extends CirculationUserTab>(
     action: 'load_tab_data',
     id: String(userId),
     tab,
+  })
+}
+
+export const blockCirculationUser = async (
+  userId: number,
+): Promise<CirculationUserStatusChangeResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.user',
+    action: 'block',
+    user_id: String(userId),
+  })
+}
+
+export const unblockCirculationUser = async (
+  userId: number,
+): Promise<CirculationUserStatusChangeResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.user',
+    action: 'unblock',
+    user_id: String(userId),
   })
 }

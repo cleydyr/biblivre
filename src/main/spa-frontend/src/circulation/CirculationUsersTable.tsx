@@ -17,6 +17,9 @@ type CirculationUsersTableProps = {
   users: User[]
   isLoading: boolean
   onUserDetailsClick: (user: User) => void
+  onBlockUser: (user: User) => void
+  onUnblockUser: (user: User) => void
+  statusChangeUserId?: number | null
   pagination: Pagination | undefined
   onPaginate: (pageIndex: number) => void
 }
@@ -25,6 +28,9 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
   users,
   isLoading,
   onUserDetailsClick,
+  onBlockUser,
+  onUnblockUser,
+  statusChangeUserId = null,
   pagination,
   onPaginate,
 }) => {
@@ -94,6 +100,42 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
           description: formatMessage({
             defaultMessage: 'Ver detalhes do usuário',
             id: 'circulation.users.table.actions.details.description',
+          }),
+        },
+        {
+          name: (
+            <FormattedMessage
+              defaultMessage='Bloquear'
+              id='circulation.user.button.block'
+            />
+          ),
+          icon: 'lock',
+          type: 'icon',
+          color: 'danger',
+          available: (user) => user.status !== 'blocked',
+          enabled: (user) => statusChangeUserId !== user.id,
+          onClick: onBlockUser,
+          description: formatMessage({
+            defaultMessage: 'Bloquear usuário',
+            id: 'circulation.users.table.actions.block.description',
+          }),
+        },
+        {
+          name: (
+            <FormattedMessage
+              defaultMessage='Desbloquear'
+              id='circulation.user.button.unblock'
+            />
+          ),
+          icon: 'lockOpen',
+          type: 'icon',
+          color: 'success',
+          available: (user) => user.status === 'blocked',
+          enabled: (user) => statusChangeUserId !== user.id,
+          onClick: onUnblockUser,
+          description: formatMessage({
+            defaultMessage: 'Desbloquear usuário',
+            id: 'circulation.users.table.actions.unblock.description',
           }),
         },
       ],

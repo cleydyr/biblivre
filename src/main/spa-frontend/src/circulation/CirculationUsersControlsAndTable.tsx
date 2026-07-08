@@ -1,13 +1,14 @@
-import { EuiButton, EuiEmptyPrompt } from '@elastic/eui'
-import { useMemo, useState } from 'react'
+import { EuiButton, EuiEmptyPrompt, EuiGlobalToastList } from '@elastic/eui'
+import { useCallback, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import {
+  useBlockCirculationUserMutation,
   useCirculationUsersPaginateMutation,
   useCirculationUsersSearchMutation,
+  useUnblockCirculationUserMutation,
 } from '../api-helpers/circulation/hooks'
 import useLatch from '../hooks/useLatch'
-import { searchQueryKeys } from '../search/hooks'
 
 import CirculationUserDetailsFlyout from './CirculationUserDetailsFlyout'
 import CirculationUsersControls from './CirculationUsersControls'
@@ -15,6 +16,7 @@ import CirculationUsersTable from './CirculationUsersTable'
 import { toCirculationSearchPayload } from './lib'
 
 import type { Pagination } from '@elastic/eui'
+import type { Toast } from '@elastic/eui/src/components/toast/global_toast_list'
 
 import type {
   CirculationUsersSearchResponse,
@@ -38,9 +40,25 @@ const CirculationUsersControlsAndTable = () => {
     isSuccess: isPaginateSuccess,
   } = useCirculationUsersPaginateMutation()
 
+  const {
+    mutate: blockUser,
+    isPending: isBlockingUser,
+    variables: blockingUserId,
+  } = useBlockCirculationUserMutation()
+
+  const {
+    mutate: unblockUser,
+    isPending: isUnblockingUser,
+    variables: unblockingUserId,
+  } = useUnblockCirculationUserMutation()
+
   const [usePaginatedResults, setUsePaginatedResults] = useState<boolean>(false)
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [userStatusOverrides, setUserStatusOverrides] = useState<
+    Record<number, User['status']>
+  >({})
+  const [toasts, setToasts] = useState<Toast[]>([])
 
   const { value: submitted, latch: latchSubmitted } = useLatch()
 
@@ -50,9 +68,94 @@ const CirculationUsersControlsAndTable = () => {
     searchResults,
   )
 
+  const usersWithStatusOverrides = useMemo(() => {
+    if (users === undefined) {
+      return undefined
+    }
+
+    return users.map((user) => {
+      if (user.id in userStatusOverrides) {
+        return { ...user, status: userStatusOverrides[user.id] }
+      }
+
+      return user
+    })
+  }, [users, userStatusOverrides])
+
+  const statusChangeUserId = isBlockingUser
+    ? blockingUserId
+    : isUnblockingUser
+      ? unblockingUserId
+      : null
+
+  const removeToast = useCallback((toast: Toast) => {
+    setToasts((currentToasts) =>
+      currentToasts.filter((currentToast) => currentToast.id !== toast.id),
+    )
+  }, [])
+
+  const showStatusChangeToast = useCallback(
+    (response: { success: boolean; message?: string }, userId: number) => {
+      setToasts([
+        {
+          id: `user-status-change-${userId}-${Date.now()}`,
+          title: response.message ?? '',
+          color: response.success ? 'success' : 'warning',
+          iconType: response.success ? 'check' : 'alert',
+        },
+      ])
+    },
+    [],
+  )
+
+  const applyUserStatusChange = useCallback(
+    (userId: number, status: User['status']) => {
+      setUserStatusOverrides((currentOverrides) => ({
+        ...currentOverrides,
+        [userId]: status,
+      }))
+      setSelectedUser((currentUser) =>
+        currentUser?.id === userId ? { ...currentUser, status } : currentUser,
+      )
+    },
+    [],
+  )
+
+  const onBlockUser = useCallback(
+    (user: User) => {
+      blockUser(user.id, {
+        onSuccess: (response) => {
+          showStatusChangeToast(response, user.id)
+
+          if (response.success) {
+            applyUserStatusChange(user.id, 'blocked')
+          }
+        },
+      })
+    },
+    [applyUserStatusChange, blockUser, showStatusChangeToast],
+  )
+
+  const onUnblockUser = useCallback(
+    (user: User) => {
+      unblockUser(user.id, {
+        onSuccess: (response) => {
+          showStatusChangeToast(response, user.id)
+
+          if (response.success) {
+            applyUserStatusChange(user.id, 'active')
+          }
+        },
+      })
+    },
+    [applyUserStatusChange, showStatusChangeToast, unblockUser],
+  )
+
   const selectedUserIndex =
-    selectedUser && users
-      ? users.findIndex((user) => user.id === selectedUser.id)
+    selectedUser && usersWithStatusOverrides
+      ? usersWithStatusOverrides.findIndex(
+          (user) => user.id === selectedUser.id,
+        )
       : -1
 
   const pagination: Pagination | undefined = useMemo(() => {
@@ -84,6 +187,7 @@ const CirculationUsersControlsAndTable = () => {
 
   const onSearchUsers = () => {
     setUsePaginatedResults(false)
+    setUserStatusOverrides({})
     searchUsers(toCirculationSearchPayload(searchConfig))
     latchSubmitted()
   }
@@ -115,8 +219,11 @@ const CirculationUsersControlsAndTable = () => {
         <CirculationUsersTable
           isLoading={isSearching || isPaginating}
           pagination={pagination}
-          users={users ?? []}
+          statusChangeUserId={statusChangeUserId}
+          users={usersWithStatusOverrides ?? []}
+          onBlockUser={onBlockUser}
           onPaginate={onPaginateUsers}
+          onUnblockUser={onUnblockUser}
           onUserDetailsClick={setSelectedUser}
         />
       ) : (
@@ -146,22 +253,31 @@ const CirculationUsersControlsAndTable = () => {
         <CirculationUserDetailsFlyout
           disableIterateBackward={selectedUserIndex <= 0}
           disableIterateForward={
-            users === undefined || selectedUserIndex >= users.length - 1
+            usersWithStatusOverrides === undefined ||
+            selectedUserIndex >= usersWithStatusOverrides.length - 1
           }
           user={selectedUser}
           onClose={() => setSelectedUser(null)}
           onIterateBackward={() => {
-            if (users && selectedUserIndex > 0) {
-              setSelectedUser(users[selectedUserIndex - 1])
+            if (usersWithStatusOverrides && selectedUserIndex > 0) {
+              setSelectedUser(usersWithStatusOverrides[selectedUserIndex - 1])
             }
           }}
           onIterateForward={() => {
-            if (users && selectedUserIndex < users.length - 1) {
-              setSelectedUser(users[selectedUserIndex + 1])
+            if (
+              usersWithStatusOverrides &&
+              selectedUserIndex < usersWithStatusOverrides.length - 1
+            ) {
+              setSelectedUser(usersWithStatusOverrides[selectedUserIndex + 1])
             }
           }}
         />
       )}
+      <EuiGlobalToastList
+        dismissToast={removeToast}
+        toastLifeTimeMs={5000}
+        toasts={toasts}
+      />
     </div>
   )
 }

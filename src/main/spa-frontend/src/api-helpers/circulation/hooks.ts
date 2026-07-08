@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import {
+  blockCirculationUser,
   getCirculationUsersPaginate,
   getCirculationUsersSearch,
   getCirculationUserTabData,
+  unblockCirculationUser,
 } from '.'
 
 import type {
@@ -25,6 +27,18 @@ export const useCirculationUsersPaginateMutation = () => {
     mutationFn: async (payload: CirculationPaginatePayload) => {
       return getCirculationUsersPaginate(payload)
     },
+  })
+}
+
+export const useBlockCirculationUserMutation = () => {
+  return useMutation({
+    mutationFn: blockCirculationUser,
+  })
+}
+
+export const useUnblockCirculationUserMutation = () => {
+  return useMutation({
+    mutationFn: unblockCirculationUser,
   })
 }
 

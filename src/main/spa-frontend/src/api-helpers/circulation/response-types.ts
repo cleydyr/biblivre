@@ -2,6 +2,7 @@ import type { Branded, ISO8601Date } from '../../types'
 import type { BibliographicRecord, Holding } from '../search/response-types'
 import type {
   Auditable,
+  NonSuccessfulResponse,
   PaginatedResponsePayload,
   SuccessfulResponse,
 } from '../types'
@@ -38,6 +39,13 @@ export type User = Auditable<{
 }>
 
 export type CirculationUsersSearchResponse = PaginatedResponsePayload<User>
+
+export type CirculationUserStatusChangeResponse =
+  | (SuccessfulResponse & {
+      message?: string
+      message_level?: string
+    })
+  | NonSuccessfulResponse
 
 export type CirculationUserTabDataResponse<T extends CirculationUserTab> =
   SuccessfulResponse & {
