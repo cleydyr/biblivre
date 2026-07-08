@@ -2,7 +2,9 @@ import {
   EuiBadge,
   EuiBasicTable,
   EuiEmptyPrompt,
+  EuiProgress,
   EuiSkeletonText,
+  useEuiTheme,
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -55,16 +57,13 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
       },
     },
     {
-      field: 'status',
       name: 'Situação',
-      render: (status: User['status']) => {
+      render: (user: User) => {
         return (
-          <EuiBadge
-            color={getStatusColor(status)}
-            iconType={getStatusIcon(status)}
-          >
-            {getStatusLabel(status)}
-          </EuiBadge>
+          <UserStatusCell
+            isChanging={statusChangeUserId === user.id}
+            status={user.status}
+          />
         )
       },
     },
@@ -169,6 +168,13 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
           showPerPageOptions: false,
         }
       }
+      rowProps={(user) =>
+        statusChangeUserId === user.id
+          ? {
+              'aria-busy': true,
+            }
+          : {}
+      }
       tableCaption={formatMessage({
         defaultMessage: 'Resultados da busca de usuários',
         id: 'circulation.users.table.caption',
@@ -178,6 +184,39 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
         onPaginate(criteria.page?.index ?? 0)
       }}
     />
+  )
+}
+
+const UserStatusCell: FC<{
+  status: User['status']
+  isChanging: boolean
+}> = ({ status, isChanging }) => {
+  const { euiTheme } = useEuiTheme()
+
+  return (
+    <div
+      aria-busy={isChanging}
+      css={{
+        position: 'relative',
+        width: '100%',
+        paddingBottom: euiTheme.size.xxs,
+      }}
+    >
+      <EuiBadge color={getStatusColor(status)} iconType={getStatusIcon(status)}>
+        {getStatusLabel(status)}
+      </EuiBadge>
+      {isChanging && (
+        <EuiProgress
+          color='primary'
+          css={{
+            top: 'auto',
+            bottom: 0,
+          }}
+          position='absolute'
+          size='xs'
+        />
+      )}
+    </div>
   )
 }
 
