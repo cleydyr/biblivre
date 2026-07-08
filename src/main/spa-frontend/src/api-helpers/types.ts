@@ -54,7 +54,7 @@ export type NonSuccessfulResponse = {
   message: string
 }
 
-export type PaginatedResponsePayload<T, U extends string = never> = {
+type SuccessfulPaginatedResponsePayload<T, U extends string = never> = {
   search: {
     record_count: number
     record_limit: number
@@ -65,6 +65,21 @@ export type PaginatedResponsePayload<T, U extends string = never> = {
     data: T[]
   } & { [key in U]: string }
 } & SuccessfulResponse
+
+type NonSuccessfulPaginatedResponsePayload<U extends string = never> = {
+  search: {
+    record_count: number
+    record_limit: number
+    records_per_page: number
+    page: number
+    page_count: number
+    time: number
+  } & { [key in U]: string }
+} & NonSuccessfulResponse
+
+export type PaginatedResponsePayload<T, U extends string = never> =
+  | SuccessfulPaginatedResponsePayload<T, U>
+  | NonSuccessfulPaginatedResponsePayload<U>
 
 // Matches AbstractDTO in Java
 export type Auditable<T> = T & {

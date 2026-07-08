@@ -1,9 +1,13 @@
+import { EuiButton, EuiEmptyPrompt } from '@elastic/eui'
 import { useMemo, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 
 import {
   useCirculationUsersPaginateMutation,
   useCirculationUsersSearchMutation,
 } from '../api-helpers/circulation/hooks'
+import useLatch from '../hooks/useLatch'
+import { searchQueryKeys } from '../search/hooks'
 
 import CirculationUserDetailsFlyout from './CirculationUserDetailsFlyout'
 import CirculationUsersControls from './CirculationUsersControls'
@@ -12,7 +16,10 @@ import { toCirculationSearchPayload } from './lib'
 
 import type { Pagination } from '@elastic/eui'
 
-import type { User } from '../api-helpers/circulation/response-types'
+import type {
+  CirculationUsersSearchResponse,
+  User,
+} from '../api-helpers/circulation/response-types'
 
 import type { CirculationSearchControlConfig } from './types'
 
@@ -21,21 +28,27 @@ const CirculationUsersControlsAndTable = () => {
     mutate: searchUsers,
     isPending: isSearching,
     data: searchResults,
+    isSuccess: isSearchSuccess,
   } = useCirculationUsersSearchMutation()
 
   const {
     mutate: paginateUsers,
     isPending: isPaginating,
     data: paginateResults,
+    isSuccess: isPaginateSuccess,
   } = useCirculationUsersPaginateMutation()
 
   const [usePaginatedResults, setUsePaginatedResults] = useState<boolean>(false)
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
-  const users = usePaginatedResults
-    ? paginateResults?.search.data
-    : searchResults?.search.data
+  const { value: submitted, latch: latchSubmitted } = useLatch()
+
+  const users: User[] | undefined = getUsers(
+    usePaginatedResults,
+    paginateResults,
+    searchResults,
+  )
 
   const selectedUserIndex =
     selectedUser && users
@@ -72,6 +85,7 @@ const CirculationUsersControlsAndTable = () => {
   const onSearchUsers = () => {
     setUsePaginatedResults(false)
     searchUsers(toCirculationSearchPayload(searchConfig))
+    latchSubmitted()
   }
 
   const onPaginateUsers = (pageIndex: number) => {
@@ -97,13 +111,37 @@ const CirculationUsersControlsAndTable = () => {
         onSearchConfigChange={setSearchConfig}
         onSearchUsers={onSearchUsers}
       />
-      <CirculationUsersTable
-        isLoading={isSearching || isPaginating}
-        pagination={pagination}
-        users={users}
-        onPaginate={onPaginateUsers}
-        onUserDetailsClick={setSelectedUser}
-      />
+      {submitted && (isSearchSuccess || isPaginateSuccess) ? (
+        <CirculationUsersTable
+          isLoading={isSearching || isPaginating}
+          pagination={pagination}
+          users={users ?? []}
+          onPaginate={onPaginateUsers}
+          onUserDetailsClick={setSelectedUser}
+        />
+      ) : (
+        <EuiEmptyPrompt
+          actions={
+            <EuiButton
+              iconType='search'
+              onClick={() => {
+                onSearchUsers()
+              }}
+            >
+              <FormattedMessage
+                defaultMessage='Listar todos os usuários'
+                id='circulation.users.controls-and-table.no-search.button'
+              />
+            </EuiButton>
+          }
+          body={
+            <FormattedMessage
+              defaultMessage='Utilize os controles acima para buscar usuários'
+              id='circulation.users.table.no-search.body'
+            />
+          }
+        />
+      )}
       {selectedUser && (
         <CirculationUserDetailsFlyout
           disableIterateBackward={selectedUserIndex <= 0}
@@ -129,3 +167,19 @@ const CirculationUsersControlsAndTable = () => {
 }
 
 export default CirculationUsersControlsAndTable
+
+function getUsers(
+  usePaginatedResults: boolean,
+  paginateResults: CirculationUsersSearchResponse | undefined,
+  searchResults: CirculationUsersSearchResponse | undefined,
+): User[] | undefined {
+  if (usePaginatedResults && paginateResults !== undefined) {
+    return paginateResults.success ? paginateResults.search.data : []
+  }
+
+  if (searchResults !== undefined) {
+    return searchResults.success ? searchResults.search.data : []
+  }
+
+  return undefined
+}
