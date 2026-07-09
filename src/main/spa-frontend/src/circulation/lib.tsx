@@ -1,9 +1,9 @@
-import { EuiBadge } from '@elastic/eui'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
 import { getStoredSchema } from '../api-helpers/schema/storage'
-import { useUserType } from '../api-helpers/user-type/hooks'
+
+import { UserStatusBadge, UserTypeBadge } from './UserBadges'
 
 import type { Moment } from 'moment'
 
@@ -65,57 +65,6 @@ export function useUserPanelDescriptionListItems(
       description: user.fields.email,
     },
   ].filter((item) => item.description)
-}
-
-const UserTypeBadge = ({ type }: { type: User['type'] }) => {
-  const { data: userType = null, isLoading } = useUserType(type)
-
-  if (isLoading) {
-    return null
-  }
-
-  return <EuiBadge color='default'>{userType?.name}</EuiBadge>
-}
-
-const UserStatusBadge = ({ status }: { status: User['status'] }) => {
-  switch (status) {
-    case 'active':
-      return (
-        <EuiBadge color='success'>
-          <FormattedMessage
-            defaultMessage='Ativo'
-            id='circulation.users.table.status.active'
-          />
-        </EuiBadge>
-      )
-    case 'inactive':
-      return (
-        <EuiBadge color='danger'>
-          <FormattedMessage
-            defaultMessage='Inativo'
-            id='circulation.users.table.status.inactive'
-          />
-        </EuiBadge>
-      )
-    case 'blocked':
-      return (
-        <EuiBadge color='warning'>
-          <FormattedMessage
-            defaultMessage='Bloqueado'
-            id='circulation.users.table.status.blocked'
-          />
-        </EuiBadge>
-      )
-    case 'pending_issues':
-      return (
-        <EuiBadge color='default'>
-          <FormattedMessage
-            defaultMessage='Com pendências'
-            id='circulation.users.table.status.pending_issues'
-          />
-        </EuiBadge>
-      )
-  }
 }
 
 export function formatCirculationDateTime(date: string | undefined): string {
