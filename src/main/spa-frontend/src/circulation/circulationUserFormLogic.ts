@@ -114,10 +114,6 @@ export function validateUserFormValues(
     errors.type = 'field.error.required'
   }
 
-  if (!values.status) {
-    errors.status = 'field.error.required'
-  }
-
   for (const field of fields) {
     const value = values.fields[field.key] ?? ''
 
