@@ -57,13 +57,14 @@ const useCirculationUsersControlsAndTable = () => {
   const [usePaginatedResults, setUsePaginatedResults] = useState<boolean>(false)
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [toasts, setToasts] = useState<Toast[]>([])
   const [userPendingDelete, setUserPendingDelete] = useState<User | null>(null)
   const [userStatusOverrides, setUserStatusOverrides] = useState<
     Record<number, User['status']>
   >({})
 
   const { value: submitted, latch: latchSubmitted } = useLatch()
+
+  const { toasts, removeToast, showStatusChangeToast } = useToasts()
 
   const users: User[] | undefined = getUsers(
     usePaginatedResults,
@@ -96,26 +97,6 @@ const useCirculationUsersControlsAndTable = () => {
       : isDeletingUser
         ? deletingUserId
         : null
-
-  const removeToast = useCallback((toast: Toast) => {
-    setToasts((currentToasts) =>
-      currentToasts.filter((currentToast) => currentToast.id !== toast.id),
-    )
-  }, [])
-
-  const showStatusChangeToast = useCallback(
-    (response: { success: boolean; message?: string }, userId: number) => {
-      setToasts([
-        {
-          id: `user-status-change-${userId}-${Date.now()}`,
-          title: response.message ?? '',
-          color: response.success ? 'success' : 'warning',
-          iconType: response.success ? 'check' : 'alert',
-        },
-      ])
-    },
-    [],
-  )
 
   const applyUserStatusChange = useCallback(
     (userId: number, status: User['status']) => {
@@ -304,4 +285,34 @@ function getUsers(
   }
 
   return undefined
+}
+
+const useToasts = () => {
+  const [toasts, setToasts] = useState<Toast[]>([])
+
+  const removeToast = useCallback((toast: Toast) => {
+    setToasts((currentToasts) =>
+      currentToasts.filter((currentToast) => currentToast.id !== toast.id),
+    )
+  }, [])
+
+  const showStatusChangeToast = useCallback(
+    (response: { success: boolean; message?: string }, userId: number) => {
+      setToasts([
+        {
+          id: `user-status-change-${userId}-${Date.now()}`,
+          title: response.message ?? '',
+          color: response.success ? 'success' : 'warning',
+          iconType: response.success ? 'check' : 'alert',
+        },
+      ])
+    },
+    [],
+  )
+
+  return {
+    toasts,
+    removeToast,
+    showStatusChangeToast,
+  }
 }
