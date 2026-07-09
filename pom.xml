@@ -496,6 +496,7 @@
 						<excludeVulnerabilityId>CVE-2026-54399</excludeVulnerabilityId>
 						<excludeVulnerabilityId>CVE-2026-9563</excludeVulnerabilityId>
 						<excludeVulnerabilityId>CVE-2026-54291</excludeVulnerabilityId>
+						<excludeVulnerabilityId>CVE-2026-59889</excludeVulnerabilityId>
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
