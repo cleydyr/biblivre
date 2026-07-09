@@ -42,3 +42,22 @@ export function partition<T>(
     [[], []],
   )
 }
+
+export function unshiftOrReplace<T>(
+  users: T[],
+  user: T,
+  predicate: (u1: T, u2: T) => boolean,
+) {
+  if (users.some((u) => predicate(u, user))) {
+    return users.map((u) => (predicate(u, user) ? user : u))
+  }
+
+  return [user, ...users]
+}
+
+export function unshiftOrReplaceWithId<T extends { id: number }>(
+  users: T[],
+  user: T,
+) {
+  return unshiftOrReplace(users, user, (u1, u2) => u1.id === u2.id)
+}

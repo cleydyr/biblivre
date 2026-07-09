@@ -54,8 +54,9 @@ export type NonSuccessfulResponse = {
   message: string
 }
 
-type SuccessfulPaginatedResponsePayload<T, U extends string = never> = {
+export type SuccessfulPaginatedResponsePayload<T, U extends string = never> = {
   search: {
+    id: number
     record_count: number
     record_limit: number
     records_per_page: number

@@ -1,5 +1,7 @@
 import type { ISO8601Date } from '../../types'
 
+import type { User } from './response-types'
+
 type BaseCirculationUserSearchPayload = { query: string; field: string }
 
 type CirculationSimpleUserSearchPayload = BaseCirculationUserSearchPayload & {
@@ -28,3 +30,11 @@ export type CirculationPaginatePayload = CirculationSearchPayload & {
 }
 
 export type CirculationUserTab = 'lendings' | 'reservations' | 'fines'
+
+export type CirculationUserSavePayload = {
+  id: number
+  name: string
+  type: number
+  status: User['status']
+  photo_data?: string
+} & Record<string, string | number>

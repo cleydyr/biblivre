@@ -7,6 +7,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 
 import CirculationUserDetailsFlyout from './CirculationUserDetailsFlyout'
+import CirculationUserFormFlyout from './CirculationUserFormFlyout'
 import CirculationUsersControls from './CirculationUsersControls'
 import CirculationUsersTable from './CirculationUsersTable'
 import useCirculationUsersControlsAndTable from './useCirculationUsersControlsAndTable'
@@ -21,11 +22,15 @@ const CirculationUsersControlsAndTable = () => {
     isSearchSuccess,
     isSearching,
     onBlockUser,
+    onCloseUserForm,
     onConfirmDeactivateOrDeleteUser,
+    onCreateUserClick,
     onDeactivateOrDeleteUser,
+    onEditUserClick,
     onPaginateUsers,
     onSearchUsers,
     onUnblockUser,
+    onUserSaved,
     pagination,
     searchConfig,
     selectedUser,
@@ -35,6 +40,7 @@ const CirculationUsersControlsAndTable = () => {
     setUserPendingDelete,
     statusChangeUserId,
     submitted,
+    userFormMode,
     userPendingDelete,
     usersWithStatusOverrides,
   } = useCirculationUsersControlsAndTable()
@@ -44,6 +50,7 @@ const CirculationUsersControlsAndTable = () => {
       <CirculationUsersControls
         isLoading={false}
         searchConfig={searchConfig}
+        onCreateUserClick={onCreateUserClick}
         onSearchConfigChange={setSearchConfig}
         onSearchUsers={onSearchUsers}
       />
@@ -55,6 +62,7 @@ const CirculationUsersControlsAndTable = () => {
           users={usersWithStatusOverrides ?? []}
           onBlockUser={onBlockUser}
           onDeactivateOrDeleteUser={onDeactivateOrDeleteUser}
+          onEditUser={onEditUserClick}
           onPaginate={onPaginateUsers}
           onUnblockUser={onUnblockUser}
           onUserDetailsClick={setSelectedUser}
@@ -91,6 +99,7 @@ const CirculationUsersControlsAndTable = () => {
           }
           user={selectedUser}
           onClose={() => setSelectedUser(null)}
+          onEditUserClick={() => onEditUserClick(selectedUser)}
           onIterateBackward={() => {
             if (usersWithStatusOverrides && selectedUserIndex > 0) {
               setSelectedUser(usersWithStatusOverrides[selectedUserIndex - 1])
@@ -106,6 +115,21 @@ const CirculationUsersControlsAndTable = () => {
           }}
         />
       )}
+      {userFormMode?.mode === 'create' ? (
+        <CirculationUserFormFlyout
+          mode='create'
+          onClose={onCloseUserForm}
+          onSaved={onUserSaved}
+        />
+      ) : null}
+      {userFormMode?.mode === 'edit' ? (
+        <CirculationUserFormFlyout
+          mode='edit'
+          user={userFormMode.user}
+          onClose={onCloseUserForm}
+          onSaved={onUserSaved}
+        />
+      ) : null}
       {userPendingDelete && (
         <CirculationUserDeleteConfirmModal
           isLoading={isDeletingUser}

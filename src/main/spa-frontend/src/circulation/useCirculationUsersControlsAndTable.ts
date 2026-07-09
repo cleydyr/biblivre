@@ -8,6 +8,7 @@ import {
   useUnblockCirculationUserMutation,
 } from '../api-helpers/circulation/hooks'
 import useLatch from '../hooks/useLatch'
+import { unshiftOrReplaceWithId } from '../lib/arrays'
 import { useToasts } from '../toasts/useToasts'
 
 import { toCirculationSearchPayload } from './lib'
@@ -20,6 +21,11 @@ import type {
 } from '../api-helpers/circulation/response-types'
 
 import type { CirculationSearchControlConfig } from './types'
+
+export type CirculationUserFormMode =
+  | null
+  | { mode: 'create' }
+  | { mode: 'edit'; user: User }
 
 const useCirculationUsersControlsAndTable = () => {
   const {
@@ -57,6 +63,8 @@ const useCirculationUsersControlsAndTable = () => {
   const [usePaginatedResults, setUsePaginatedResults] = useState<boolean>(false)
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [userFormMode, setUserFormMode] =
+    useState<CirculationUserFormMode>(null)
   const [userPendingDelete, setUserPendingDelete] = useState<User | null>(null)
   const [userStatusOverrides, setUserStatusOverrides] = useState<
     Record<number, User['status']>
@@ -85,22 +93,43 @@ const useCirculationUsersControlsAndTable = () => {
   )
 
   const [removedUserIds, setRemovedUserIds] = useState<number[]>([])
+  const [savedUsersById, setSavedUsersById] = useState<Record<number, User>>({})
+  const [createdUsers, setCreatedUsers] = useState<User[]>([])
 
   const usersWithStatusOverrides = useMemo(() => {
     if (users === undefined) {
       return undefined
     }
 
-    return users
+    const mergedUsers = [...users]
+
+    for (const createdUser of createdUsers) {
+      if (!mergedUsers.some((user) => user.id === createdUser.id)) {
+        mergedUsers.unshift(createdUser)
+      }
+    }
+
+    return mergedUsers
       .filter((user) => !removedUserIds.includes(user.id))
       .map((user) => {
+        const savedUser =
+          user.id in savedUsersById ? savedUsersById[user.id] : undefined
+        const status =
+          user.id in userStatusOverrides
+            ? userStatusOverrides[user.id]
+            : user.status
+
+        if (savedUser) {
+          return { ...savedUser, status }
+        }
+
         if (user.id in userStatusOverrides) {
-          return { ...user, status: userStatusOverrides[user.id] }
+          return { ...user, status }
         }
 
         return user
       })
-  }, [users, userStatusOverrides, removedUserIds])
+  }, [users, userStatusOverrides, removedUserIds, savedUsersById, createdUsers])
 
   const statusChangeUserId = isBlockingUser
     ? blockingUserId
@@ -241,6 +270,8 @@ const useCirculationUsersControlsAndTable = () => {
     setUsePaginatedResults(false)
     setUserStatusOverrides({})
     setRemovedUserIds([])
+    setCreatedUsers([])
+    setSavedUsersById({})
     searchUsers(toCirculationSearchPayload(searchConfig))
     latchSubmitted()
   }
@@ -253,6 +284,32 @@ const useCirculationUsersControlsAndTable = () => {
     })
   }
 
+  const onCreateUserClick = useCallback(() => {
+    setSelectedUser(null)
+    setUserFormMode({ mode: 'create' })
+  }, [])
+
+  const onEditUserClick = useCallback((user: User) => {
+    setSelectedUser(null)
+    setUserFormMode({ mode: 'edit', user })
+  }, [])
+
+  const onCloseUserForm = useCallback(() => {
+    setUserFormMode(null)
+  }, [])
+
+  const onUserSaved = useCallback((user: User) => {
+    setSavedUsersById((currentSavedUsers) => ({
+      ...currentSavedUsers,
+      [user.id]: user,
+    }))
+
+    setCreatedUsers((currentCreatedUsers) => {
+      return unshiftOrReplaceWithId(currentCreatedUsers, user)
+    })
+    setSelectedUser(user)
+  }, [])
+
   return {
     isDeletingUser,
     isPaginateSuccess,
@@ -260,11 +317,15 @@ const useCirculationUsersControlsAndTable = () => {
     isSearchSuccess,
     isSearching,
     onBlockUser,
+    onCloseUserForm,
     onConfirmDeactivateOrDeleteUser,
+    onCreateUserClick,
     onDeactivateOrDeleteUser,
+    onEditUserClick,
     onPaginateUsers,
     onSearchUsers,
     onUnblockUser,
+    onUserSaved,
     pagination,
     searchConfig,
     selectedUser,
@@ -274,6 +335,7 @@ const useCirculationUsersControlsAndTable = () => {
     setUserPendingDelete,
     statusChangeUserId,
     submitted,
+    userFormMode,
     userPendingDelete,
     usersWithStatusOverrides,
   }

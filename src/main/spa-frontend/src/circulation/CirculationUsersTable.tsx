@@ -24,6 +24,7 @@ type CirculationUsersTableProps = {
   users: User[]
   isLoading: boolean
   onUserDetailsClick: (user: User) => void
+  onEditUser: (user: User) => void
   onBlockUser: (user: User) => void
   onUnblockUser: (user: User) => void
   onDeactivateOrDeleteUser: (user: User) => void
@@ -36,6 +37,7 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
   users,
   isLoading,
   onUserDetailsClick,
+  onEditUser,
   onBlockUser,
   onUnblockUser,
   onDeactivateOrDeleteUser,
@@ -93,6 +95,16 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
         />
       ),
       actions: [
+        {
+          name: <FormattedMessage defaultMessage='Editar' id='common.edit' />,
+          icon: 'pencil',
+          type: 'icon',
+          onClick: onEditUser,
+          description: formatMessage({
+            defaultMessage: 'Editar usuário',
+            id: 'circulation.users.table.actions.edit.description',
+          }),
+        },
         {
           name: (
             <FormattedMessage

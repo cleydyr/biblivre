@@ -47,6 +47,19 @@ export type CirculationUserStatusChangeResponse =
     })
   | NonSuccessfulResponse
 
+export type CirculationUserFieldErrors = Record<string, string>
+
+export type CirculationUserSaveResponse =
+  | (SuccessfulResponse & {
+      data: User
+      message?: string
+      message_level?: string
+      full_data?: boolean
+    })
+  | (NonSuccessfulResponse & {
+      errors?: CirculationUserFieldErrors[]
+    })
+
 export type CirculationUserTabDataResponse<T extends CirculationUserTab> =
   SuccessfulResponse & {
     data: {

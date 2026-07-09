@@ -30,6 +30,14 @@ type CirculationParametrizedLegacyUnblockUserPayload =
 type CirculationParametrizedLegacyDeleteUserPayload =
   ParametrizedLegacyEndpointPayload<'circulation.user', 'delete', 'id'>
 
+type CirculationParametrizedLegacySaveUserPayload =
+  ParametrizedLegacyEndpointPayload<
+    'circulation.user',
+    'save',
+    'id' | 'name' | 'type' | 'status',
+    string
+  >
+
 declare module '../../registry' {
   interface ParametrizedLegacyEndpointPayloadRegistry {
     CirculationParametrizedLegacySearchPayload: CirculationParametrizedLegacySearchPayload
@@ -38,5 +46,6 @@ declare module '../../registry' {
     CirculationParametrizedLegacyBlockUserPayload: CirculationParametrizedLegacyBlockUserPayload
     CirculationParametrizedLegacyUnblockUserPayload: CirculationParametrizedLegacyUnblockUserPayload
     CirculationParametrizedLegacyDeleteUserPayload: CirculationParametrizedLegacyDeleteUserPayload
+    CirculationParametrizedLegacySaveUserPayload: CirculationParametrizedLegacySaveUserPayload
   }
 }

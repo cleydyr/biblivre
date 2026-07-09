@@ -1,6 +1,7 @@
 import { fetchJSONFromLegacyEndpoint } from '..'
 
 import type {
+  CirculationUserSaveResponse,
   CirculationUsersSearchResponse,
   CirculationUserStatusChangeResponse,
   CirculationUserTabDataResponse,
@@ -8,6 +9,7 @@ import type {
 import type {
   CirculationPaginatePayload,
   CirculationSearchPayload,
+  CirculationUserSavePayload,
   CirculationUserTab,
 } from './types'
 
@@ -71,5 +73,42 @@ export const deleteCirculationUser = async (
     module: 'circulation.user',
     action: 'delete',
     id: String(userId),
+  })
+}
+
+const BYPASS_KEYS = new Set(['id', 'name', 'type', 'status', 'photo_data'])
+
+export const saveCirculationUser = async (
+  payload: CirculationUserSavePayload,
+): Promise<CirculationUserSaveResponse> => {
+  const params: {
+    id: string
+    name: string
+    type: string
+    status: string
+    photo_data?: string
+  } & Record<string, string> = {
+    id: String(payload.id),
+    name: payload.name,
+    type: String(payload.type),
+    status: payload.status,
+  }
+
+  if (payload.photo_data) {
+    params.photo_data = payload.photo_data
+  }
+
+  for (const [key, value] of Object.entries(payload)) {
+    if (BYPASS_KEYS.has(key)) {
+      continue
+    }
+
+    params[key] = String(value)
+  }
+
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.user',
+    action: 'save',
+    ...params,
   })
 }

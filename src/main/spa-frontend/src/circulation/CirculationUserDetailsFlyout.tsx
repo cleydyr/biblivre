@@ -22,6 +22,7 @@ type Props = {
   disableIterateForward: boolean
   disableIterateBackward: boolean
   onClose: () => void
+  onEditUserClick: () => void
   onIterateForward: () => void
   onIterateBackward?: () => void
 }
@@ -31,6 +32,7 @@ const CirculationUserDetailsFlyout: FC<Props> = ({
   disableIterateForward,
   disableIterateBackward,
   onClose,
+  onEditUserClick,
   onIterateBackward,
   onIterateForward,
 }) => {
@@ -61,6 +63,9 @@ const CirculationUserDetailsFlyout: FC<Props> = ({
           </EuiFlexItem>
           <div>
             <EuiFlexGroup>
+              <EuiButton iconType='pencil' onClick={onEditUserClick}>
+                <FormattedMessage defaultMessage='Editar' id='common.edit' />
+              </EuiButton>
               <EuiButton
                 disabled={disableIterateBackward}
                 iconType='chevronSingleLeft'

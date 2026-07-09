@@ -6,12 +6,14 @@ import {
   getCirculationUsersPaginate,
   getCirculationUsersSearch,
   getCirculationUserTabData,
+  saveCirculationUser,
   unblockCirculationUser,
 } from '.'
 
 import type {
   CirculationPaginatePayload,
   CirculationSearchPayload,
+  CirculationUserSavePayload,
   CirculationUserTab,
 } from './types'
 
@@ -67,5 +69,12 @@ export function useCirculationUserTabData<T extends CirculationUserTab>(
     },
     enabled,
     staleTime: 60 * 1000,
+  })
+}
+
+export function useSaveCirculationUserMutation() {
+  return useMutation({
+    mutationFn: (payload: CirculationUserSavePayload) =>
+      saveCirculationUser(payload),
   })
 }
