@@ -4,6 +4,23 @@ info:
   description: |-
   version: 0.0.1
 paths:
+  /userTypes:
+    get:
+      description: Retrieves all user types configured for the current schema
+      responses:
+        200:
+          description: The user types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserType'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getUserTypes
+      tags:
+        - User Type
   /userType/{id}:
     get:
       description: Retrieves a user type by id
@@ -23,6 +40,23 @@ paths:
       operationId: getUserType
       tags:
         - User Type
+  /circulation/user_fields:
+    get:
+      description: Retrieves all user fields configured for the current schema
+      responses:
+        200:
+          description: The user fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSearchableField'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getUserFields
+      tags:
+        - User Field
   /circulation/user_searchable_fields:
     get:
       description: Retrieves the searchable user fields configured for the current schema

@@ -21,6 +21,13 @@ public class CirculationApiDelegateImpl implements CirculationApiDelegate {
                 HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<List<RestUserSearchableField>> getUserFields() {
+        return new ResponseEntity<>(
+                userFieldBO.getFields().stream().map(this::toRestUserSearchableField).toList(),
+                HttpStatus.OK);
+    }
+
     private RestUserSearchableField toRestUserSearchableField(UserFieldDTO field) {
         RestUserSearchableField restField = new RestUserSearchableField();
         restField.setKey(field.getKey());
