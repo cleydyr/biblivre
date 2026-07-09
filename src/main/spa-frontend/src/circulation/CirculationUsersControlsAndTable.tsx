@@ -2,7 +2,6 @@ import {
   EuiButton,
   EuiConfirmModal,
   EuiEmptyPrompt,
-  EuiGlobalToastList,
   useGeneratedHtmlId,
 } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
@@ -28,7 +27,6 @@ const CirculationUsersControlsAndTable = () => {
     onSearchUsers,
     onUnblockUser,
     pagination,
-    removeToast,
     searchConfig,
     selectedUser,
     selectedUserIndex,
@@ -37,7 +35,6 @@ const CirculationUsersControlsAndTable = () => {
     setUserPendingDelete,
     statusChangeUserId,
     submitted,
-    toasts,
     userPendingDelete,
     usersWithStatusOverrides,
   } = useCirculationUsersControlsAndTable()
@@ -109,11 +106,6 @@ const CirculationUsersControlsAndTable = () => {
           }}
         />
       )}
-      <EuiGlobalToastList
-        dismissToast={removeToast}
-        toastLifeTimeMs={5000}
-        toasts={toasts}
-      />
       {userPendingDelete && (
         <CirculationUserDeleteConfirmModal
           isLoading={isDeletingUser}

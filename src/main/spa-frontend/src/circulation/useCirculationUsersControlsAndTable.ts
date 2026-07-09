@@ -8,11 +8,11 @@ import {
   useUnblockCirculationUserMutation,
 } from '../api-helpers/circulation/hooks'
 import useLatch from '../hooks/useLatch'
+import { useToasts } from '../toasts/useToasts'
 
 import { toCirculationSearchPayload } from './lib'
 
 import type { Pagination } from '@elastic/eui'
-import type { Toast } from '@elastic/eui/src/components/toast/global_toast_list'
 
 import type {
   CirculationUsersSearchResponse,
@@ -64,7 +64,19 @@ const useCirculationUsersControlsAndTable = () => {
 
   const { value: submitted, latch: latchSubmitted } = useLatch()
 
-  const { toasts, removeToast, showStatusChangeToast } = useToasts()
+  const { showToast } = useToasts()
+
+  const showStatusChangeToast = useCallback(
+    (response: { success: boolean; message?: string }, userId: number) => {
+      showToast({
+        id: `user-status-change-${userId}-${Date.now()}`,
+        title: response.message ?? '',
+        color: response.success ? 'success' : 'warning',
+        iconType: response.success ? 'check' : 'alert',
+      })
+    },
+    [showToast],
+  )
 
   const users: User[] | undefined = getUsers(
     usePaginatedResults,
@@ -254,7 +266,6 @@ const useCirculationUsersControlsAndTable = () => {
     onSearchUsers,
     onUnblockUser,
     pagination,
-    removeToast,
     searchConfig,
     selectedUser,
     selectedUserIndex,
@@ -263,7 +274,6 @@ const useCirculationUsersControlsAndTable = () => {
     setUserPendingDelete,
     statusChangeUserId,
     submitted,
-    toasts,
     userPendingDelete,
     usersWithStatusOverrides,
   }
@@ -285,34 +295,4 @@ function getUsers(
   }
 
   return undefined
-}
-
-const useToasts = () => {
-  const [toasts, setToasts] = useState<Toast[]>([])
-
-  const removeToast = useCallback((toast: Toast) => {
-    setToasts((currentToasts) =>
-      currentToasts.filter((currentToast) => currentToast.id !== toast.id),
-    )
-  }, [])
-
-  const showStatusChangeToast = useCallback(
-    (response: { success: boolean; message?: string }, userId: number) => {
-      setToasts([
-        {
-          id: `user-status-change-${userId}-${Date.now()}`,
-          title: response.message ?? '',
-          color: response.success ? 'success' : 'warning',
-          iconType: response.success ? 'check' : 'alert',
-        },
-      ])
-    },
-    [],
-  )
-
-  return {
-    toasts,
-    removeToast,
-    showStatusChangeToast,
-  }
 }

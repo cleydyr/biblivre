@@ -1,6 +1,7 @@
 import { EuiProvider } from '@elastic/eui'
 import { useState } from 'react'
 
+import { ToastProvider } from './toasts/ToastProvider'
 import App from './App'
 
 const AppWithTheme = () => {
@@ -8,7 +9,9 @@ const AppWithTheme = () => {
 
   return (
     <EuiProvider colorMode={isDarkMode ? 'dark' : 'light'}>
-      <App isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      <ToastProvider>
+        <App isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      </ToastProvider>
     </EuiProvider>
   )
 }
