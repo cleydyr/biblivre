@@ -10,11 +10,18 @@ import CirculationUserDetailsFlyout from './CirculationUserDetailsFlyout'
 import CirculationUserFormFlyout from './CirculationUserFormFlyout'
 import CirculationUsersControls from './CirculationUsersControls'
 import CirculationUsersTable from './CirculationUsersTable'
-import useCirculationUsersControlsAndTable from './useCirculationUsersControlsAndTable'
 
 import type { User } from '../api-helpers/circulation/response-types'
 
-const CirculationUsersControlsAndTable = () => {
+import type { UseCirculationUsersControlsAndTableReturn } from './useCirculationUsersControlsAndTable'
+
+type CirculationUsersControlsAndTableProps = {
+  controlsAndTable: UseCirculationUsersControlsAndTableReturn
+}
+
+const CirculationUsersControlsAndTable = ({
+  controlsAndTable,
+}: CirculationUsersControlsAndTableProps) => {
   const {
     isDeletingUser,
     isPaginateSuccess,
@@ -42,7 +49,7 @@ const CirculationUsersControlsAndTable = () => {
     userFormMode,
     userPendingDelete,
     usersWithStatusOverrides,
-  } = useCirculationUsersControlsAndTable()
+  } = controlsAndTable
 
   return (
     <div>

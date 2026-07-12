@@ -21,6 +21,26 @@ export async function login(page: Page): Promise<void> {
   )
 }
 
+export async function navigateToCirculationUsers(page: Page): Promise<void> {
+  const circulationNav = page.getByRole('button', { name: 'Circulação' })
+
+  if (await circulationNav.isVisible()) {
+    await circulationNav.click()
+  }
+
+  const usersNav = page.getByRole('button', {
+    name: 'Cadastro de usuários',
+  })
+
+  await expect(usersNav).toBeEnabled()
+  await usersNav.click()
+
+  await expect(page).toHaveURL(/\/spa\/circulation_user/)
+  await expect(
+    page.getByRole('heading', { name: 'Circulação', level: 1 }),
+  ).toBeVisible()
+}
+
 export async function navigateToReports(page: Page): Promise<void> {
   const administrationNav = page.getByRole('button', { name: 'Administração' })
 

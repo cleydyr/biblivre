@@ -8,7 +8,7 @@ import CirculationUsersControlsAndTable from './CirculationUsersControlsAndTable
 import useCirculationUsersControlsAndTable from './useCirculationUsersControlsAndTable'
 
 const CirculationPage = () => {
-  const { onCreateUserClick } = useCirculationUsersControlsAndTable()
+  const controlsAndTable = useCirculationUsersControlsAndTable()
 
   return (
     <PageTemplate
@@ -22,7 +22,7 @@ const CirculationPage = () => {
         <EuiButton
           key='new-user'
           iconType='plusInCircle'
-          onClick={onCreateUserClick}
+          onClick={controlsAndTable.onCreateUserClick}
         >
           <FormattedMessage
             defaultMessage='Novo usuário'
@@ -34,7 +34,9 @@ const CirculationPage = () => {
       <EuiFlexGroup>
         <EuiFlexItem>
           <CirculationInstructionsAccordion />
-          <CirculationUsersControlsAndTable />
+          <CirculationUsersControlsAndTable
+            controlsAndTable={controlsAndTable}
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
     </PageTemplate>
