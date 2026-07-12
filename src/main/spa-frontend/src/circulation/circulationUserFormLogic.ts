@@ -191,6 +191,29 @@ export function formatFieldValueForForm(value: string): string {
   return value
 }
 
+export function formatFieldValueForDisplay(
+  field: UserSearchableField,
+  value: string | undefined,
+): string {
+  if (!value?.trim()) {
+    return '-'
+  }
+
+  switch (field.type) {
+    case 'list':
+      return getLegacyUserFieldTranslation(`${field.key}.${value}`)
+    case 'boolean':
+      return value === 'true'
+        ? getLegacyTranslation('common.yes')
+        : getLegacyTranslation('common.no')
+    case 'date':
+    case 'datetime':
+      return formatFieldValueForForm(value)
+    default:
+      return value
+  }
+}
+
 const ACCEPTED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 const MAX_PHOTO_DIMENSION = 800
 

@@ -5,13 +5,14 @@ import { FormattedMessage } from 'react-intl'
 import LoadingState from '../components/LoadingState'
 import SpacedEuiTabbedContent from '../components/SpacedEuiTabbedContent'
 
+import CirculationUserFormTab from './CirculationUserFormTab'
 import CirculationUserSummaryPanel from './CirculationUserSummaryPanel'
 
 import type { EuiTabbedContentTab } from '@elastic/eui'
 import type { FC, ReactNode } from 'react'
 
 import type { User } from '../api-helpers/circulation/response-types'
-import type { CirculationUserTab } from '../api-helpers/circulation/types'
+import type { CirculationUserDetailsTab } from '../api-helpers/circulation/types'
 
 type Props = {
   user: User
@@ -34,7 +35,17 @@ const LazyTabContent: FC<{ children: ReactNode }> = ({ children }) => (
 )
 
 const CirculationUserDetails: FC<Props> = ({ user }) => {
-  const tabs: TypedEuiTabbedContentTab<CirculationUserTab>[] = [
+  const tabs: TypedEuiTabbedContentTab<CirculationUserDetailsTab>[] = [
+    {
+      id: 'form',
+      content: <CirculationUserFormTab user={user} />,
+      name: (
+        <FormattedMessage
+          defaultMessage='Cadastro'
+          id='circulation.user.tabs.form'
+        />
+      ),
+    },
     {
       id: 'lendings',
       content: (
@@ -83,7 +94,7 @@ const CirculationUserDetails: FC<Props> = ({ user }) => {
     <EuiFlexGroup direction='column'>
       <CirculationUserSummaryPanel user={user} />
       <SpacedEuiTabbedContent
-        initiallySelectedTabId='lendings'
+        initiallySelectedTabId='form'
         spacing='m'
         tabs={tabs}
       />

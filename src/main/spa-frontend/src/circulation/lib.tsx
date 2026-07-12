@@ -57,13 +57,6 @@ export function useUserPanelDescriptionListItems(
       }),
       description: <UserStatusBadge status={user.status} />,
     },
-    {
-      title: formatMessage({
-        defaultMessage: 'E-mail',
-        id: 'circulation.user.flyout.email',
-      }),
-      description: user.fields.email,
-    },
   ].filter((item) => item.description)
 }
 

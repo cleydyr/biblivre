@@ -5,6 +5,7 @@ import { userFieldsFixture } from '../api-helpers/user-fields/fixtures'
 import {
   buildSavePayload,
   createEmptyUserFormValues,
+  formatFieldValueForDisplay,
   getListFieldOptions,
   parseServerFieldErrors,
   userToFormValues,
@@ -169,6 +170,36 @@ describe('circulationUserForm', () => {
         { value: '1', text: 'Masculino' },
         { value: '2', text: 'Feminino' },
       ])
+    })
+  })
+
+  describe('formatFieldValueForDisplay', () => {
+    it('returns a dash for empty values', () => {
+      expect(
+        formatFieldValueForDisplay(userFieldsFixture[0], undefined),
+      ).toBe('-')
+    })
+
+    it('formats list, boolean, and date values', () => {
+      expect(
+        formatFieldValueForDisplay(userFieldsFixture[1], '1'),
+      ).toBe('Masculino')
+      expect(
+        formatFieldValueForDisplay(
+          {
+            ...userFieldsFixture[0],
+            key: 'active',
+            type: 'boolean',
+          },
+          'true',
+        ),
+      ).toBe('Sim')
+      expect(
+        formatFieldValueForDisplay(
+          userFieldsFixture.find((field) => field.key === 'birthday')!,
+          '1990-05-10T00:00:00.000Z',
+        ),
+      ).toBe('10/05/1990')
     })
   })
 

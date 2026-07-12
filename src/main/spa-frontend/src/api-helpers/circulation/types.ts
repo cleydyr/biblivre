@@ -31,6 +31,8 @@ export type CirculationPaginatePayload = CirculationSearchPayload & {
 
 export type CirculationUserTab = 'lendings' | 'reservations' | 'fines'
 
+export type CirculationUserDetailsTab = CirculationUserTab | 'form'
+
 export type CirculationUserSavePayload = {
   id: number
   name: string
