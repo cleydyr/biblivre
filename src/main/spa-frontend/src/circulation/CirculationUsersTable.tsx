@@ -119,6 +119,7 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
             defaultMessage: 'Ver detalhes do usuário',
             id: 'circulation.users.table.actions.details.description',
           }),
+          isPrimary: true,
         },
         {
           name: (
@@ -137,6 +138,7 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
             defaultMessage: 'Bloquear usuário',
             id: 'circulation.users.table.actions.block.description',
           }),
+          isPrimary: true,
         },
         {
           name: (
