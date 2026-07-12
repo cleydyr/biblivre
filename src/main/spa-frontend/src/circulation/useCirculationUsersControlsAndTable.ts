@@ -341,6 +341,10 @@ const useCirculationUsersControlsAndTable = () => {
   }
 }
 
+export type UseCirculationUsersControlsAndTableReturn = ReturnType<
+  typeof useCirculationUsersControlsAndTable
+>
+
 export default useCirculationUsersControlsAndTable
 
 function getUsers(

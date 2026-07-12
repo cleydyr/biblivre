@@ -32,7 +32,6 @@ type CirculationUsersControlsProps = {
   searchConfig: CirculationSearchControlConfig
   onSearchConfigChange: (searchConfig: CirculationSearchControlConfig) => void
   onSearchUsers: (payload: CirculationSearchControlConfig) => void
-  onCreateUserClick: () => void
 }
 
 const CirculationUsersControls: FC<CirculationUsersControlsProps> = ({
@@ -40,7 +39,6 @@ const CirculationUsersControls: FC<CirculationUsersControlsProps> = ({
   searchConfig,
   onSearchUsers,
   onSearchConfigChange,
-  onCreateUserClick,
 }) => {
   const { formatMessage } = useIntl()
 
@@ -67,20 +65,6 @@ const CirculationUsersControls: FC<CirculationUsersControlsProps> = ({
     <EuiPanel hasBorder paddingSize='l'>
       <EuiFlexGroup direction='column'>
         <EuiFlexItem>
-          <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
-            <EuiFlexItem grow={false}>
-              <EuiButton iconType='plusInCircle' onClick={onCreateUserClick}>
-                <FormattedMessage
-                  defaultMessage='Novo usuário'
-                  id='circulation.user.button.new'
-                />
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer size='m' />
-        </EuiFlexItem>
-        <EuiFlexItem>
-          {/* search field, button and advanced search switch */}
           <EuiFlexGroup alignItems='flexEnd' gutterSize='m'>
             <EuiFlexItem>
               <EuiFieldSearch

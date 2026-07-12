@@ -24,7 +24,6 @@ const CirculationUsersControlsAndTable = () => {
     onBlockUser,
     onCloseUserForm,
     onConfirmDeactivateOrDeleteUser,
-    onCreateUserClick,
     onDeactivateOrDeleteUser,
     onEditUserClick,
     onPaginateUsers,
@@ -50,7 +49,6 @@ const CirculationUsersControlsAndTable = () => {
       <CirculationUsersControls
         isLoading={false}
         searchConfig={searchConfig}
-        onCreateUserClick={onCreateUserClick}
         onSearchConfigChange={setSearchConfig}
         onSearchUsers={onSearchUsers}
       />
