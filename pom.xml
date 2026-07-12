@@ -36,7 +36,7 @@
 		<debug>false</debug>
 		<dockerfile.version>1.4.13</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
-		<aws.java.sdk.version>2.46.14</aws.java.sdk.version>
+		<aws.java.sdk.version>2.46.21</aws.java.sdk.version>
 		<spotless.version>3.7.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.50.0</error-prone.version>
@@ -257,7 +257,7 @@
 		<dependency>
 			<groupId>net.datafaker</groupId>
 			<artifactId>datafaker</artifactId>
-			<version>2.5.4</version>
+			<version>2.7.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -325,7 +325,7 @@
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-annotations</artifactId>
-			<version>2.2.51</version>
+			<version>2.2.52</version>
 		</dependency>
 
 		<dependency>
@@ -337,7 +337,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>5.5.12</version>
+			<version>5.5.13</version>
 		</dependency>
 
 		<dependency>
