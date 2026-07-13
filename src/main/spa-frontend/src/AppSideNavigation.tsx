@@ -1,4 +1,11 @@
-import { EuiFlexGroup, EuiFlexItem, EuiSideNav } from '@elastic/eui'
+import {
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiScreenReaderOnly,
+  EuiSideNav,
+} from '@elastic/eui'
+import { css } from '@emotion/react'
+import { useId } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import ExperimentalAppBadge from './components/ExperimentalAppBadge'
@@ -6,7 +13,33 @@ import useNavigationItems from './navigation'
 
 import type { EuiSideNavItemType } from '@elastic/eui'
 
+const hiddenRootItemStyles = css`
+  & > .euiSideNavItemButton {
+    display: none;
+  }
+`
+
 const AppSideNavigation = () => {
+  const rootItemId = useId()
+
+  const items: EuiSideNavItemType<unknown>[] = [
+    {
+      id: rootItemId,
+      css: hiddenRootItemStyles,
+      name: (
+        <EuiScreenReaderOnly>
+          <span>
+            <FormattedMessage
+              defaultMessage='Biblivre'
+              id='app.sideNav.search.main'
+            />
+          </span>
+        </EuiScreenReaderOnly>
+      ),
+      items: filterEnabledItems(useNavigationItems()),
+    },
+  ]
+
   return (
     <EuiSideNav
       heading={
@@ -22,7 +55,7 @@ const AppSideNavigation = () => {
           </EuiFlexItem>
         </EuiFlexGroup>
       }
-      items={filterEnabledItems(useNavigationItems())}
+      items={items}
     />
   )
 }
