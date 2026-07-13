@@ -623,6 +623,17 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>yarn i18n extract-compile spa-frontend</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<configuration>
+							<arguments>i18n:extract-compile</arguments>
+							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
+						</configuration>
+					</execution>
+					<execution>
 						<id>yarn build spa-frontend</id>
 						<goals>
 							<goal>yarn</goal>
