@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
 import { getStoredSchema } from '../api-helpers/schema/storage'
+import { element } from '../lib/arrays'
 
 import { UserStatusBadge, UserTypeBadge } from './UserBadges'
 
@@ -9,10 +10,56 @@ import type { Moment } from 'moment'
 
 import type { User } from '../api-helpers/circulation/response-types'
 import type { CirculationSearchPayload } from '../api-helpers/circulation/types'
+import type { BibliographicRecord } from '../api-helpers/search/response-types'
 import type { EuiDescriptionListItem } from '../components/types'
 import type { ISO8601Date } from '../types'
 
 import type { CirculationSearchControlConfig } from './types'
+
+type BiblioForDescriptionList = Pick<
+  BibliographicRecord,
+  'title' | 'author' | 'publication_year' | 'shelf_location'
+>
+
+export function useBiblioDescriptionListItems(
+  biblio: BiblioForDescriptionList,
+  shelfLocation?: string,
+): EuiDescriptionListItem[] {
+  const { formatMessage } = useIntl()
+
+  const location = shelfLocation ?? biblio.shelf_location
+
+  return [
+    ...element({
+      title: formatMessage({
+        defaultMessage: 'Título',
+        id: 'search.bibliographic.title',
+      }),
+      description: biblio.title,
+    }).if(biblio.title !== ''),
+    ...element({
+      title: formatMessage({
+        defaultMessage: 'Autor',
+        id: 'search.bibliographic.author',
+      }),
+      description: biblio.author,
+    }).if(biblio.author !== ''),
+    ...element({
+      title: formatMessage({
+        defaultMessage: 'Ano de publicação',
+        id: 'search.bibliographic.publication_year',
+      }),
+      description: biblio.publication_year,
+    }).if(biblio.publication_year !== ''),
+    ...element({
+      title: formatMessage({
+        defaultMessage: 'Localização',
+        id: 'search.bibliographic.shelf_location',
+      }),
+      description: location,
+    }).if(location !== ''),
+  ]
+}
 
 export function getUserPhotoUrl(photoId: string): string {
   const schema = getStoredSchema()

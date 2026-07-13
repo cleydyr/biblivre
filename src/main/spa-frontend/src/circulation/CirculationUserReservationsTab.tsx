@@ -9,9 +9,12 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useCirculationUserTabData } from '../api-helpers/circulation/hooks'
 import LoadingState from '../components/LoadingState'
-import { element } from '../lib/arrays'
 
-import { formatCirculationDate, formatCirculationDateTime } from './lib'
+import {
+  formatCirculationDate,
+  formatCirculationDateTime,
+  useBiblioDescriptionListItems,
+} from './lib'
 
 import type { FC } from 'react'
 
@@ -96,34 +99,7 @@ const ReservationCard: FC<{ reservationBag: ReservationBag }> = ({
   const { biblio, reservation } = reservationBag
 
   const listItems: Array<EuiDescriptionListItem> = [
-    ...element({
-      title: formatMessage({
-        defaultMessage: 'Título',
-        id: 'search.bibliographic.title',
-      }),
-      description: biblio.title,
-    }).if(biblio.title !== ''),
-    ...element({
-      title: formatMessage({
-        defaultMessage: 'Autor',
-        id: 'search.bibliographic.author',
-      }),
-      description: biblio.author,
-    }).if(biblio.author !== ''),
-    ...element({
-      title: formatMessage({
-        defaultMessage: 'Ano de publicação',
-        id: 'search.bibliographic.publication_year',
-      }),
-      description: biblio.publication_year,
-    }).if(biblio.publication_year !== ''),
-    ...element({
-      title: formatMessage({
-        defaultMessage: 'Localização',
-        id: 'search.bibliographic.shelf_location',
-      }),
-      description: biblio.shelf_location,
-    }).if(biblio.shelf_location !== ''),
+    ...useBiblioDescriptionListItems(biblio, formatMessage),
     {
       title: formatMessage({
         defaultMessage: 'Data da reserva',

@@ -175,15 +175,15 @@ describe('circulationUserForm', () => {
 
   describe('formatFieldValueForDisplay', () => {
     it('returns a dash for empty values', () => {
-      expect(
-        formatFieldValueForDisplay(userFieldsFixture[0], undefined),
-      ).toBe('-')
+      expect(formatFieldValueForDisplay(userFieldsFixture[0], undefined)).toBe(
+        '-',
+      )
     })
 
     it('formats list, boolean, and date values', () => {
-      expect(
-        formatFieldValueForDisplay(userFieldsFixture[1], '1'),
-      ).toBe('Masculino')
+      expect(formatFieldValueForDisplay(userFieldsFixture[1], '1')).toBe(
+        'Masculino',
+      )
       expect(
         formatFieldValueForDisplay(
           {
