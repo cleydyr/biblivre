@@ -1,7 +1,9 @@
 import { getStoredSchema } from './schema/storage'
 import { BIBLIVRE_ENDPOINT, DEFAULT_HEADERS } from './constants'
 
-import type { FileDownload, LegacyEndpointPayload } from './types'
+import type { ParametrizedLegacyEndpointPayloadValues } from '../registry'
+
+import type { FileDownload } from './types'
 
 export function buildDefaultHeaders(): Record<string, string> {
   const headers: Record<string, string> = { ...DEFAULT_HEADERS }
@@ -25,7 +27,7 @@ export async function fetchJSONFromLegacyEndpoint({
   module,
   action,
   ...otherParams
-}: LegacyEndpointPayload) {
+}: ParametrizedLegacyEndpointPayloadValues) {
   const response = await fetch(BIBLIVRE_ENDPOINT, {
     method: 'POST',
     headers: buildDefaultHeaders(),
@@ -44,7 +46,7 @@ export async function downloadFromLegacyEndpoint({
   module,
   action,
   ...otherParams
-}: LegacyEndpointPayload): Promise<FileDownload> {
+}: ParametrizedLegacyEndpointPayloadValues): Promise<FileDownload> {
   const queryParams = new URLSearchParams({
     controller: 'download',
     module,
@@ -52,12 +54,9 @@ export async function downloadFromLegacyEndpoint({
     ...otherParams,
   }).toString()
 
-  const response = await fetch(
-    `${BIBLIVRE_ENDPOINT}?${queryParams}`,
-    {
-      headers: buildDefaultHeaders(),
-    },
-  )
+  const response = await fetch(`${BIBLIVRE_ENDPOINT}?${queryParams}`, {
+    headers: buildDefaultHeaders(),
+  })
 
   return {
     blob: await response.blob(),

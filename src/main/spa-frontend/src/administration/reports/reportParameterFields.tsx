@@ -8,6 +8,8 @@ import {
 } from '@elastic/eui'
 import moment from 'moment'
 
+import { DAY_FIRST_DATE_FORMAT } from '../../constants'
+
 import type { Moment } from 'moment'
 
 import type { ReportTemplateParameter } from '../../generated-sources'
@@ -59,6 +61,7 @@ export function ReportParameterField({
   if (!isSupportedParameterType(type)) {
     return (
       <EuiCallOut
+        announceOnMount
         color='danger'
         iconType='alert'
         size='s'
@@ -74,7 +77,9 @@ export function ReportParameterField({
           <EuiCheckbox
             checked={value === 'true'}
             id={`report-parameter-${name}`}
-            onChange={(e) => onChange(name, e.target.checked ? 'true' : 'false')}
+            onChange={(e) =>
+              onChange(name, e.target.checked ? 'true' : 'false')
+            }
           />
         </EuiFormRow>
       )
@@ -96,6 +101,7 @@ export function ReportParameterField({
         <EuiFormRow label={label}>
           <EuiDatePicker
             compressed
+            dateFormat={DAY_FIRST_DATE_FORMAT}
             locale='pt-br'
             selected={value ? moment(value, 'YYYY-MM-DD') : null}
             onChange={(date: Moment | null) => {
@@ -109,9 +115,10 @@ export function ReportParameterField({
         <EuiFormRow label={label}>
           <EuiDatePicker
             compressed
+            showTimeSelect
+            dateFormat={DAY_FIRST_DATE_FORMAT}
             locale='pt-br'
             selected={value ? moment(value) : null}
-            showTimeSelect
             onChange={(date: Moment | null) => {
               onChange(name, date ? date.format('YYYY-MM-DDTHH:mm:ss') : '')
             }}
@@ -174,7 +181,7 @@ export function areParameterValuesValid(
       return true
     }
 
-    return values[parameter.name]?.trim().length > 0
+    return values[parameter.name].trim().length > 0
   })
 }
 
@@ -182,7 +189,8 @@ export function hasUnsupportedParameterTypes(
   parameters: ReportTemplateParameter[] | undefined,
 ): boolean {
   return (
-    parameters?.some((parameter) => !isSupportedParameterType(parameter.type)) ??
-    false
+    parameters?.some(
+      (parameter) => !isSupportedParameterType(parameter.type),
+    ) ?? false
   )
 }

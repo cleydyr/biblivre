@@ -8,10 +8,11 @@ import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import useMap from '../../hooks/useMap'
+import { getEmptyDateRange } from '../../lib/dates'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 import AdvancedBibliographicSearchDateFilters from './AdvancedBibliographicSearchDateFilters'
-import { generateTermField, getEmptyDateRange, getValidQueries } from './lib'
+import { generateTermField, getValidQueries } from './lib'
 
 import type { FC } from 'react'
 
@@ -19,8 +20,7 @@ import type {
   AdvancedQueryTerm,
   AdvancedTextQueryTerm,
 } from '../../api-helpers/search/types'
-
-import type { DateRange, UUID } from './types'
+import type { DateRange, UUID } from '../../types'
 
 type Props = {
   onQuerySubmited: (terms: AdvancedQueryTerm[] | undefined) => void

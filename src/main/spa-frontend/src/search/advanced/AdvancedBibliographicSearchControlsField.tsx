@@ -11,7 +11,6 @@ import { useMemo } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useBibliographicIndexingGroups } from '../../api-helpers/indexing-groups/hooks'
-import { FIELDS } from '../../api-helpers/search/constants'
 import TypedEuiSelect from '../../components/TypedEuiSelect'
 import { getLegacyBibliographicIndexingGroupTranslation } from '../../legacy_translations/lib'
 
@@ -59,7 +58,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
               >
                 <TypedEuiSelect<QueryOperator>
                   options={operatorOptions}
-                  value={term?.operator || 'AND'}
+                  value={term.operator}
                   onChange={(e) => {
                     onChange({
                       ...term,
@@ -115,15 +114,15 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
             >
               <TypedEuiSelect<EncodedTextQueryField>
                 disabled={isFieldOptionsLoading}
+                isLoading={isFieldOptionsLoading}
                 options={fieldOptions}
-                value={term?.field ?? FIELDS.TITLE}
+                value={term.field}
                 onChange={(e) =>
                   onChange({
                     ...term,
                     field: e.target.value,
                   })
                 }
-                isLoading={isFieldOptionsLoading}
               />
             </EuiFormRow>
           </EuiFlexItem>
@@ -133,6 +132,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
                 <EuiSpacer size='l' />
                 {/* to compensate for the form row label */}
                 <EuiToolTip
+                  disableScreenReaderOutput
                   content={formatMessage({
                     defaultMessage: 'Remover termo',
                     id: 'search.bibliographic.remove_field',

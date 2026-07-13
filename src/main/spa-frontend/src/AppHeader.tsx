@@ -14,10 +14,8 @@ import { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  useAuthSession,
-  useLegacyLogout
-} from './api-helpers/login/hooks'
+import { BIBLIVRE_ENDPOINT } from './api-helpers/constants'
+import { useAuthSession, useLegacyLogout } from './api-helpers/login/hooks'
 import { useSchemasList } from './api-helpers/schema/hooks'
 import { useSchemaQueryParams } from './api-helpers/schema/useSchemaQueryParams'
 import LibraryHeading from './components/LibraryHeading'
@@ -29,6 +27,7 @@ import type { FC } from 'react'
 import type {
   LoggedLoginSessionResponse,
   LoginSessionResponse,
+  SchemaListItem,
 } from './api-helpers/types'
 
 type Props = {
@@ -52,14 +51,13 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   const { mutate: logout, isPending: isLogoutPending } = useLegacyLogout()
   const { data: schemas, isPending: isSchemasPending } = useSchemasList()
 
-  
   const [isSchemaModalOpen, setIsSchemaModalOpen] = useState(false)
 
   const { activeSchemaId, applyActiveSchema } = useSchemaQueryParams({
     schemas,
     setIsSchemaModalOpen,
   })
-  
+
   const loggedIn = isLoggedInSession(session)
 
   const activeSchema = schemas?.find((s) => s.schema === activeSchemaId)
@@ -77,9 +75,9 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
       <EuiHeader>
         <EuiHeaderSection side='left'>
           <EuiHeaderSectionItem>
-            <EuiLink href={import.meta.env.VITE_BIBLIVRE_ENDPOINT}>
+            <EuiLink href={getLegacyLibraryUrl(schemas, activeSchemaId)}>
               <EuiFlexGroup alignItems='center' gutterSize='s'>
-                <EuiIcon type='chevronSingleLeft' />
+                <EuiIcon aria-hidden type='chevronSingleLeft' />
                 <FormattedMessage
                   defaultMessage='Voltar para a interface clássica'
                   id='app.header.back_to_legacy'
@@ -119,7 +117,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
                   ) : null}
                 </EuiFlexGroup>
               ) : null}
-              {loggedIn && session?.username ? (
+              {loggedIn ? (
                 <EuiText css={{ fontWeight: 500 }} size='s'>
                   {session.username}
                 </EuiText>
@@ -167,6 +165,29 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
       ) : null}
     </>
   )
+}
+
+function getLegacyLibraryUrl(
+  schemas: SchemaListItem[] | undefined,
+  activeSchemaId: string | null,
+): string | undefined {
+  if (!schemas || !activeSchemaId) {
+    return undefined
+  }
+
+  if (schemas.length === 1 && schemas[0].schema === 'single') {
+    // TODO: consider the case where single is the single schema activated, but multi-library is enabled
+    // In that case, we should return the legacy library url for the single schema
+    return `${window.location.origin}/`
+  }
+
+  const schema = schemas.find((s) => s.schema === activeSchemaId)
+
+  if (!schema) {
+    return undefined
+  }
+
+  return `${BIBLIVRE_ENDPOINT}/${schema.schema}`
 }
 
 export default AppHeader

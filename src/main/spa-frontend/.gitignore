@@ -29,3 +29,7 @@ dist-ssr
 src/generated-sources
 
 .eslintcache
+
+# FormatJS generated message catalogs
+lang.json
+lang-compiled.json

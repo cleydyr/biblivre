@@ -25,6 +25,23 @@ export function getLegacyBibliographicIndexingGroupTranslation(
   return translationKey
 }
 
+export function getLegacyUserFieldTranslation(fieldKey: string) {
+  const customKey =
+    `circulation.custom.user_field.${fieldKey}` as keyof typeof translations
+
+  if (customKey in translations) {
+    return translations[customKey]
+  }
+
+  const key = `circulation.user_field.${fieldKey}` as keyof typeof translations
+
+  if (key in translations) {
+    return translations[key]
+  }
+
+  return fieldKey
+}
+
 export function getLegacyMarcDatafieldTranslation(field: MarcField) {
   const customKey = `cataloging.tab.record.custom.field_label.biblio_${field}`
 

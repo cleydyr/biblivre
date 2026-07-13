@@ -2,10 +2,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
+import { AUTH_SESSION_QUERY_KEY } from '../login/hooks'
+
 import { clearStoredSchema, getStoredSchema, setStoredSchema } from './storage'
 
 import type { SchemaListItem } from '../types'
-import { AUTH_SESSION_QUERY_KEY } from '../login/hooks'
 
 export const SCHEMA_QUERY_PARAM = 'schema'
 export const SHOW_SELECT_SCHEMA_QUERY_PARAM = 'showSelectSchema'
@@ -25,14 +26,13 @@ export function useSchemaQueryParams({
   setIsSchemaModalOpen,
 }: UseSchemaQueryParamsOptions): UseSchemaQueryParamsBag {
   const schemaAutoPromptedRef = useRef(false)
-  
+
   const [activeSchemaId, setActiveSchemaId] = useState<string | null>(() =>
     getStoredSchema(),
   )
-  
-  
+
   const queryClient = useQueryClient()
-  
+
   const [searchParams, setSearchParams] = useSearchParams()
 
   const applyActiveSchema = useCallback(

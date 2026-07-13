@@ -12,6 +12,8 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
+import noDupeTernaryBranches from './eslint-rules/no-dupe-ternary-branches.ts'
+
 export default tseslint.config([
   // Global ignores
   {
@@ -40,9 +42,13 @@ export default tseslint.config([
       import: importPlugin,
       prettier,
       'simple-import-sort': simpleImportSort,
-      eui: elasticEuiPlugin,
       '@stylistic': stylistic,
       reactIntl,
+      biblivre: {
+        rules: {
+          'no-dupe-ternary-branches': noDupeTernaryBranches,
+        },
+      },
     },
     rules: {
       // Prettier integration
@@ -113,6 +119,7 @@ export default tseslint.config([
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-var-requires': 'error',
+      // Keep type-only and value imports in separate statements (no inline mixing).
       '@typescript-eslint/consistent-type-imports': [
         'error',
         {
@@ -122,6 +129,7 @@ export default tseslint.config([
         },
       ],
       '@typescript-eslint/no-import-type-side-effects': 'error',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 
       // Comma rules
       '@stylistic/comma-dangle': [
@@ -137,7 +145,7 @@ export default tseslint.config([
       ],
 
       // General code quality
-      'no-console': 'warn',
+      'no-console': 'error',
       'no-debugger': 'error',
       'no-alert': 'error',
       'prefer-const': 'error',
@@ -145,7 +153,24 @@ export default tseslint.config([
       'object-shorthand': 'error',
       'prefer-template': 'error',
       'no-else-return': 'warn',
-      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+
+      // Ternary branches must not return the same value regardless of the condition
+      'biblivre/no-dupe-ternary-branches': 'error',
+    },
+  },
+
+  // Type-aware rules for TypeScript files
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // Warn when ?. is used on values that cannot be null or undefined
+      '@typescript-eslint/no-unnecessary-condition': 'warn',
     },
   },
 
@@ -157,6 +182,7 @@ export default tseslint.config([
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'jsx-a11y': jsxA11y,
+      '@elastic/eui': elasticEuiPlugin,
     },
     settings: {
       react: {
@@ -164,6 +190,9 @@ export default tseslint.config([
       },
     },
     rules: {
+      // EUI recommended rules (plugin:@elastic/eui/recommended)
+      ...elasticEuiPlugin.configs.recommended.rules,
+
       // React Hooks rules
       ...reactHooks.configs.recommended.rules,
 
@@ -299,7 +328,13 @@ export default tseslint.config([
 
   // Configuration files
   {
-    files: ['**/*.config.{js,ts}', 'vite.config.ts', 'eslint.config.js'],
+    files: [
+      '**/*.config.{js,ts}',
+      'vite.config.ts',
+      'eslint.config.js',
+      'eslint-rules/**/*.ts',
+      'scripts/formatjs-vite-plugin.ts',
+    ],
     languageOptions: {
       globals: {
         ...globals.node,

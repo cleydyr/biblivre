@@ -1,56 +1,6 @@
-import type { MODULES } from './constants'
-import type { ACTIONS as MENU_ACTIONS } from './menu/constants'
-import type { ACTIONS as SEARCH_ACTIONS } from './search/constants'
+import type { ISO8601Date } from '../types'
 
-export type LegacyModule = (typeof MODULES)[keyof typeof MODULES]
-
-export type LegacyEndpointPayload =
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.SEARCH,
-      'search_parameters'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.PAGINATE,
-      'search_id' | 'page'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.PAGINATE,
-      'search_id' | 'page' | 'sort'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.OPEN,
-      'id'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.EXPORT,
-      'id_list'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
-      typeof SEARCH_ACTIONS.DOWNLOAD_EXPORT,
-      'id'
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.MENU,
-      typeof MENU_ACTIONS.ADMINISTRATION_CUSTOM_REPORTS
-    >
-  | ParametrizedLegacyEndpointPayload<
-      typeof MODULES.LOGIN,
-      'login',
-      'username' | 'password'
-    >
-  | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'session'>
-  | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'logout'>
-  | ParametrizedLegacyEndpointPayload<typeof MODULES.MULTI_SCHEMA, 'list'>
-  | ParametrizedLegacyEndpointPayload<typeof MODULES.CATALOGING_BIBLIOGRAPHIC, typeof SEARCH_ACTIONS.EXPORT_SEARCH_EXCEL, 'sort' | 'search_parameters'>
-  | ParametrizedLegacyEndpointPayload<typeof MODULES.CATALOGING_BIBLIOGRAPHIC, typeof SEARCH_ACTIONS.DOWNLOAD_SEARCH_EXCEL, 'id'>
-
-type ParametrizedLegacyEndpointPayload<
+export type ParametrizedLegacyEndpointPayload<
   M extends string,
   A extends string,
   P extends string = never,
@@ -102,4 +52,40 @@ export type NonSuccessfulResponse = {
   success: false
   message_level: 'warning'
   message: string
+}
+
+export type SuccessfulPaginatedResponsePayload<T, U extends string = never> = {
+  search: {
+    id: number
+    record_count: number
+    record_limit: number
+    records_per_page: number
+    page: number
+    page_count: number
+    time: number
+    data: T[]
+  } & { [key in U]: string }
+} & SuccessfulResponse
+
+type NonSuccessfulPaginatedResponsePayload<U extends string = never> = {
+  search: {
+    record_count: number
+    record_limit: number
+    records_per_page: number
+    page: number
+    page_count: number
+    time: number
+  } & { [key in U]: string }
+} & NonSuccessfulResponse
+
+export type PaginatedResponsePayload<T, U extends string = never> =
+  | SuccessfulPaginatedResponsePayload<T, U>
+  | NonSuccessfulPaginatedResponsePayload<U>
+
+// Matches AbstractDTO in Java
+export type Auditable<T> = T & {
+  createdBy: number
+  created: ISO8601Date
+  modifiedBy: number
+  modified: ISO8601Date
 }

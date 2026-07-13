@@ -1,17 +1,13 @@
 import { paginateCatalographicSearchResults } from '.'
 
 import type { AsyncBidirectionalIterator } from '../../lib/async-bidirectional-iterator'
+import type { SuccessfulPaginatedResponsePayload } from '../types'
 
-import type {
-  BibliographicRecord,
-  SuccessfulSearchResponse,
-} from './response-types'
+import type { BibliographicRecord } from './response-types'
 
-class SearchResultsBidirectionalIterator
-  implements AsyncBidirectionalIterator<BibliographicRecord>
-{
+class SearchResultsBidirectionalIterator implements AsyncBidirectionalIterator<BibliographicRecord> {
   // private fields
-  #searchResults: SuccessfulSearchResponse
+  #searchResults: SuccessfulPaginatedResponsePayload<BibliographicRecord>
 
   #currentRecordIndex: number = 0
 
@@ -20,7 +16,10 @@ class SearchResultsBidirectionalIterator
   #hasPrevious: boolean = false
 
   constructor(
-    searchResults: SuccessfulSearchResponse,
+    searchResults: SuccessfulPaginatedResponsePayload<
+      BibliographicRecord,
+      'id'
+    >,
     initialRecordIndex?: number,
   ) {
     this.#searchResults = searchResults

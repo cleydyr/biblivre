@@ -8,12 +8,14 @@ import {
   EuiFlyoutHeader,
   EuiForm,
   EuiFormRow,
-  EuiGlobalToastList,
   EuiPageTemplate,
   EuiTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui'
 import { useCallback, useState } from 'react'
+
+import { BIBLIVRE_ENDPOINT } from '../../api-helpers/constants'
+import { useToasts } from '../../toasts/useToasts'
 
 import {
   useAddReportMutation,
@@ -22,8 +24,8 @@ import {
   useListReportsQuery,
   useUpdateReportMutation,
 } from './queries'
-import ReportFillForm from './ReportFillForm'
 import { getRestApiErrorMessage } from './reportApiErrors'
+import ReportFillForm from './ReportFillForm'
 import { getShortTypeName } from './reportParameterFields'
 import ReportTemplateTable from './ReportTemplateTable'
 import UploadReportForm from './UploadReportForm'
@@ -69,7 +71,9 @@ const formatUploadParameterSummary = (report: ReportTemplate): string => {
   }
 
   return `Parâmetros detectados: ${parameters
-    .map((parameter) => `${parameter.name} (${getShortTypeName(parameter.type)})`)
+    .map(
+      (parameter) => `${parameter.name} (${getShortTypeName(parameter.type)})`,
+    )
     .join(', ')}.`
 }
 
@@ -83,22 +87,17 @@ const toastsById = TOASTS.reduce(
 
 export default function ReportApp() {
   const [screen, setScreen] = useState('list' as Screen)
-
-  const [toasts, setToasts] = useState([] as Toast[])
-
-  function removeToast(toast: Toast): void {
-    setToasts(toasts.filter((t) => t.id !== toast.id))
-  }
+  const { showToast } = useToasts()
 
   const handleUpdateReportSuccess = useCallback(() => {
     setScreen('list')
-    setToasts([toastsById['report-updated']])
-  }, [])
+    showToast(toastsById['report-updated'])
+  }, [showToast])
 
   const handleDeleteReportSuccess = useCallback(() => {
     setDeletingReport(undefined)
-    setToasts([toastsById['report-deleted']])
-  }, [])
+    showToast(toastsById['report-deleted'])
+  }, [showToast])
 
   const handleDeleteReportFailure = useCallback((error: Error) => {
     void getRestApiErrorMessage(error).then((message) => {
@@ -107,15 +106,16 @@ export default function ReportApp() {
     })
   }, [])
 
-  const handleAddReportSuccess = useCallback((report: ReportTemplate) => {
-    setScreen('list')
-    setToasts([
-      {
+  const handleAddReportSuccess = useCallback(
+    (report: ReportTemplate) => {
+      setScreen('list')
+      showToast({
         ...toastsById['report-uploaded'],
         text: formatUploadParameterSummary(report),
-      },
-    ])
-  }, [])
+      })
+    },
+    [showToast],
+  )
 
   const getReportsQuery = useListReportsQuery()
 
@@ -144,7 +144,7 @@ export default function ReportApp() {
       onSuccess: (reportFill: ReportFill) => {
         setFillError(undefined)
         setReportFill(reportFill)
-        setToasts([toastsById['report-filled']])
+        showToast(toastsById['report-filled'])
       },
       onError: (error: Error) => {
         void getRestApiErrorMessage(error).then((message) => {
@@ -178,10 +178,10 @@ export default function ReportApp() {
   })
 
   const downloadReportFillBanner = screen === 'fill' && reportFill && (
-    <EuiCallOut>
+    <EuiCallOut announceOnMount>
       <p>
         O relatório foi gerado com sucesso.{' '}
-        <a href={`${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
+        <a href={`${BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
           Clique para baixar o relatório gerado.
         </a>
       </p>
@@ -308,11 +308,6 @@ export default function ReportApp() {
           {flyout}
         </EuiPageTemplate.Section>
       </EuiPageTemplate>
-      <EuiGlobalToastList
-        dismissToast={removeToast}
-        toastLifeTimeMs={6000}
-        toasts={toasts}
-      />
       {deletingReport && (
         <EuiConfirmModal
           buttonColor='danger'
@@ -358,6 +353,7 @@ const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
         <EuiFieldText
           aria-required
           required
+          isInvalid={name.length === 0}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />

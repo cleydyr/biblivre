@@ -147,12 +147,12 @@ public class Handler extends AbstractHandler {
     }
 
     private ReservationListDTO populateReservationList(UserDTO user) {
-        List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
+        List<ReservationBag> reservationBags = reservationBO.getReservationBags(user);
 
         ReservationListDTO reservationList = new ReservationListDTO();
         reservationList.setUser(user);
         reservationList.setId(user.getId());
-        reservationList.setReservationInfoList(infos);
+        reservationList.setReservationInfoList(reservationBags);
         return reservationList;
     }
 
@@ -170,13 +170,13 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.SUCCESS, "circulation.reservation.reserve_success");
 
             ReservationDTO reservation = reservationBO.get(reservationId);
-            ReservationInfoDTO info = new ReservationInfoDTO();
-            info.setReservation(reservation);
-            info.setBiblio(record);
-            info.setUser(user);
+            ReservationBag reservationBag = new ReservationBag();
+            reservationBag.setReservation(reservation);
+            reservationBag.setBiblio(record);
+            reservationBag.setUser(user);
 
             try {
-                put("data", info.toJSONObject());
+                put("data", reservationBag.toJSONObject());
                 put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);

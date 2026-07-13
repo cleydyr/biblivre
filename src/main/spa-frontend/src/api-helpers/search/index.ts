@@ -1,10 +1,9 @@
-import { MODULES } from '../constants'
 import { downloadFromLegacyEndpoint, fetchJSONFromLegacyEndpoint } from '..'
 
 import { ACTIONS, FIELDS } from './constants'
 import { getSearchMode, getSearchTerms } from './lib'
 
-import type { UUID } from '../../search/advanced/types'
+import type { UUID } from '../../types'
 import type { FileDownload } from '../types'
 
 import type { ExportResponse, OpenResponse } from './response-types'
@@ -20,7 +19,7 @@ export async function getCatalographicSearchResults(
   terms?: SearchQueryTerms,
 ): Promise<SearchResponse> {
   return fetchJSONFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.SEARCH,
     search_parameters: JSON.stringify({
       database: 'main',
@@ -37,7 +36,7 @@ export async function paginateCatalographicSearchResults(
   sort?: EncodedQueryField,
 ): Promise<SearchResponse> {
   return fetchJSONFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.PAGINATE,
     page: String(page + 1),
     search_id,
@@ -49,7 +48,7 @@ export function openBibliographicRecord(
   recordId: string,
 ): Promise<OpenResponse> {
   return fetchJSONFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.OPEN,
     id: recordId,
   })
@@ -59,7 +58,7 @@ export function exportBibliographicRecords(
   recordIds: number[],
 ): Promise<ExportResponse> {
   return fetchJSONFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.EXPORT,
     id_list: recordIds.join(','),
   })
@@ -67,7 +66,7 @@ export function exportBibliographicRecords(
 
 export function downloadExport(uuid: UUID): Promise<FileDownload> {
   return downloadFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.DOWNLOAD_EXPORT,
     id: uuid,
   })
@@ -78,7 +77,7 @@ export async function prepareSearchExcelExport(
   sort: string,
 ): Promise<ExportResponse> {
   return fetchJSONFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.EXPORT_SEARCH_EXCEL,
     search_parameters,
     sort,
@@ -87,7 +86,7 @@ export async function prepareSearchExcelExport(
 
 export function downloadSearchExcel(uuid: UUID): Promise<FileDownload> {
   return downloadFromLegacyEndpoint({
-    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    module: 'cataloging.bibliographic',
     action: ACTIONS.DOWNLOAD_SEARCH_EXCEL,
     id: uuid,
   })

@@ -107,45 +107,45 @@ public class ReservationBO extends AbstractBO {
         return list;
     }
 
-    public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
+    public List<ReservationBag> getReservationBags(UserDTO user) {
         List<ReservationDTO> list =
                 this.reservationDAO.list(
                         user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
-        List<ReservationInfoDTO> result = new ArrayList<>();
+        List<ReservationBag> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
-            ReservationInfoDTO info = new ReservationInfoDTO();
-            info.setReservation(dto);
+            ReservationBag reservationBag = new ReservationBag();
+            reservationBag.setReservation(dto);
 
             BiblioRecordDTO record =
                     (BiblioRecordDTO) biblioRecordBO.get(dto.getRecordId(), RecordBO.MARC_INFO);
-            info.setBiblio(record);
+            reservationBag.setBiblio(record);
 
-            result.add(info);
+            result.add(reservationBag);
         }
 
         return result;
     }
 
-    public List<ReservationInfoDTO> list() {
+    public List<ReservationBag> list() {
         List<ReservationDTO> list =
                 this.reservationDAO.list(
                         indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
-        List<ReservationInfoDTO> result = new ArrayList<>();
+        List<ReservationBag> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
-            ReservationInfoDTO info = new ReservationInfoDTO();
+            ReservationBag reservationBag = new ReservationBag();
 
             BiblioRecordDTO record =
                     (BiblioRecordDTO) biblioRecordBO.get(dto.getRecordId(), RecordBO.MARC_INFO);
-            info.setBiblio(record);
+            reservationBag.setBiblio(record);
 
             dto.setTitle(record.getTitle());
             dto.setAuthor(record.getAuthor());
-            info.setReservation(dto);
+            reservationBag.setReservation(dto);
 
             UserDTO user = userBO.get(dto.getUserId());
-            info.setUser(user);
+            reservationBag.setUser(user);
         }
 
         return result;
@@ -236,18 +236,18 @@ public class ReservationBO extends AbstractBO {
                 continue;
             }
 
-            DTOCollection<ReservationInfoDTO> infoList = new DTOCollection<>();
+            DTOCollection<ReservationBag> infoReservationBagsst = new DTOCollection<>();
             for (ReservationDTO reservation : reservations) {
-                ReservationInfoDTO info = new ReservationInfoDTO();
+                ReservationBag reservationBag = new ReservationBag();
 
-                info.setReservation(reservation);
+                reservationBag.setReservation(reservation);
                 if (reservation.getUserId() != null) {
-                    info.setUser(usersMap.get(reservation.getUserId()));
+                    reservationBag.setUser(usersMap.get(reservation.getUserId()));
                 }
 
-                infoList.add(info);
+                infoReservationBagsst.add(reservationBag);
             }
-            record.addExtraData("reservationInfo", infoList);
+            record.addExtraData("reservationInfo", infoReservationBagsst);
         }
     }
 

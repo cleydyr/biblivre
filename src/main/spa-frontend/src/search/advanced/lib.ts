@@ -7,10 +7,8 @@ import type {
   AdvancedQueryTerm,
   AdvancedTextQueryTerm,
   BaseQueryTerm,
-  ISO8601Date,
 } from '../../api-helpers/search/types'
-
-import type { DateRange, UUID } from './types'
+import type { DateRange, ISO8601Date, UUID } from '../../types'
 
 function hasValidQuery([_, term]: [UUID, BaseQueryTerm]): boolean {
   return term.query !== ''
@@ -73,11 +71,4 @@ function getISO8601Date(date: Moment | null): ISO8601Date | null {
 
 export function generateTermField(): [UUID, AdvancedTextQueryTerm] {
   return [crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM]
-}
-
-export function getEmptyDateRange() {
-  return {
-    from: null,
-    to: null,
-  }
 }

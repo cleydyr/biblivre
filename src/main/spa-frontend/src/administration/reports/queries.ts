@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { getStoredSchema } from '../../api-helpers/schema/storage'
+import { BIBLIVRE_ENDPOINT } from '../../api-helpers/constants'
 import { defaultRestApiFetchOptions } from '../../api-helpers/rest-api'
+import { getStoredSchema } from '../../api-helpers/schema/storage'
 import {
   Configuration,
   ReportFillApi,
@@ -19,7 +20,7 @@ import type { UploadReportFormData } from './UploadReportForm'
 const LIST_REPORTS = 'listReports'
 
 function baseEndpointPath() {
-  return `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/api/v2`
+  return `${BIBLIVRE_ENDPOINT}/api/v2`
 }
 
 type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
@@ -42,9 +43,7 @@ export const useFillReportMutation = (
     mutationFn: (request: ReportFillRequest) => {
       if (!getStoredSchema()) {
         return Promise.reject(
-          new Error(
-            'Selecione uma biblioteca antes de gerar o relatório.',
-          ),
+          new Error('Selecione uma biblioteca antes de gerar o relatório.'),
         )
       }
 
@@ -81,7 +80,7 @@ const useUpdateReportMutation = (
     mutationFn: (reportTemplate: ReportTemplate) =>
       api.updateReport(
         {
-          reportTemplateId: reportTemplate.id ?? 0,
+          reportTemplateId: reportTemplate.id,
           reportTemplate,
         },
         defaultRestApiFetchOptions,

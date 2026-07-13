@@ -34,7 +34,7 @@ public class LendingListDTO extends AbstractDTO {
     private UserDTO user;
     private HoldingDTO holding;
     private BiblioRecordDTO biblio;
-    private List<LendingInfoDTO> lendingInfo;
+    private List<LendingBag> lendingInfo;
     private List<Integer> reservedRecords;
 
     public List<Integer> getReservedRecords() {
@@ -77,11 +77,11 @@ public class LendingListDTO extends AbstractDTO {
         this.biblio = biblio;
     }
 
-    public List<LendingInfoDTO> getLendingInfo() {
+    public List<LendingBag> getLendingInfo() {
         return this.lendingInfo;
     }
 
-    public void setLendingInfo(List<LendingInfoDTO> lendingInfo) {
+    public void setLendingInfo(List<LendingBag> lendingInfo) {
         this.lendingInfo = lendingInfo;
     }
 }

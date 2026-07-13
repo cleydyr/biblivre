@@ -57,7 +57,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
-    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
+    private PagedUserSearchWebHelper pagedUserSearchWebHelper;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -87,8 +87,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<LendingInfoDTO> lendingInfo =
-                lendingBO.populateLendingInfoByHolding(holdingList);
+        DTOCollection<LendingBag> lendingInfo = lendingBO.populateLendingBagByHolding(holdingList);
 
         try {
             put("search", lendingInfo.toJSONObject());
@@ -131,7 +130,7 @@ public class Handler extends AbstractHandler {
 
         List<LendingDTO> lendings = lendingBO.listUserLendings(user);
 
-        List<LendingInfoDTO> infos = new ArrayList<>();
+        List<LendingBag> infos = new ArrayList<>();
 
         for (LendingDTO lending : lendings) {
             HoldingDTO holding =
@@ -140,7 +139,7 @@ public class Handler extends AbstractHandler {
             BiblioRecordDTO biblio =
                     (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
-            LendingInfoDTO info = new LendingInfoDTO();
+            LendingBag info = new LendingBag();
 
             info.setLending(lending);
             info.setHolding(holding);
@@ -180,17 +179,10 @@ public class Handler extends AbstractHandler {
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.lend_success");
 
-            BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
-            LendingDTO lending = lendingBO.getCurrentLending(holding);
-            LendingInfoDTO info = new LendingInfoDTO();
-            info.setLending(lending);
-            info.setHolding(holding);
-            info.setBiblio(biblio);
-            info.setUser(user);
+            var lendingBag = createLendingBag(holdingId, userId);
 
             try {
-                put("data", info.toJSONObject());
+                put("data", lendingBag.toJSONObject());
                 put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
@@ -201,41 +193,52 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    private LendingBag createLendingBag(int holdingId, int userId) {
+        var holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
+
+        var user = userBO.get(userId);
+
+        BiblioRecordDTO biblio =
+                (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
+
+        LendingDTO lending = lendingBO.getCurrentLending(holding);
+        LendingBag lendingBag = new LendingBag();
+        lendingBag.setLending(lending);
+        lendingBag.setHolding(holding);
+        lendingBag.setBiblio(biblio);
+        lendingBag.setUser(user);
+
+        return lendingBag;
+    }
+
     public void renewLending(ExtendedRequest request, ExtendedResponse response) {
 
         Integer lendingId = request.getInteger("id");
 
         LendingDTO lending = lendingBO.get(lendingId);
-
-        Integer holdingId = lending.getHoldingId();
-        Integer userId = lending.getUserId();
-
         lending.setCreatedBy(request.getLoggedUserId());
+
         boolean success = lendingBO.doRenew(lending);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.renew_success");
 
+            Integer holdingId = lending.getHoldingId();
+
+            Integer userId = lending.getUserId();
+
             HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
-            BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
+
             UserDTO user = userBO.get(userId);
 
-            LendingDTO newLending = lendingBO.getCurrentLending(holding);
-
-            LendingInfoDTO info = new LendingInfoDTO();
-            info.setLending(newLending);
-            info.setHolding(holding);
-            info.setBiblio(biblio);
-            info.setUser(user);
+            var lendingBag = createLendingBag(holdingId, userId);
 
             try {
-                put("data", info.toJSONObject());
+                put("data", lendingBag.toJSONObject());
                 put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             }
-
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.lending.renew_failure");
         }
@@ -281,9 +284,9 @@ public class Handler extends AbstractHandler {
                         "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
-        DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
+        DTOCollection<LendingBag> list = new DTOCollection<>();
 
-        Collection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
+        Collection<LendingBag> lendingInfoList = lendingBO.listLendings(offset, limit);
 
         list.addAll(lendingInfoList);
 
@@ -358,5 +361,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
+    }
+
+    @Autowired
+    public void setPagedUserSearchWebHelper(PagedUserSearchWebHelper pagedUserSearchWebHelper) {
+        this.pagedUserSearchWebHelper = pagedUserSearchWebHelper;
     }
 }

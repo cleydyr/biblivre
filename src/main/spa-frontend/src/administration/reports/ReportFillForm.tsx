@@ -1,17 +1,23 @@
-import { EuiButton, EuiCallOut, EuiFlexGroup, EuiForm, EuiSpacer } from '@elastic/eui'
+import {
+  EuiButton,
+  EuiCallOut,
+  EuiFlexGroup,
+  EuiForm,
+  EuiSpacer,
+} from '@elastic/eui'
 import { useEffect, useMemo, useState } from 'react'
-
-import type { FormEvent } from 'react'
+import { FormattedMessage } from 'react-intl'
 
 import {
-  ReportParameterField,
   areParameterValuesValid,
   createInitialParameterValues,
   hasUnsupportedParameterTypes,
+  ReportParameterField,
 } from './reportParameterFields'
 
+import type { FormEvent } from 'react'
+
 import type { ReportFillRequest, ReportTemplate } from '../../generated-sources'
-import { FormattedMessage } from 'react-intl'
 
 type ReportFillFormProps = {
   report: ReportTemplate
@@ -51,10 +57,6 @@ const ReportFillForm = ({
   }
 
   const handleSubmit = () => {
-    if (report.id === undefined) {
-      return
-    }
-
     onSubmit({
       reportTemplateId: report.id,
       parameters: parameterValues,
@@ -72,15 +74,31 @@ const ReportFillForm = ({
   return (
     <EuiFlexGroup direction='column'>
       {errorMessage && (
-        <EuiCallOut color='danger' iconType='error' title={<FormattedMessage defaultMessage='Erro ao gerar relatório' id='app.reports.fill.submit.error' />}>
+        <EuiCallOut
+          announceOnMount
+          color='danger'
+          iconType='error'
+          title={
+            <FormattedMessage
+              defaultMessage='Erro ao gerar relatório'
+              id='app.reports.fill.submit.error'
+            />
+          }
+        >
           <p>{errorMessage}</p>
         </EuiCallOut>
       )}
       {parameters.length === 0 && (
         <EuiCallOut
+          announceOnMount
           iconType='iInCircle'
           size='s'
-          title={<FormattedMessage defaultMessage='Este modelo não possui parâmetros' id='app.reports.fill.submit.no.parameters.info' />}
+          title={
+            <FormattedMessage
+              defaultMessage='Este modelo não possui parâmetros'
+              id='app.reports.fill.submit.no.parameters.info'
+            />
+          }
         />
       )}
       <EuiForm component='form' onSubmit={handleFormSubmit}>
@@ -98,9 +116,15 @@ const ReportFillForm = ({
           <>
             <EuiSpacer size='m' />
             <EuiCallOut
+              announceOnMount
               color='danger'
               iconType='alert'
-              title={<FormattedMessage defaultMessage='Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface.' id='app.reports.fill.submit.unsupported.info' />}
+              title={
+                <FormattedMessage
+                  defaultMessage='Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface.'
+                  id='app.reports.fill.submit.unsupported.info'
+                />
+              }
             />
           </>
         )}
@@ -108,9 +132,15 @@ const ReportFillForm = ({
           <>
             <EuiSpacer size='m' />
             <EuiCallOut
+              announceOnMount
               iconType='info'
               size='s'
-              title={<FormattedMessage defaultMessage='Preencha todos os parâmetros para gerar o relatório' id='app.reports.fill.submit.info' />}
+              title={
+                <FormattedMessage
+                  defaultMessage='Preencha todos os parâmetros para gerar o relatório'
+                  id='app.reports.fill.submit.info'
+                />
+              }
             />
           </>
         )}
@@ -121,7 +151,10 @@ const ReportFillForm = ({
           isLoading={pending}
           type='submit'
         >
-          <FormattedMessage defaultMessage='Gerar relatório' id='app.reports.fill.submit' />
+          <FormattedMessage
+            defaultMessage='Gerar relatório'
+            id='app.reports.fill.submit'
+          />
         </EuiButton>
       </EuiForm>
     </EuiFlexGroup>
