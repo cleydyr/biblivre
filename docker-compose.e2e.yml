@@ -18,7 +18,7 @@ services:
       start_period: 10s
 
   app:
-    image: eclipse-temurin:25-jre-jammy
+    image: eclipse-temurin:25.0.3_9-jre-jammy
     container_name: biblivre-e2e-app
     ports:
       - "8090:8090"
