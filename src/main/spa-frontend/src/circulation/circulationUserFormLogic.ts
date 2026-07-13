@@ -72,7 +72,7 @@ export function userToFormValues(user: User): CirculationUserFormValues {
     status: user.status,
     fields,
     photoData: null,
-    photoPreviewUrl: user.photo_id ? null : null,
+    photoPreviewUrl: user.photo_id ?? null,
   }
 }
 

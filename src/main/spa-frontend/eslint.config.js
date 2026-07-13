@@ -12,6 +12,8 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
+import noDupeTernaryBranches from './eslint-rules/no-dupe-ternary-branches.ts'
+
 export default tseslint.config([
   // Global ignores
   {
@@ -42,6 +44,11 @@ export default tseslint.config([
       'simple-import-sort': simpleImportSort,
       '@stylistic': stylistic,
       reactIntl,
+      biblivre: {
+        rules: {
+          'no-dupe-ternary-branches': noDupeTernaryBranches,
+        },
+      },
     },
     rules: {
       // Prettier integration
@@ -146,6 +153,9 @@ export default tseslint.config([
       'object-shorthand': 'error',
       'prefer-template': 'error',
       'no-else-return': 'warn',
+
+      // Ternary branches must not return the same value regardless of the condition
+      'biblivre/no-dupe-ternary-branches': 'error',
     },
   },
 
@@ -322,6 +332,7 @@ export default tseslint.config([
       '**/*.config.{js,ts}',
       'vite.config.ts',
       'eslint.config.js',
+      'eslint-rules/**/*.ts',
       'scripts/formatjs-vite-plugin.ts',
     ],
     languageOptions: {
