@@ -5,7 +5,7 @@ import {
   EuiPanel,
   EuiSkeletonLoading,
 } from '@elastic/eui'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
 import { useCirculationUserTabData } from '../api-helpers/circulation/hooks'
 import LoadingState from '../components/LoadingState'
@@ -95,23 +95,26 @@ const ReservationsList: FC<{
 const ReservationCard: FC<{ reservationBag: ReservationBag }> = ({
   reservationBag,
 }) => {
-  const { formatMessage } = useIntl()
   const { biblio, reservation } = reservationBag
 
   const listItems: Array<EuiDescriptionListItem> = [
-    ...useBiblioDescriptionListItems(biblio, formatMessage),
+    ...useBiblioDescriptionListItems(biblio),
     {
-      title: formatMessage({
-        defaultMessage: 'Data da reserva',
-        id: 'circulation.reservation.reserve_date',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Data da reserva'
+          id='circulation.reservation.reserve_date'
+        />
+      ),
       description: formatCirculationDateTime(reservation.created),
     },
     {
-      title: formatMessage({
-        defaultMessage: 'Data de expiração',
-        id: 'circulation.reservation.expiration_date',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Data de expiração'
+          id='circulation.reservation.expiration_date'
+        />
+      ),
       description: formatCirculationDate(reservation.expires),
     },
   ]

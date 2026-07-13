@@ -7,7 +7,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
 import { useCirculationUserTabData } from '../api-helpers/circulation/hooks'
 import LoadingState from '../components/LoadingState'
@@ -126,7 +126,6 @@ const LendingSection: FC<{
 }
 
 const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
-  const { formatMessage } = useIntl()
   const {
     biblio,
     holding,
@@ -143,40 +142,50 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
     .join(' ')
 
   const listItems: Array<EuiDescriptionListItem> = [
-    ...useBiblioDescriptionListItems(biblio, formatMessage, shelfLocation),
+    ...useBiblioDescriptionListItems(biblio, shelfLocation),
     ...element({
-      title: formatMessage({
-        defaultMessage: 'Tombo patrimonial',
-        id: 'search.holding.accession_number',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Tombo patrimonial'
+          id='search.holding.accession_number'
+        />
+      ),
       description: holding.accession_number,
     }).if(holding.accession_number !== ''),
     {
-      title: formatMessage({
-        defaultMessage: 'Data do empréstimo',
-        id: 'circulation.lending.lending_date',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Data do empréstimo'
+          id='circulation.lending.lending_date'
+        />
+      ),
       description: formatCirculationDateTime(created),
     },
     ...element({
-      title: formatMessage({
-        defaultMessage: 'Data da devolução',
-        id: 'circulation.lending.return_date',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Data da devolução'
+          id='circulation.lending.return_date'
+        />
+      ),
       description: returnDate ? formatCirculationDateTime(returnDate) : '-',
     }).if(returnDate !== undefined),
     {
-      title: formatMessage({
-        defaultMessage: 'Data prevista para devolução',
-        id: 'circulation.lending.expected_return_date',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Data prevista para devolução'
+          id='circulation.lending.expected_return_date'
+        />
+      ),
       description: formatCirculationDate(expectedReturnDate),
     },
     ...element({
-      title: formatMessage({
-        defaultMessage: 'Dias de atraso',
-        id: 'circulation.lending.days_late',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Dias de atraso'
+          id='circulation.lending.days_late'
+        />
+      ),
       description: (
         <EuiText color='danger' size='s'>
           {daysLate ? String(daysLate) : '-'}
@@ -184,10 +193,12 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
       ),
     }).if(returnDate === undefined && daysLate !== undefined && daysLate > 0),
     ...element({
-      title: formatMessage({
-        defaultMessage: 'Multa estimada',
-        id: 'circulation.lending.estimated_fine',
-      }),
+      title: (
+        <FormattedMessage
+          defaultMessage='Multa estimada'
+          id='circulation.lending.estimated_fine'
+        />
+      ),
       description: (
         <EuiText color='danger' size='s'>
           {estimatedFine ? estimatedFine.toFixed(2) : '-'}
