@@ -1,6 +1,3 @@
-openapi:
-  biblivreREST:
-    base-path: /api/v2
 logging:
   level:
     org:
