@@ -129,7 +129,15 @@ export function formatCirculationDate(date: string | undefined): string {
 }
 
 export function toISO8601Date(date: Moment | null): ISO8601Date | '' {
-  return date ? (date.toISOString() as ISO8601Date) : ''
+  if (!date) {
+    return ''
+  }
+
+  return date
+    .clone()
+    .startOf('day')
+    .toISOString()
+    .slice(0, -'.000Z'.length) as ISO8601Date
 }
 
 export function toCirculationSearchPayload(
