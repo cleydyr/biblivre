@@ -24,6 +24,9 @@ export type SuccessfulResponse = {
   success: true
 }
 
+export type MaybeSuccessfulResponse<T, U = unknown> =
+  (SuccessfulResponse & T) | (NonSuccessfulResponse & U)
+
 export type SchemaListItem = {
   schema: string
   name: string
