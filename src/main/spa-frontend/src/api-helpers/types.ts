@@ -45,8 +45,7 @@ export type UnloggedLoginSessionResponse = SuccessfulResponse & {
 }
 
 export type LoginSessionResponse =
-  | LoggedLoginSessionResponse
-  | UnloggedLoginSessionResponse
+  LoggedLoginSessionResponse | UnloggedLoginSessionResponse
 
 export type NonSuccessfulResponse = {
   success: false

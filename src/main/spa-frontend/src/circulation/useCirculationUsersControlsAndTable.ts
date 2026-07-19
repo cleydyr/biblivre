@@ -23,9 +23,7 @@ import type {
 import type { CirculationSearchControlConfig } from './types'
 
 export type CirculationUserFormMode =
-  | null
-  | { mode: 'create' }
-  | { mode: 'edit'; user: User }
+  null | { mode: 'create' } | { mode: 'edit'; user: User }
 
 const useCirculationUsersControlsAndTable = () => {
   const {
