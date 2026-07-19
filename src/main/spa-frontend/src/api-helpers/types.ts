@@ -24,6 +24,9 @@ export type SuccessfulResponse = {
   success: true
 }
 
+export type MaybeSuccessfulResponse<T, U = unknown> =
+  (SuccessfulResponse & T) | (NonSuccessfulResponse & U)
+
 export type SchemaListItem = {
   schema: string
   name: string
@@ -45,8 +48,7 @@ export type UnloggedLoginSessionResponse = SuccessfulResponse & {
 }
 
 export type LoginSessionResponse =
-  | LoggedLoginSessionResponse
-  | UnloggedLoginSessionResponse
+  LoggedLoginSessionResponse | UnloggedLoginSessionResponse
 
 export type NonSuccessfulResponse = {
   success: false

@@ -28,6 +28,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.reservation.ReservationBO;
+import biblivre.circulation.reservation.ReservationBag;
 import biblivre.circulation.user.PagedUserSearchWebHelper;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -37,8 +38,10 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.ActionResult;
+import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.search.SearchException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -256,6 +259,80 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.return_success");
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.lending.return_failure");
+        }
+    }
+
+    /** Immediate Return for SPA: auto-creates unpaid Fine when late (ADR-0001). */
+    public void returnImmediate(ExtendedRequest request, ExtendedResponse response) {
+        Integer lendingId = request.getInteger("id");
+        LendingDTO lending = lendingBO.get(lendingId);
+
+        if (lending == null || lending.getReturnDate() != null) {
+            this.setMessage(ActionResult.WARNING, "circulation.lending.return_failure");
+            return;
+        }
+
+        try {
+            LendingBag lendingBag = lendingBO.doReturnImmediate(lending, request.getLoggedUserId());
+            HoldingDTO holding = lendingBag.getHolding();
+            ReservationBag nextReservation = lendingBO.getNextReservation(holding);
+
+            this.setMessage(ActionResult.SUCCESS, "circulation.lending.return_success");
+
+            put("data", lendingBag);
+            put("full_data", true);
+            put("undo_window_seconds", lendingBO.getReturnUndoWindowSeconds());
+            Instant undoUntil = lendingBO.getUndoAvailableUntil(lendingBag.getLending());
+            if (undoUntil != null) {
+                put("undo_available_until", undoUntil.toEpochMilli());
+            }
+
+            putOpt("next_reservation", nextReservation);
+        } catch (ValidationException e) {
+            this.setMessage(ActionResult.WARNING, e.getMessage());
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        }
+    }
+
+    public void undoReturn(ExtendedRequest request, ExtendedResponse response) {
+        Integer lendingId = request.getInteger("id");
+
+        try {
+            LendingBag lendingBag = lendingBO.undoReturn(lendingId);
+            this.setMessage(ActionResult.SUCCESS, "circulation.lending.undo_return_success");
+            try {
+                put("data", lendingBag);
+                put("full_data", true);
+            } catch (JSONException e) {
+                this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+            }
+        } catch (ValidationException e) {
+            this.setMessage(ActionResult.WARNING, e.getMessage());
+        }
+    }
+
+    public void adjustFine(ExtendedRequest request, ExtendedResponse response) {
+        Integer fineId = request.getInteger("fine_id");
+        Float value = request.getFloat("value");
+
+        LendingFineDTO lendingFine = lendingFineBO.getById(fineId);
+        if (lendingFine == null || lendingFine.isPaid()) {
+            this.setMessage(ActionResult.WARNING, "circulation.lending.fine.failure_adjust_fine");
+            return;
+        }
+
+        boolean success = lendingFineBO.adjustValue(fineId, value);
+        if (success) {
+            lendingFine = lendingFineBO.getById(fineId);
+            this.setMessage(ActionResult.SUCCESS, "circulation.lending.fine.success_adjust_fine");
+            try {
+                put("data", lendingFine);
+            } catch (JSONException e) {
+                this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+            }
+        } else {
+            this.setMessage(ActionResult.WARNING, "circulation.lending.fine.failure_adjust_fine");
         }
     }
 

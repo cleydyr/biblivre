@@ -1,0 +1,28 @@
+---
+description: Prefer <Fragment> over shorthand <> in React JSX
+globs: **/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# Prefer `<Fragment>` over `<>`
+
+Do not use the shorthand fragment syntax. Always use the explicit element form.
+
+```tsx
+// ❌ BAD
+<>
+  <Child />
+  <Other />
+</>
+
+// ✅ GOOD
+import { Fragment } from 'react'
+
+<Fragment>
+  <Child />
+  <Other />
+</Fragment>
+```
+
+- Import `Fragment` as a value from `react` (keep type-only imports separate).
+- ESLint enforces this via `biblivre/prefer-fragment-element`; it autofixes on save (`source.fixAll.eslint`).

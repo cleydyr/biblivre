@@ -2,6 +2,7 @@ import type { Branded, ISO8601Date } from '../../types'
 import type { BibliographicRecord, Holding } from '../search/response-types'
 import type {
   Auditable,
+  MaybeSuccessfulResponse,
   NonSuccessfulResponse,
   PaginatedResponsePayload,
   SuccessfulResponse,
@@ -40,25 +41,24 @@ export type User = Auditable<{
 
 export type CirculationUsersSearchResponse = PaginatedResponsePayload<User>
 
-export type CirculationUserStatusChangeResponse =
-  | (SuccessfulResponse & {
-      message?: string
-      message_level?: string
-    })
-  | NonSuccessfulResponse
+export type CirculationUserStatusChangeResponse = MaybeSuccessfulResponse<{
+  message?: string
+  message_level?: string
+}>
 
 export type CirculationUserFieldErrors = Record<string, string>
 
-export type CirculationUserSaveResponse =
-  | (SuccessfulResponse & {
-      data: User
-      message?: string
-      message_level?: string
-      full_data?: boolean
-    })
-  | (NonSuccessfulResponse & {
-      errors?: CirculationUserFieldErrors[]
-    })
+export type CirculationUserSaveResponse = MaybeSuccessfulResponse<
+  {
+    data: User
+    message?: string
+    message_level?: string
+    full_data?: boolean
+  },
+  {
+    errors?: CirculationUserFieldErrors[]
+  }
+>
 
 export type CirculationUserTabDataResponse<T extends CirculationUserTab> =
   SuccessfulResponse & {
@@ -97,6 +97,16 @@ export type LendingBag = Auditable<{
   lendingFine: LendingFine
 }>
 
+/** Holding-first search / Return bag: open or last closed Lending may be absent. */
+export type HoldingLendingBag = Auditable<{
+  id: number
+  biblio?: BibliographicRecord
+  holding: Holding
+  user?: User
+  lending?: Lending
+  lendingFine?: LendingFine
+}>
+
 export type Reservation = Auditable<{
   recordId: number
   expires: ISO8601Date
@@ -104,9 +114,16 @@ export type Reservation = Auditable<{
   userId: number
 }>
 
+export type ReservationInfo = Auditable<{
+  biblio?: BibliographicRecord
+  reservation: Reservation
+  user?: User
+}>
+
 export type ReservationBag = Auditable<{
   biblio: BibliographicRecord
   reservation: Reservation
+  user?: User
 }>
 
 // Unfortunate name: the real reservation list is the list of reservation bags

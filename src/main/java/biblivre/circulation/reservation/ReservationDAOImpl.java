@@ -244,6 +244,29 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
+    public List<ReservationDTO> listByRecordId(int recordId) {
+        List<ReservationDTO> list = new ArrayList<>();
+
+        try (Connection con = datasource.getConnection()) {
+            String sql =
+                    "SELECT * FROM reservations WHERE record_id = ? "
+                            + "AND expires > localtimestamp ORDER BY created ASC;";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, recordId);
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                list.add(this.populateDTO(rs));
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+
+        return list;
+    }
+
+    @Override
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
         Map<Integer, List<ReservationDTO>> map = new LinkedHashMap<>();
 

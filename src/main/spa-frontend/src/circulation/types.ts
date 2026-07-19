@@ -27,5 +27,4 @@ type CirculationAdvancedSearchControlConfig =
   }
 
 export type CirculationSearchControlConfig =
-  | CirculationSimpleSearchControlConfig
-  | CirculationAdvancedSearchControlConfig
+  CirculationSimpleSearchControlConfig | CirculationAdvancedSearchControlConfig

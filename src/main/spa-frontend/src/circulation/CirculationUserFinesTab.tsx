@@ -10,7 +10,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useCirculationUserTabData } from '../api-helpers/circulation/hooks'
 import LoadingState from '../components/LoadingState'
-import { element } from '../lib/arrays'
+import { when } from '../lib/arrays'
 
 import { formatCirculationDate } from './lib'
 
@@ -82,20 +82,20 @@ const FineCard: FC<{ fine: LendingFine }> = ({ fine }) => {
   const { formatMessage } = useIntl()
 
   const listItems: Array<EuiDescriptionListItem> = [
-    ...element({
+    ...when(fine.title).element((title) => ({
       title: formatMessage({
         defaultMessage: 'Título',
         id: 'search.bibliographic.title',
       }),
-      description: fine.title,
-    }).if(fine.title !== ''),
-    ...element({
+      description: title,
+    })),
+    ...when(fine.author).element((author) => ({
       title: formatMessage({
         defaultMessage: 'Autor',
         id: 'search.bibliographic.author',
       }),
-      description: fine.author,
-    }).if(fine.author !== ''),
+      description: author,
+    })),
     {
       title: formatMessage({
         defaultMessage: 'Valor da multa',

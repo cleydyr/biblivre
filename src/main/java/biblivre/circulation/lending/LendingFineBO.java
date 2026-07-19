@@ -29,6 +29,8 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.utils.CalendarUtils;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class LendingFineBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
     private LendingDAO lendingDAO;
     private UserTypeBO userTypeBO;
+    private Clock clock;
 
     public LendingFineDTO getById(Integer fineId) {
         return this.lendingFineDAO.get(fineId);
@@ -81,16 +84,30 @@ public class LendingFineBO extends AbstractBO {
         return this.lendingFineDAO.update(fine);
     }
 
-    public void createFine(LendingDTO lending, Float value, boolean paid) {
+    // TODO: fix value should not be float
+    public boolean adjustValue(Integer fineId, float value) {
+        return this.lendingFineDAO.adjustValue(fineId, value);
+    }
+
+    public boolean delete(Integer fineId) {
+        return this.lendingFineDAO.delete(fineId);
+    }
+
+    public LendingFineDTO createFine(LendingDTO lending, Float value, boolean paid, int createdBy) {
         LendingFineDTO fine = new LendingFineDTO();
         fine.setUserId(lending.getUserId());
         fine.setLendingId(lending.getId());
         fine.setValue(value);
         if (paid) {
-            fine.setPayment(new Date());
+            fine.setPayment(Date.from(clock.instant()));
         }
-        fine.setCreatedBy(lending.getCreatedBy());
+        fine.setCreatedBy(createdBy);
         this.lendingFineDAO.insert(fine);
+        return fine;
+    }
+
+    public void createFine(LendingDTO lending, Float value, boolean paid) {
+        createFine(lending, value, paid, lending.getCreatedBy());
     }
 
     public Float calculateFineValue(Integer daysLate, UserDTO user) {
@@ -107,8 +124,12 @@ public class LendingFineBO extends AbstractBO {
     }
 
     public Integer calculateLateDays(LendingDTO lending) {
-        Date expectedReturnDate = lending.getExpectedReturnDate();
-        return CalendarUtils.calculateDateDifference(expectedReturnDate, new Date());
+        return this.calculateLateDays(lending, clock.instant());
+    }
+
+    public Integer calculateLateDays(LendingDTO lending, Instant asOf) {
+        Instant expectedReturn = lending.getExpectedReturnDate().toInstant();
+        return CalendarUtils.calculateDateDifference(expectedReturn, asOf);
     }
 
     @Autowired
@@ -134,5 +155,10 @@ public class LendingFineBO extends AbstractBO {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 }

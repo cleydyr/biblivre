@@ -13,6 +13,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 import noDupeTernaryBranches from './eslint-rules/no-dupe-ternary-branches.ts'
+import preferFragmentElement from './eslint-rules/prefer-fragment-element.ts'
 
 export default tseslint.config([
   // Global ignores
@@ -47,6 +48,7 @@ export default tseslint.config([
       biblivre: {
         rules: {
           'no-dupe-ternary-branches': noDupeTernaryBranches,
+          'prefer-fragment-element': preferFragmentElement,
         },
       },
     },
@@ -156,6 +158,9 @@ export default tseslint.config([
 
       // Ternary branches must not return the same value regardless of the condition
       'biblivre/no-dupe-ternary-branches': 'error',
+
+      // Prefer <Fragment> over shorthand <> (autofixable)
+      'biblivre/prefer-fragment-element': 'error',
     },
   },
 
@@ -169,8 +174,8 @@ export default tseslint.config([
       },
     },
     rules: {
-      // Warn when ?. is used on values that cannot be null or undefined
-      '@typescript-eslint/no-unnecessary-condition': 'warn',
+      // Error when conditions are always true/false (e.g. re-checking after narrowing)
+      '@typescript-eslint/no-unnecessary-condition': 'error',
     },
   },
 

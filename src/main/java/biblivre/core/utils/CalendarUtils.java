@@ -20,6 +20,7 @@
 package biblivre.core.utils;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -96,20 +97,30 @@ public class CalendarUtils {
         return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
     }
 
-    public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
+    public static Date toDateInDefaultZone(LocalDate expectedReturnDate) {
         return Date.from(
                 expectedReturnDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    public static java.time.LocalDate toLocalDateInDefaultZone(Date lendingDate) {
-        return lendingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    public static LocalDate toLocalDateInDefaultZone(Date lendingDate) {
+        return toLocalDateInDefaultZone(lendingDate.toInstant());
+    }
+
+    public static LocalDate toLocalDateInDefaultZone(Instant instant) {
+        return instant.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     public static int calculateDateDifference(Date initialDate, Date finalDate) {
-        LocalDate initialLocalDate = toLocalDateInDefaultZone(initialDate);
+        return calculateDateDifference(
+                toLocalDateInDefaultZone(initialDate), toLocalDateInDefaultZone(finalDate));
+    }
 
-        LocalDate finalLocalDate = toLocalDateInDefaultZone(finalDate);
+    public static int calculateDateDifference(Instant initialInstant, Instant finalInstant) {
+        return calculateDateDifference(
+                toLocalDateInDefaultZone(initialInstant), toLocalDateInDefaultZone(finalInstant));
+    }
 
-        return (int) ChronoUnit.DAYS.between(initialLocalDate, finalLocalDate);
+    public static int calculateDateDifference(LocalDate initialDate, LocalDate finalDate) {
+        return (int) ChronoUnit.DAYS.between(initialDate, finalDate);
     }
 }

@@ -1,0 +1,34 @@
+---
+description: Always internationalize user-facing UI strings with react-intl
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Internationalize UI strings
+
+Never hardcode user-facing copy (labels, placeholders, button text, empty states, toast titles, aria-labels, etc.). Always use `react-intl`.
+
+```tsx
+// ❌ BAD
+<EuiFieldSearch placeholder="Escaneie o tombo ou busque por título/autor" />
+
+// ✅ GOOD — FormattedMessage for JSX text
+<FormattedMessage
+  defaultMessage="Tombo, título ou autor"
+  id="circulation.return.search.label"
+/>
+
+// ✅ GOOD — useIntl when a string prop or non-JSX value is required
+const { formatMessage } = useIntl()
+<EuiFieldSearch
+  placeholder={formatMessage({
+    defaultMessage: 'Escaneie o tombo ou busque por título/autor',
+    id: 'circulation.return.search.placeholder',
+  })}
+/>
+```
+
+- Prefer `FormattedMessage` for visible JSX children.
+- Use `useIntl` / `formatMessage` for props, toast titles, and other non-JSX strings — including inside hooks.
+- Give every message a stable `id` and a Portuguese `defaultMessage`.
+- Do not skip i18n for "temporary" or Portuguese-only UI.

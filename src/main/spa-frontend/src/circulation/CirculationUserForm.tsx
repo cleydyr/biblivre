@@ -11,6 +11,7 @@ import {
   EuiTextArea,
 } from '@elastic/eui'
 import moment from 'moment'
+import { Fragment } from 'react'
 
 import TypedEuiSelect from '../components/TypedEuiSelect'
 import { DAY_FIRST_DATE_FORMAT } from '../constants'
@@ -258,7 +259,7 @@ const EuiFlexPhotoField: FC<PhotoFieldProps> = ({
   onPhotoSelect,
 }) => {
   return (
-    <>
+    <Fragment>
       {photoPreviewUrl ? (
         <EuiAvatar
           css={{ marginBottom: '0.75rem' }}
@@ -274,7 +275,7 @@ const EuiFlexPhotoField: FC<PhotoFieldProps> = ({
         isLoading={isPhotoLoading}
         onChange={(files) => onPhotoSelect(files?.[0] ?? null)}
       />
-    </>
+    </Fragment>
   )
 }
 

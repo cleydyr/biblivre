@@ -4,6 +4,11 @@ logging:
 server:
   port: 8090
 
+biblivre:
+  circulation:
+    # Override with env BIBLIVRE_CIRCULATION_RETURN_UNDO_WINDOW_SECONDS
+    return-undo-window-seconds: 120
+
 spring:
   mvc:
     view:

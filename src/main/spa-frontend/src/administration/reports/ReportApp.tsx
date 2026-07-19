@@ -12,7 +12,7 @@ import {
   EuiTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui'
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 
 import { BIBLIVRE_ENDPOINT } from '../../api-helpers/constants'
 import { useToasts } from '../../toasts/useToasts'
@@ -265,7 +265,7 @@ export default function ReportApp() {
   }
 
   return (
-    <>
+    <Fragment>
       <EuiPageTemplate>
         <EuiPageTemplate.Header
           description='Crie e gere relatórios personalizados'
@@ -325,7 +325,7 @@ export default function ReportApp() {
           </p>
         </EuiConfirmModal>
       )}
-    </>
+    </Fragment>
   )
 }
 
