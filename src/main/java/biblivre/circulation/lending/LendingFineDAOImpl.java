@@ -38,20 +38,23 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
             String sql =
                     "INSERT INTO lending_fines "
                             + "(user_id, lending_id, fine_value, payment_date, created_by) "
-                            + "VALUES (?, ?, ?, ?, ?);";
+                            + "VALUES (?, ?, ?, ?, ?) RETURNING id;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, fine.getUserId());
             pst.setInt(2, fine.getLendingId());
             pst.setFloat(3, fine.getValue());
-            if (fine.getPayment() != null) {
-                pst.setDate(4, CalendarUtils.toSqlDate(fine.getPayment()));
+            if (fine.isPaid()) {
+                pst.setDate(4, CalendarUtils.toSqlDate(fine.getPaymentDate()));
             } else {
                 pst.setNull(4, Types.DATE);
             }
             pst.setInt(5, fine.getCreatedBy());
 
-            pst.executeUpdate();
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                fine.setId(rs.getInt("id"));
+            }
 
         } catch (Exception e) {
             throw new DAOException(e);
@@ -143,6 +146,37 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
+    public boolean adjustValue(Integer fineId, float value) {
+        try (Connection con = datasource.getConnection()) {
+            String sql =
+                    "UPDATE lending_fines SET fine_value = ? "
+                            + "WHERE id = ? AND payment_date IS NULL;";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setFloat(1, value);
+            pst.setInt(2, fineId);
+
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public boolean delete(Integer fineId) {
+        try (Connection con = datasource.getConnection()) {
+            String sql = "DELETE FROM lending_fines WHERE id = ?;";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, fineId);
+
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
     public boolean hasPendingFine(int userID) {
         String sql =
                 """
@@ -177,7 +211,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         dto.setLendingId(rs.getInt("lending_id"));
         dto.setUserId(rs.getInt("user_id"));
         dto.setValue(rs.getFloat("fine_value"));
-        dto.setPayment(rs.getTimestamp("payment_date"));
+        dto.setPaymentDate(rs.getTimestamp("payment_date"));
 
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));

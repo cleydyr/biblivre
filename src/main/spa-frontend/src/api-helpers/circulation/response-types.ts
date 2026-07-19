@@ -97,6 +97,16 @@ export type LendingBag = Auditable<{
   lendingFine: LendingFine
 }>
 
+/** Holding-first search / Return bag: open or last closed Lending may be absent. */
+export type HoldingLendingBag = Auditable<{
+  id: number
+  biblio?: BibliographicRecord
+  holding: Holding
+  user?: User
+  lending?: Lending
+  lendingFine?: LendingFine
+}>
+
 export type Reservation = Auditable<{
   recordId: number
   expires: ISO8601Date
@@ -104,9 +114,16 @@ export type Reservation = Auditable<{
   userId: number
 }>
 
+export type ReservationInfo = Auditable<{
+  biblio?: BibliographicRecord
+  reservation: Reservation
+  user?: User
+}>
+
 export type ReservationBag = Auditable<{
   biblio: BibliographicRecord
   reservation: Reservation
+  user?: User
 }>
 
 // Unfortunate name: the real reservation list is the list of reservation bags

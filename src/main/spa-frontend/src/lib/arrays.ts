@@ -24,6 +24,19 @@ export function element<T>(arg: T): {
   }
 }
 
+export function elements<T>(args: T[]): {
+  if: (condition: boolean) => T[]
+} {
+  return {
+    if: (condition: boolean): T[] | [] => {
+      if (condition) {
+        return args
+      }
+      return []
+    },
+  }
+}
+
 export function partition<T>(
   array: T[],
   predicate: (item: T) => boolean,

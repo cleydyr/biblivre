@@ -396,6 +396,13 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
             boolean listAll = StringUtils.isBlank(query);
 
+            String titleAuthorMatch =
+                    "record_id IN ("
+                            + "SELECT s.record_id FROM biblio_idx_sort s "
+                            + "INNER JOIN biblio_indexing_groups g ON g.id = s.indexing_group_id "
+                            + "WHERE g.translation_key IN ('author', 'title') "
+                            + "AND s.phrase ILIKE ?)";
+
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM biblio_holdings WHERE 1 = 1 ");
 
@@ -405,9 +412,13 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             if (!listAll) {
                 if (searchId) {
-                    sql.append("AND (accession_number ilike ? OR id = ?) ");
+                    sql.append("AND (accession_number ILIKE ? OR id = ? OR ")
+                            .append(titleAuthorMatch)
+                            .append(") ");
                 } else {
-                    sql.append("AND accession_number ilike ? ");
+                    sql.append("AND (accession_number ILIKE ? OR ")
+                            .append(titleAuthorMatch)
+                            .append(") ");
                 }
             }
 
@@ -427,9 +438,13 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             if (!listAll) {
                 if (searchId) {
-                    countSql.append("AND (accession_number ilike ? OR id = ?) ");
+                    countSql.append("AND (accession_number ILIKE ? OR id = ? OR ")
+                            .append(titleAuthorMatch)
+                            .append(") ");
                 } else {
-                    countSql.append("AND accession_number ilike ? ");
+                    countSql.append("AND (accession_number ILIKE ? OR ")
+                            .append(titleAuthorMatch)
+                            .append(") ");
                 }
             }
 
@@ -442,6 +457,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             PreparedStatement pstCount = con.prepareStatement(countSql.toString());
 
             int index = 1;
+            String phraseQuery = "%" + query + "%";
 
             if (database != null) {
                 pst.setString(index, database.toString());
@@ -456,6 +472,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     pst.setLong(index, Long.parseLong(query));
                     pstCount.setLong(index++, Long.parseLong(query));
                 }
+
+                pst.setString(index, phraseQuery);
+                pstCount.setString(index++, phraseQuery);
             }
 
             pst.setInt(index++, limit);
@@ -665,7 +684,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                            """
+                    """
                         SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
                             INNER JOIN biblio_search_results B ON H.record_id = B.record_id
                             WHERE B.search_id = ?

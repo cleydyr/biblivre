@@ -68,11 +68,15 @@ public class LendingFineDTO extends AbstractDTO {
         this.value = value;
     }
 
-    public Date getPayment() {
+    public Date getPaymentDate() {
         return this.payment;
     }
 
-    public void setPayment(Date payment) {
+    public boolean isPaid() {
+        return this.payment != null;
+    }
+
+    public void setPaymentDate(Date payment) {
         this.payment = payment;
     }
 

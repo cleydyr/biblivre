@@ -277,7 +277,7 @@
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons">
-								{#if $T.record.lending}
+								{#if $T.record.lending && !$T.record.lending.returnDate}
 									{#if $T.record.lending.daysLate > 0}
 										<a class="button center disabled"><i18n:text key="circulation.lending.button.renew" /></a>
 									{#else}
@@ -309,13 +309,13 @@
 								{#if $T.record.holding.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.holding.availability)}<br/>{#/if}
 
 
-								{#if ($T.record.lending == undefined) && ($T.record.biblio.holdings_reserved > 0) && ($T.record.biblio.holdings_reserved >= $T.record.biblio.holdings_available) && CirculationSearch.selectedRecord && ($.inArray($T.record.biblio.id, CirculationSearch.selectedRecord.reservedRecords) == -1)}
+								{#if (!$T.record.lending || $T.record.lending.returnDate) && ($T.record.biblio.holdings_reserved > 0) && ($T.record.biblio.holdings_reserved >= $T.record.biblio.holdings_available) && CirculationSearch.selectedRecord && ($.inArray($T.record.biblio.id, CirculationSearch.selectedRecord.reservedRecords) == -1)}
 									<div class="ncspacer"></div>
 									<div class="warn"><strong><i18n:text key="circulation.lending.reserved.warning" /></strong></div>
 									<div class="ncspacer"></div>
 								{#/if}
 
-								{#if $T.record.lending !== undefined}
+								{#if $T.record.lending && !$T.record.lending.returnDate}
 									<div class="user_lending">
 										<label><i18n:text key="circulation.lending.holding_lent_to_the_following_reader" />:</label><br/>
 

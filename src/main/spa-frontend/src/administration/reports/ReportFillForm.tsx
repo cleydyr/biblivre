@@ -5,7 +5,7 @@ import {
   EuiForm,
   EuiSpacer,
 } from '@elastic/eui'
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import {
@@ -113,7 +113,7 @@ const ReportFillForm = ({
           ) : null,
         )}
         {unsupportedTypes && (
-          <>
+          <Fragment>
             <EuiSpacer size='m' />
             <EuiCallOut
               announceOnMount
@@ -126,10 +126,10 @@ const ReportFillForm = ({
                 />
               }
             />
-          </>
+          </Fragment>
         )}
         {!canSubmit && parameters.length > 0 && !unsupportedTypes && (
-          <>
+          <Fragment>
             <EuiSpacer size='m' />
             <EuiCallOut
               announceOnMount
@@ -142,7 +142,7 @@ const ReportFillForm = ({
                 />
               }
             />
-          </>
+          </Fragment>
         )}
         <EuiSpacer size='m' />
         <EuiButton

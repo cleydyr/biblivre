@@ -26,5 +26,7 @@ public interface ReservationDAO {
 
     int insert(ReservationDTO dto);
 
+    List<ReservationDTO> listByRecordId(int recordId);
+
     Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds);
 }

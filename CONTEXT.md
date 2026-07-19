@@ -21,7 +21,7 @@ Extending an open Lending’s expected return date without closing it. Part of L
 _Avoid_: Extend loan, roll over
 
 **Return**:
-Closing one open Lending as soon as its Holding is identified (holding-first, immediate — not a pending basket). Does not start from browsing a User’s loans. Does not open or renew Lendings. Lateness does not block completion; Fine handling is non-blocking after the Lending is closed. Scanning a Holding with no open Lending is not a Return — staff see that it is not on loan, plus the last closed Lending when history exists. If the title has active Reservations, Return informs staff who is next; it does not change reservation state or Holding availability rules.
+Closing one open Lending as soon as its Holding is identified by unique identifier (accession number or holding id), holding-first and immediate — not a pending basket. Title/author search lists candidates; it does not auto-close. Does not start from browsing a User’s loans. Does not open or renew Lendings. Lateness does not block completion; Fine handling is non-blocking after the Lending is closed. Scanning a Holding with no open Lending is not a Return — staff see that it is not on loan, plus the last closed Lending when history exists. If the title has active Reservations, Return informs staff who is next; it does not change reservation state or Holding availability rules.
 _Avoid_: Check-in, give back, return session, batch return (as the primary flow)
 
 **Fine**:

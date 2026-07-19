@@ -119,10 +119,20 @@ public class AbstractHandler {
         json.put(key, object);
     }
 
+    public void put(String key, IFJson object) {
+        JSONObject json = getJson();
+        json.put(key, object.toJSONObject());
+    }
+
     public void append(String key, Object object) {
         JSONObject json = getJson();
 
         json.append(key, object);
+    }
+
+    public void append(String key, IFJson object) {
+        JSONObject json = getJson();
+        json.append(key, object.toJSONObject());
     }
 
     public void putOpt(String key, Object object) {
@@ -131,10 +141,20 @@ public class AbstractHandler {
         json.putOpt(key, object);
     }
 
+    public void putOpt(String key, IFJson object) {
+        JSONObject json = getJson();
+        json.putOpt(key, object.toJSONObject());
+    }
+
     public void accumulate(String key, Object object) {
         JSONObject json = getJson();
 
         json.accumulate(key, object);
+    }
+
+    public void accumulate(String key, IFJson object) {
+        JSONObject json = getJson();
+        json.accumulate(key, object.toJSONObject());
     }
 
     @Autowired

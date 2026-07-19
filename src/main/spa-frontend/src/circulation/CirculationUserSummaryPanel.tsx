@@ -13,7 +13,7 @@ import {
   useEuiTheme,
   useGeneratedHtmlId,
 } from '@elastic/eui'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { getUserPhotoUrl, useUserPanelDescriptionListItems } from './lib'
@@ -55,7 +55,7 @@ const CirculationUserAvatar: FC<{ user: User }> = ({ user }) => {
 
   if (photoUrl) {
     return (
-      <>
+      <Fragment>
         <EuiToolTip content={photoHint} position='top'>
           <div
             aria-label={photoHint}
@@ -125,7 +125,7 @@ const CirculationUserAvatar: FC<{ user: User }> = ({ user }) => {
             </EuiModalBody>
           </EuiModal>
         ) : null}
-      </>
+      </Fragment>
     )
   }
 
