@@ -1,7 +1,7 @@
 import { EuiDescriptionList } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
-import { element, elements } from '../../lib/arrays'
+import { when } from '../../lib/arrays'
 import {
   formatCirculationDate,
   formatCirculationDateTime,
@@ -34,47 +34,45 @@ const HoldingLendingSummary: FC<Props> = ({ holdingLendingBag }) => {
   )
 
   const items: EuiDescriptionListItem[] = [
-    ...elements(biblioItems).if(Boolean(biblio)),
-    ...element({
+    ...when(biblio).elements(biblioItems),
+    ...when(holding.accession_number).element((accessionNumber) => ({
       title: (
         <FormattedMessage
           defaultMessage='Tombo patrimonial'
           id='search.holding.accession_number'
         />
       ),
-      description: holding.accession_number,
-    }).if(Boolean(holding.accession_number)),
-    ...element({
+      description: accessionNumber,
+    })),
+    ...when(user?.name).element((userName) => ({
       title: (
         <FormattedMessage
           defaultMessage='Usuário'
           id='circulation.return.user'
         />
       ),
-      description: user?.name ?? '',
-    }).if(Boolean(user?.name)),
-    ...element({
+      description: userName,
+    })),
+    ...when(holdingLendingBag.lending).element((lending) => ({
       title: (
         <FormattedMessage
           defaultMessage='Data do empréstimo'
           id='circulation.lending.lending_date'
         />
       ),
-      description: holdingLendingBag.lending
-        ? formatCirculationDateTime(holdingLendingBag.lending.created)
-        : '',
-    }).if(Boolean(holdingLendingBag.lending)),
-    ...element({
-      title: (
-        <FormattedMessage
-          defaultMessage='Data prevista para devolução'
-          id='circulation.lending.expected_return_date'
-        />
-      ),
-      description: holdingLendingBag.lending?.expectedReturnDate
-        ? formatCirculationDate(holdingLendingBag.lending.expectedReturnDate)
-        : '',
-    }).if(Boolean(holdingLendingBag.lending?.expectedReturnDate)),
+      description: formatCirculationDateTime(lending.created),
+    })),
+    ...when(holdingLendingBag.lending?.expectedReturnDate).element(
+      (expectedReturnDate) => ({
+        title: (
+          <FormattedMessage
+            defaultMessage='Data prevista para devolução'
+            id='circulation.lending.expected_return_date'
+          />
+        ),
+        description: formatCirculationDate(expectedReturnDate),
+      }),
+    ),
   ]
 
   return <EuiDescriptionList listItems={items} type='column' />

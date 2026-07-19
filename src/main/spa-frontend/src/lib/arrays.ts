@@ -1,38 +1,46 @@
 /*
 Helper to create arrays conditionally.
 
-Example:
-
 [
     a,
     b,
-    ...element(c).if(c.is_valid),
-    ...element(x).if(x.is_valid),
+    ...when(c.is_valid).element(() => c),
+    ...when(lending).element((lending) => ({
+        description: formatDate(lending.created),
+    })),
 ]
 */
 
-export function element<T>(arg: T): {
-  if: (condition: boolean) => [T] | []
-} {
-  return {
-    if: (condition: boolean): [T] | [] => {
-      if (condition) {
-        return [arg]
-      }
-      return []
-    },
-  }
+export type Falsy = false | 0 | 0n | '' | null | undefined
+
+export type Truthy<T> = Exclude<T, Falsy>
+
+type WhenResult<T> = {
+  element: <U>(factory: (narrowed: Truthy<T>) => U) => [U] | []
+  elements: <U>(factoryOrItems: ((narrowed: Truthy<T>) => U[]) | U[]) => U[]
 }
 
-export function elements<T>(args: T[]): {
-  if: (condition: boolean) => T[]
-} {
+export function when<T>(value: T): WhenResult<T> {
   return {
-    if: (condition: boolean): T[] | [] => {
-      if (condition) {
-        return args
+    element: <U>(factory: (narrowed: Truthy<T>) => U): [U] | [] => {
+      if (!value) {
+        return []
       }
-      return []
+
+      return [factory(value as Truthy<T>)]
+    },
+    elements: <U>(
+      factoryOrItems: ((narrowed: Truthy<T>) => U[]) | U[],
+    ): U[] => {
+      if (!value) {
+        return []
+      }
+
+      if (typeof factoryOrItems === 'function') {
+        return factoryOrItems(value as Truthy<T>)
+      }
+
+      return factoryOrItems
     },
   }
 }

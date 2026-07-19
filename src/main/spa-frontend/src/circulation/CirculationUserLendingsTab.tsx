@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { useCirculationUserTabData } from '../api-helpers/circulation/hooks'
 import LoadingState from '../components/LoadingState'
-import { element, partition } from '../lib/arrays'
+import { partition, when } from '../lib/arrays'
 
 import {
   formatCirculationDate,
@@ -143,15 +143,15 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
 
   const listItems: Array<EuiDescriptionListItem> = [
     ...useBiblioDescriptionListItems(biblio, shelfLocation),
-    ...element({
+    ...when(holding.accession_number).element((accessionNumber) => ({
       title: (
         <FormattedMessage
           defaultMessage='Tombo patrimonial'
           id='search.holding.accession_number'
         />
       ),
-      description: holding.accession_number,
-    }).if(holding.accession_number !== ''),
+      description: accessionNumber,
+    })),
     {
       title: (
         <FormattedMessage
@@ -161,15 +161,15 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
       ),
       description: formatCirculationDateTime(created),
     },
-    ...element({
+    ...when(returnDate).element((closedReturnDate) => ({
       title: (
         <FormattedMessage
           defaultMessage='Data da devolução'
           id='circulation.lending.return_date'
         />
       ),
-      description: returnDate ? formatCirculationDateTime(returnDate) : '-',
-    }).if(returnDate !== undefined),
+      description: formatCirculationDateTime(closedReturnDate),
+    })),
     {
       title: (
         <FormattedMessage
@@ -179,7 +179,11 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
       ),
       description: formatCirculationDate(expectedReturnDate),
     },
-    ...element({
+    ...when(
+      returnDate === undefined && daysLate !== undefined && daysLate > 0
+        ? daysLate
+        : undefined,
+    ).element((lateDays) => ({
       title: (
         <FormattedMessage
           defaultMessage='Dias de atraso'
@@ -188,11 +192,17 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
       ),
       description: (
         <EuiText color='danger' size='s'>
-          {daysLate ? String(daysLate) : '-'}
+          {String(lateDays)}
         </EuiText>
       ),
-    }).if(returnDate === undefined && daysLate !== undefined && daysLate > 0),
-    ...element({
+    })),
+    ...when(
+      returnDate === undefined &&
+        estimatedFine !== undefined &&
+        estimatedFine > 0
+        ? estimatedFine
+        : undefined,
+    ).element((fineAmount) => ({
       title: (
         <FormattedMessage
           defaultMessage='Multa estimada'
@@ -201,14 +211,10 @@ const LendingCard: FC<{ lendingBag: LendingBag }> = ({ lendingBag }) => {
       ),
       description: (
         <EuiText color='danger' size='s'>
-          {estimatedFine ? estimatedFine.toFixed(2) : '-'}
+          {fineAmount.toFixed(2)}
         </EuiText>
       ),
-    }).if(
-      returnDate === undefined &&
-        estimatedFine !== undefined &&
-        estimatedFine > 0,
-    ),
+    })),
   ]
 
   return (
