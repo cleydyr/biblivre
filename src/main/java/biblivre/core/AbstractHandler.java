@@ -146,7 +146,7 @@ public class AbstractHandler {
     }
 
     public void putOpt(String key, Object object) {
-        
+
         JSONObject json = getJson();
 
         json.putOpt(key, object);
@@ -159,7 +159,7 @@ public class AbstractHandler {
         }
 
         JSONObject json = getJson();
-        
+
         json.putOpt(key, object.toJSONObject());
     }
 
