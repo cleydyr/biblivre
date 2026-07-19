@@ -99,7 +99,7 @@ public class LendingFineBO extends AbstractBO {
         fine.setLendingId(lending.getId());
         fine.setValue(value);
         if (paid) {
-            fine.setPaymentDate(Date.from(clock.instant()));
+            fine.setPayment(Date.from(clock.instant()));
         }
         fine.setCreatedBy(createdBy);
         this.lendingFineDAO.insert(fine);

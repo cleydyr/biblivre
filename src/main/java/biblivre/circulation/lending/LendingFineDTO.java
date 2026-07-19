@@ -68,7 +68,7 @@ public class LendingFineDTO extends AbstractDTO {
         this.value = value;
     }
 
-    public Date getPaymentDate() {
+    public Date getPayment() {
         return this.payment;
     }
 
@@ -76,7 +76,7 @@ public class LendingFineDTO extends AbstractDTO {
         return this.payment != null;
     }
 
-    public void setPaymentDate(Date payment) {
+    public void setPayment(Date payment) {
         this.payment = payment;
     }
 
