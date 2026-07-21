@@ -297,7 +297,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>5.5.13</version>
+			<version>6.1.0</version>
 		</dependency>
 
 		<dependency>
