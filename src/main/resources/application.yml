@@ -10,11 +10,6 @@ spring:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
   devtools:
     livereload:
       enabled: true

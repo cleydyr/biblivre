@@ -258,6 +258,16 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.21.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jfree</groupId>
+					<artifactId>jfreechart</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jfree</groupId>
+					<artifactId>jcommon</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- Skip CVE-2025-48734 -->
 		<dependency>
@@ -267,16 +277,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -430,7 +435,7 @@
 					<authId>ossindex</authId>
 					<excludeVulnerabilityIds>
 						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
-						<!-- Disputed JFreeChart finding via jasperreports -->
+						<!-- Disputed finding reported against jasperreports; no community fix as of 6.21.5 -->
 						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>
 						<!-- No community fix for jasperreports as of 6.21.5 -->
 						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>
@@ -445,6 +450,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludeDevtools>true</excludeDevtools>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
@@ -653,6 +661,13 @@
 	<profiles>
 		<profile>
 			<id>developer</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-devtools</artifactId>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
