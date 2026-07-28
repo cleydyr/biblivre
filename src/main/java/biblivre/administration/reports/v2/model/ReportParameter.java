@@ -1,20 +1,19 @@
 package biblivre.administration.reports.v2.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * A report parameter is a parameter that is used to generate a report. It contains a name and a
  * type.
  */
-@Entity
-@Table(name = "report_parameters", schema = "global")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class ReportParameter {
-    @GeneratedValue @Id long id;
+    @Setter long id;
 
     String name;
 
@@ -22,9 +21,5 @@ public class ReportParameter {
 
     String description;
 
-    @ManyToOne
-    @JoinColumn(name = "report_id", nullable = false)
-    @JsonBackReference
-    @Setter
-    Report report;
+    @Setter Report report;
 }
