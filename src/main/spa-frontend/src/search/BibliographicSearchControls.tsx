@@ -10,8 +10,8 @@ import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import AdvancedBibliographicSearchControls from './advanced/AdvancedBibliographicSearchControls'
-import MaterialTypeSelect from './MaterialTypeSelect'
 import SimpleBibliographicSearchControls from './simple/SimpleBibliographicSearchControls'
+import MaterialTypeSelect from './MaterialTypeSelect'
 
 import type { FC } from 'react'
 

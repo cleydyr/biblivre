@@ -18,6 +18,7 @@ import { FIELDS } from '../api-helpers/search/constants'
 import { getSearchMode, getSearchTerms } from '../api-helpers/search/lib'
 import FeatureFlag from '../components/FeatureFlag'
 import { SEARCH_EXCEL_EXPORT_FEATURE } from '../config/features'
+
 import BibliographicSearchResultSort from './BibliographicSearchResultSort'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { getPagination, isFirstResult, isLastResult } from './lib'

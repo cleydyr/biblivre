@@ -20,9 +20,7 @@ export function isFirstResult(
   }
 
   return (
-    search.data.findIndex(
-      (record) => record.id === recordIdForFlyout,
-    ) === 0
+    search.data.findIndex((record) => record.id === recordIdForFlyout) === 0
   )
 }
 
@@ -41,9 +39,7 @@ export function isLastResult(
   }
 
   return (
-    search.data.findIndex(
-      (record) => record.id === recordIdForFlyout,
-    ) ===
+    search.data.findIndex((record) => record.id === recordIdForFlyout) ===
     search.data.length - 1
   )
 }

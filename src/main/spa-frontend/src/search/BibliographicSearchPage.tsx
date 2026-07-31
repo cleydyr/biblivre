@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import PageTemplate from '../components/PageTemplate'
+
 import BibliographicSearchControls from './BibliographicSearchControls'
 import BibliographicSearchResults from './BibliographicSearchResults'
 import { usePaginatedSearch } from './hooks'

@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl'
 import PageTemplate from '../../components/PageTemplate'
 import BibliographicSearchResults from '../BibliographicSearchResults'
 import { usePaginatedSearch } from '../hooks'
+
 import IntelligentBibliographicSearchControls from './IntelligentBibliographicSearchControls'
 
 import type {

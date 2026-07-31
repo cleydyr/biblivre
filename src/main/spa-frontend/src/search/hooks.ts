@@ -29,7 +29,13 @@ export const searchQueryKeys = {
     terms?: SearchQueryTerms,
     searchMode?: SearchMode,
   ) =>
-    [...searchQueryKeys.all, 'results', materiaType, terms, searchMode] as const,
+    [
+      ...searchQueryKeys.all,
+      'results',
+      materiaType,
+      terms,
+      searchMode,
+    ] as const,
   pagination: (searchId?: string, page?: number, sort?: EncodedQueryField) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: number) =>
