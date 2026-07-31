@@ -1,0 +1,18 @@
+---
+description: Always run yarn lint after spa-frontend contributions
+globs: src/main/spa-frontend/**/*.{ts,tsx,js,jsx,mjs,cjs}
+alwaysApply: false
+---
+
+# spa-frontend: run yarn lint
+
+After editing or adding files under `src/main/spa-frontend`, always run lint before considering the work done:
+
+```bash
+cd src/main/spa-frontend && yarn lint
+```
+
+- Fix every reported ESLint error in files you changed.
+- Prefer fixing issues manually; use `yarn lint:fix` only for safe auto-fixes.
+- Do not leave lint failures in your final suggestions.
+- If lint fails, resolve the issues and run `yarn lint` again until it passes.
