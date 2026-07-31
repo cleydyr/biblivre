@@ -26,6 +26,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.search.intelligent.IntelligentSearchService;
 import biblivre.core.AbstractBO;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,8 @@ public class IndexingBO extends AbstractBO {
     private IndexingGroupBO indexingGroupBO;
 
     private TabFieldsBO tabFieldsBO;
+
+    private IntelligentSearchService intelligentSearchService;
 
     public void reindex(RecordType recordType) {
         if (this.getLockState(recordType)) {
@@ -88,6 +91,16 @@ public class IndexingBO extends AbstractBO {
                 }
 
                 this.indexingDAO.reindexDatabase(recordType);
+
+                if (recordType == RecordType.BIBLIO && intelligentSearchService != null) {
+                    // Re-walk records for vector index after lexical reindex batches above.
+                    // The loop above already had each page; reindex embeddings in a second pass.
+                    intelligentSearchService.clearAll();
+                    for (int offset = 0; offset < recordCount; offset += limit) {
+                        List<RecordDTO> page = rbo.list(offset, limit);
+                        intelligentSearchService.reindexRecords(page);
+                    }
+                }
             } finally {
                 this.toggleLockState(recordType, false);
             }
@@ -188,5 +201,10 @@ public class IndexingBO extends AbstractBO {
     @Autowired
     public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired(required = false)
+    public void setIntelligentSearchService(IntelligentSearchService intelligentSearchService) {
+        this.intelligentSearchService = intelligentSearchService;
     }
 }

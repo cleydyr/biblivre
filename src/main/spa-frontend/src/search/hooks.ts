@@ -16,6 +16,7 @@ import type { OpenResponse } from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
   EncodedQueryField,
+  SearchMode,
   SearchQueryTerms,
   SearchResponse,
 } from '../api-helpers/search/types'
@@ -23,8 +24,12 @@ import type {
 // Query keys for cache management
 export const searchQueryKeys = {
   all: ['search'] as const,
-  results: (materiaType: BibliographicMaterial, terms?: SearchQueryTerms) =>
-    [...searchQueryKeys.all, 'results', materiaType, terms] as const,
+  results: (
+    materiaType: BibliographicMaterial,
+    terms?: SearchQueryTerms,
+    searchMode?: SearchMode,
+  ) =>
+    [...searchQueryKeys.all, 'results', materiaType, terms, searchMode] as const,
   pagination: (searchId?: string, page?: number, sort?: EncodedQueryField) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: number) =>
@@ -36,6 +41,7 @@ export function usePaginatedSearch(
   page: number,
   materialType: BibliographicMaterial,
   sort?: EncodedQueryField,
+  searchMode: SearchMode = 'simple',
   options?: Omit<
     UseQueryOptions<SearchResponse>,
     'queryKey' | 'queryFn' | 'placeholderData'
@@ -45,12 +51,13 @@ export function usePaginatedSearch(
 
   useEffect(() => {
     setSearchId(undefined)
-  }, [terms, materialType])
+  }, [terms, materialType, searchMode])
 
   const initialQuery = useQuery({
     ...options,
-    queryKey: searchQueryKeys.results(materialType, terms),
-    queryFn: () => getCatalographicSearchResults(materialType, terms),
+    queryKey: searchQueryKeys.results(materialType, terms, searchMode),
+    queryFn: () =>
+      getCatalographicSearchResults(materialType, terms, searchMode),
     enabled: options?.enabled && searchId === undefined,
     placeholderData: keepPreviousData,
   })

@@ -11,8 +11,6 @@ import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import TypedEuiSelect from '../components/TypedEuiSelect'
-import useToggle from '../hooks/useToggle'
-
 import AdvancedBibliographicSearchControls from './advanced/AdvancedBibliographicSearchControls'
 import SimpleBibliographicSearchControls from './simple/SimpleBibliographicSearchControls'
 
@@ -20,6 +18,7 @@ import type { FC } from 'react'
 
 import type {
   BibliographicMaterial,
+  SearchMode,
   SearchQueryTerms,
 } from '../api-helpers/search/types'
 import type { TypedEuiSelectOption } from '../components/TypedEuiSelect'
@@ -27,28 +26,48 @@ import type { TypedEuiSelectOption } from '../components/TypedEuiSelect'
 type Props = {
   onQuerySubmited: (
     materialType: BibliographicMaterial,
-    terms?: SearchQueryTerms,
+    terms: SearchQueryTerms | undefined,
+    searchMode: SearchMode,
   ) => void
   isLoading: boolean
 }
+
+type UiSearchMode = 'simple' | 'advanced' | 'intelligent'
 
 const BibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
 }) => {
-  const [isAdvancedSearch, toggleAdvancedSearch] = useToggle(false)
+  const [uiMode, setUiMode] = useState<UiSearchMode>('simple')
 
   const [materialType, setMaterialType] = useState<BibliographicMaterial>('all')
+
+  const submit = (terms?: SearchQueryTerms) => {
+    let searchMode: SearchMode = 'simple'
+
+    if (terms === undefined) {
+      searchMode = 'list_all'
+    } else if (uiMode === 'intelligent' || uiMode === 'advanced') {
+      searchMode = uiMode
+    }
+
+    onQuerySubmited(materialType, terms, searchMode)
+  }
 
   return (
     <EuiFlexGroup direction='column'>
       <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
         <EuiTitle size='s'>
           <h2>
-            {isAdvancedSearch ? (
+            {uiMode === 'advanced' ? (
               <FormattedMessage
                 defaultMessage='Pesquisa Bibliográfica Avançada'
                 id='search.bibliographic.header.2.advanced'
+              />
+            ) : uiMode === 'intelligent' ? (
+              <FormattedMessage
+                defaultMessage='Pesquisa Bibliográfica Inteligente'
+                id='search.bibliographic.header.2.intelligent'
               />
             ) : (
               <FormattedMessage
@@ -81,14 +100,37 @@ const BibliographicSearchControls: FC<Props> = ({
               <EuiFlexGroup direction='column' gutterSize='none'>
                 <EuiSpacer size='l' />
                 <EuiSwitch
-                  checked={isAdvancedSearch}
+                  checked={uiMode === 'intelligent'}
+                  label={
+                    <FormattedMessage
+                      defaultMessage='Pesquisa inteligente'
+                      id='search.bibliographic.intelligent_search'
+                    />
+                  }
+                  onChange={() =>
+                    setUiMode((current) =>
+                      current === 'intelligent' ? 'simple' : 'intelligent',
+                    )
+                  }
+                />
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiFlexGroup direction='column' gutterSize='none'>
+                <EuiSpacer size='l' />
+                <EuiSwitch
+                  checked={uiMode === 'advanced'}
                   label={
                     <FormattedMessage
                       defaultMessage='Pesquisa avançada'
                       id='search.bibliographic.advanced_search'
                     />
                   }
-                  onChange={() => toggleAdvancedSearch()}
+                  onChange={() =>
+                    setUiMode((current) =>
+                      current === 'advanced' ? 'simple' : 'advanced',
+                    )
+                  }
                 />
               </EuiFlexGroup>
             </EuiFlexItem>
@@ -96,15 +138,15 @@ const BibliographicSearchControls: FC<Props> = ({
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiHorizontalRule />
-      {isAdvancedSearch ? (
+      {uiMode === 'advanced' ? (
         <AdvancedBibliographicSearchControls
           isLoading={isLoading}
-          onQuerySubmited={(terms) => onQuerySubmited(materialType, terms)}
+          onQuerySubmited={submit}
         />
       ) : (
         <SimpleBibliographicSearchControls
           isLoading={isLoading}
-          onQuerySubmited={(terms) => onQuerySubmited(materialType, terms)}
+          onQuerySubmited={submit}
         />
       )}
     </EuiFlexGroup>

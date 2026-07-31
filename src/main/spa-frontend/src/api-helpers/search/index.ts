@@ -10,6 +10,7 @@ import type { ExportResponse, OpenResponse } from './response-types'
 import type {
   BibliographicMaterial,
   EncodedQueryField,
+  SearchMode,
   SearchQueryTerms,
   SearchResponse,
 } from './types'
@@ -17,6 +18,7 @@ import type {
 export async function getCatalographicSearchResults(
   materialType: BibliographicMaterial,
   terms?: SearchQueryTerms,
+  searchMode?: SearchMode,
 ): Promise<SearchResponse> {
   return fetchJSONFromLegacyEndpoint({
     module: 'cataloging.bibliographic',
@@ -24,7 +26,7 @@ export async function getCatalographicSearchResults(
     search_parameters: JSON.stringify({
       database: 'main',
       material_type: materialType,
-      search_mode: getSearchMode(terms),
+      search_mode: getSearchMode(terms, searchMode),
       ...getSearchTerms(terms),
     }),
   })

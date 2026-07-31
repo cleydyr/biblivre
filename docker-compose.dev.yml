@@ -1,7 +1,7 @@
 version: "3"
 services:
   database:
-    image: postgres:18-alpine
+    image: pgvector/pgvector:pg18
     container_name: biblivre-dev-db
     ports:
       - "5432:5432"

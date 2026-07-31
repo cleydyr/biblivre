@@ -26,3 +26,17 @@ spring:
       enabled: true
     restart:
       enabled: true
+
+biblivre:
+  search:
+    intelligent:
+      enabled: true
+      candidate-limit: 40
+      rrf-k: 50
+      embedding:
+        provider: openai_compatible
+        base-url: http://192.168.1.145:11434/v1
+        api-key: ollama
+        model: bge-m3
+        dimensions: 1024
+        batch-size: 32

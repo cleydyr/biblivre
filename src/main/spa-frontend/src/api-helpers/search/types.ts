@@ -36,7 +36,7 @@ export type AdvancedQueryTerm = AdvancedTextQueryTerm | AdvancedDateQueryTerm
 
 export type SearchQueryTerms = SimpleQueryTerm | AdvancedQueryTerm[]
 
-export type SearchMode = 'list_all' | 'simple' | 'advanced'
+export type SearchMode = 'list_all' | 'simple' | 'advanced' | 'intelligent'
 
 export type BibliographicMaterial =
   | 'all'

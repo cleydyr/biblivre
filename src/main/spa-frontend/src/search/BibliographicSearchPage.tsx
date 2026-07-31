@@ -36,6 +36,7 @@ import type {
 import type {
   BibliographicMaterial,
   EncodedQueryField,
+  SearchMode,
   SearchQueryTerms,
 } from '../api-helpers/search/types'
 
@@ -48,6 +49,8 @@ const BibliographicSearchPage = () => {
 
   const [materialType, setMaterialType] = useState<BibliographicMaterial>('all')
 
+  const [searchMode, setSearchMode] = useState<SearchMode>('simple')
+
   const [isQuerySubmittedOnce, setQuerySubmittedOnce] = useState<boolean>(false)
 
   const [isExportingExcel, setIsExportingExcel] = useState(false)
@@ -59,7 +62,7 @@ const BibliographicSearchPage = () => {
     isSuccess: isSearchSuccess,
     isError: isSearchError,
     isFetching: isSearchFetching,
-  } = usePaginatedSearch(terms, page, materialType, sort, {
+  } = usePaginatedSearch(terms, page, materialType, sort, searchMode, {
     enabled: isQuerySubmittedOnce,
   })
 
@@ -154,10 +157,11 @@ const BibliographicSearchPage = () => {
         <EuiPanel hasBorder paddingSize='l'>
           <BibliographicSearchControls
             isLoading={isSearchFetching}
-            onQuerySubmited={(queryMaterialType, newTerms) => {
+            onQuerySubmited={(queryMaterialType, newTerms, mode) => {
               setTerms(newTerms)
               setPage(0)
               setMaterialType(queryMaterialType)
+              setSearchMode(mode)
               setQuerySubmittedOnce(true)
             }}
           />
@@ -231,7 +235,7 @@ const BibliographicSearchPage = () => {
                         const search_parameters = JSON.stringify({
                           database: 'main',
                           material_type: materialType,
-                          search_mode: getSearchMode(terms),
+                          search_mode: getSearchMode(terms, searchMode),
                           ...getSearchTerms(terms),
                         })
                         const sortParam =

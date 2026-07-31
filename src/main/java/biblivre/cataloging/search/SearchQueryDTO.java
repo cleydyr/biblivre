@@ -90,6 +90,11 @@ public final class SearchQueryDTO extends AbstractDTO {
             return;
         }
 
+        if (this.getSearchMode() == SearchMode.INTELLIGENT) {
+            processIntelligentSearchTerm(searchTerms.optJSONObject(0));
+            return;
+        }
+
         for (int i = 0; i < searchTerms.length(); i++) {
             JSONObject searchTerm = searchTerms.optJSONObject(i);
 
@@ -99,6 +104,21 @@ public final class SearchQueryDTO extends AbstractDTO {
         if (this.terms.isEmpty()) {
             throw new ValidationException("cataloging.error.no_valid_terms");
         }
+    }
+
+    private void processIntelligentSearchTerm(JSONObject searchTerm) {
+        if (searchTerm == null) {
+            throw new ValidationException("cataloging.error.no_valid_terms");
+        }
+
+        String query = StringUtils.trimToEmpty(searchTerm.optString("query"));
+        if (query.isEmpty()) {
+            throw new ValidationException("cataloging.error.no_valid_terms");
+        }
+
+        SearchTermDTO dto = new SearchTermDTO();
+        dto.addTerms(Set.of(query));
+        this.addTerm(dto);
     }
 
     private void processSearchTerm(JSONObject searchTerm) throws ParseException {

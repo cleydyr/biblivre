@@ -131,6 +131,9 @@ public class BiblioRecordBO extends PaginableRecordBO {
                     dto,
                     indexingGroupBO.getGroups(dto.getRecordType()),
                     tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
+            if (intelligentSearchService != null) {
+                intelligentSearchService.indexRecord(dto);
+            }
             return true;
         }
 
@@ -146,6 +149,9 @@ public class BiblioRecordBO extends PaginableRecordBO {
                     dto,
                     indexingGroupBO.getGroups(dto.getRecordType()),
                     tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
+            if (intelligentSearchService != null) {
+                intelligentSearchService.indexRecord(dto);
+            }
             return true;
         }
 
@@ -157,6 +163,9 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
         if (this.recordDAO.delete(dto)) {
             indexingDAO.deleteIndexes(RecordType.BIBLIO, dto);
+            if (intelligentSearchService != null) {
+                intelligentSearchService.deleteRecord(dto.getId());
+            }
         }
 
         return true;
