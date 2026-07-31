@@ -2,24 +2,22 @@ import { EuiFlexGroup, EuiPanel } from '@elastic/eui'
 import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
-import PageTemplate from '../components/PageTemplate'
-import BibliographicSearchControls from './BibliographicSearchControls'
-import BibliographicSearchResults from './BibliographicSearchResults'
-import { usePaginatedSearch } from './hooks'
+import PageTemplate from '../../components/PageTemplate'
+import BibliographicSearchResults from '../BibliographicSearchResults'
+import { usePaginatedSearch } from '../hooks'
+import IntelligentBibliographicSearchControls from './IntelligentBibliographicSearchControls'
 
 import type {
   BibliographicMaterial,
   EncodedQueryField,
-  SearchMode,
   SearchQueryTerms,
-} from '../api-helpers/search/types'
+} from '../../api-helpers/search/types'
 
-const BibliographicSearchPage = () => {
+const IntelligentBibliographicSearchPage = () => {
   const [terms, setTerms] = useState<SearchQueryTerms | undefined>()
   const [page, setPage] = useState(0)
   const [sort, setSort] = useState<EncodedQueryField | undefined>(undefined)
   const [materialType, setMaterialType] = useState<BibliographicMaterial>('all')
-  const [searchMode, setSearchMode] = useState<SearchMode>('simple')
   const [isQuerySubmittedOnce, setQuerySubmittedOnce] = useState(false)
 
   const {
@@ -27,7 +25,7 @@ const BibliographicSearchPage = () => {
     isSuccess: isSearchSuccess,
     isError: isSearchError,
     isFetching: isSearchFetching,
-  } = usePaginatedSearch(terms, page, materialType, sort, searchMode, {
+  } = usePaginatedSearch(terms, page, materialType, sort, 'intelligent', {
     enabled: isQuerySubmittedOnce,
   })
 
@@ -35,20 +33,19 @@ const BibliographicSearchPage = () => {
     <PageTemplate
       pageTitle={
         <FormattedMessage
-          defaultMessage='Pesquisa Bibliográfica'
-          id='search.bibliographic.header.1'
+          defaultMessage='Pesquisa Inteligente'
+          id='search.bibliographic.intelligent.header.1'
         />
       }
     >
       <EuiFlexGroup direction='column'>
         <EuiPanel hasBorder paddingSize='l'>
-          <BibliographicSearchControls
+          <IntelligentBibliographicSearchControls
             isLoading={isSearchFetching}
-            onQuerySubmited={(queryMaterialType, newTerms, mode) => {
+            onQuerySubmited={(queryMaterialType, newTerms) => {
               setTerms(newTerms)
               setPage(0)
               setMaterialType(queryMaterialType)
-              setSearchMode(mode)
               setQuerySubmittedOnce(true)
             }}
           />
@@ -58,7 +55,7 @@ const BibliographicSearchPage = () => {
           isSearchFetching={isSearchFetching}
           isSearchSuccess={isSearchSuccess}
           materialType={materialType}
-          searchMode={searchMode}
+          searchMode='intelligent'
           searchResults={searchResults}
           sort={sort}
           terms={terms}
@@ -73,4 +70,4 @@ const BibliographicSearchPage = () => {
   )
 }
 
-export default BibliographicSearchPage
+export default IntelligentBibliographicSearchPage

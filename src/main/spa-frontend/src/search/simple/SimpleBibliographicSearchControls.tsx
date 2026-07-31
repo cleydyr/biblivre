@@ -15,17 +15,21 @@ import type { SimpleQueryTerm } from '../../api-helpers/search/types'
 type Props = {
   onQuerySubmited: (terms?: SimpleQueryTerm) => void
   isLoading: boolean
+  allowListAll?: boolean
 }
 
 const SimpleBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
+  allowListAll = true,
 }) => {
   const { formatMessage } = useIntl()
 
   const query = useRef<string>('')
 
   const [isListAll, setListAll] = useState<boolean>(true)
+
+  const showListAll = allowListAll && isListAll
 
   return (
     <EuiFlexGroup alignItems='center' justifyContent='flexStart'>
@@ -65,12 +69,13 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
         <EuiButton
+          isDisabled={!allowListAll && isListAll}
           isLoading={isLoading}
           onClick={() => {
             onQuerySubmited(getSearchQuery(query.current))
           }}
         >
-          {isListAll ? (
+          {showListAll ? (
             <FormattedMessage
               defaultMessage='Listar todos'
               id='search.bibliographic.search_all'
