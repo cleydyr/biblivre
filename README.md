@@ -67,3 +67,9 @@ The following variables are used in Biblivre and can be set on the .env file:
 * `POSTGRES_DB` (database name; default "biblivre4")
 * `DATABASE_HOST_PORT` (database host port; default: 5432)
 * `DATABASE_HOST_NAME` (database hostname; default: "database", which is also the hostname of the container that hosts PostgreSQL)
+
+### Intelligent search (pgvector)
+
+Intelligent (hybrid lexical + vector) search requires the PostgreSQL `vector` extension. Biblivre creates the extension and schema objects on startup once pgvector is installed on the database server.
+
+For migrating an existing plain PostgreSQL deployment, see [docs/pgvector-migration.md](docs/pgvector-migration.md).
