@@ -122,7 +122,7 @@ public class RestoreService {
 
     private void setPGSearchPath(String schema) throws RestoreException {
         writeLine(
-                        """
+                """
                         SET search_path = "%s", pg_catalog
                         """
                         .formatted(schema));
@@ -183,7 +183,7 @@ public class RestoreService {
 
     public void deleteSchemaFromSchemasTable(String originalSchemaName) throws RestoreException {
         writeLine(
-                        """
+                """
                         DELETE FROM "global".schemas WHERE "schema" = '%s'
                         """
                         .formatted(originalSchemaName));
@@ -195,8 +195,7 @@ public class RestoreService {
     }
 
     private static String buildInsertSchemaQuery(String finalSchemaName, String schemaTitle) {
-        return
-                """
+        return """
                 INSERT INTO "global".schemas (schema, name) VALUES ('%s', E'%s');
                 """
                 .formatted(finalSchemaName, schemaTitle);
@@ -204,7 +203,7 @@ public class RestoreService {
 
     public void dropSchema(String schemaToBeDeleted) throws RestoreException {
         writeLine(
-                        """
+                """
                         DROP SCHEMA "%s" CASCADE
                         """
                         .formatted(schemaToBeDeleted));
@@ -212,7 +211,7 @@ public class RestoreService {
 
     public void deleteAllDigitalMedia(String schemaToBeDeleted) throws RestoreException {
         writeLine(
-                        """
+                """
                         DELETE FROM "%s".digital_media
                         """
                         .formatted(schemaToBeDeleted));
@@ -288,7 +287,7 @@ public class RestoreService {
     private void changePGSchemaName(String originalSchemaName, String finalSchemaName)
             throws RestoreException {
         writeLine(
-                        """
+                """
                         ALTER SCHEMA "%s" RENAME TO "%s"
                         """
                         .formatted(originalSchemaName, finalSchemaName));
@@ -416,5 +415,10 @@ public class RestoreService {
     @Autowired
     public void setDataSource(DataSource datasource) {
         this.datasource = datasource;
+    }
+
+    @Autowired
+    public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
     }
 }
