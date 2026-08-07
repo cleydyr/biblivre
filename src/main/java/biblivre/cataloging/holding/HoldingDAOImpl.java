@@ -129,8 +129,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
+                int id = rs.getInt("id");
                 RecordDTO dto = this.populateDTO(rs);
-                map.put(dto.getId(), dto);
+                map.put(id, dto);
             }
         } catch (Exception e) {
             throw new DAOException(e);
@@ -665,7 +666,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                            """
+                    """
                         SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
                             INNER JOIN biblio_search_results B ON H.record_id = B.record_id
                             WHERE B.search_id = ?
@@ -814,12 +815,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         HoldingDTO dto = new HoldingDTO();
 
         dto.setIso2709(rs.getBytes("iso2709"));
-
-        Record holdingMarcRecord = dto.getRecord();
-
-        if (holdingMarcRecord.getControlNumber() == null) {
-            dto.setId(rs.getInt("id"));
-        }
+        dto.setId(rs.getInt("id"));
 
         if (this.hasBiblioColumn(rs)) {
             BiblioRecordDTO biblioRecordDTO = new BiblioRecordDTO();
