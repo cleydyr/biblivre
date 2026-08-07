@@ -37,20 +37,24 @@ jobs:
           server-id: ossindex
           server-username: ${{ secrets.OSSINDEX_USERNAME }}
           server-password: ${{ secrets.OSSINDEX_TOKEN }}
-      - name: Get Yarn version
-        id: yarn-version
-        run: echo "version=$(grep -oP '(?<=<yarnVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
+      - name: Get Node and Yarn versions
+        id: frontend-versions
+        run: |
+          echo "node=$(grep -oP '(?<=<nodeVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
+          echo "yarn=$(grep -oP '(?<=<yarnVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
       - name: Cache frontend-maven-plugin Node/Yarn downloads
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository/com/github/eirslett
-          key: frontend-maven-plugin-${{ runner.os }}-${{ steps.yarn-version.outputs.version }}
+          key: frontend-maven-plugin-${{ runner.os }}-${{ steps.frontend-versions.outputs.node }}-${{ steps.frontend-versions.outputs.yarn }}
           restore-keys: |
             frontend-maven-plugin-${{ runner.os }}-
       - name: Cache Yarn dependencies
         uses: actions/cache@v6
         with:
-          path: src/main/spa-frontend/node_modules
+          path: |
+            ~/.cache/yarn
+            src/main/spa-frontend/node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('src/main/spa-frontend/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
