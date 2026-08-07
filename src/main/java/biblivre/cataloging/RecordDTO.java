@@ -100,8 +100,6 @@ public class RecordDTO extends AbstractDTO {
     public void setId(int id) {
         nullifyDerivedFields();
 
-        this.id = id;
-
         MarcFactory factory = MarcFactory.newInstance();
 
         ControlField field = factory.newControlField("001");
@@ -110,9 +108,14 @@ public class RecordDTO extends AbstractDTO {
 
         field.setData(formatter.format(id));
 
+        for (VariableField existing : List.copyOf(record.getVariableFields("001"))) {
+            record.removeVariableField(existing);
+        }
+
         record.addVariableField(field);
 
         nullifyDerivedFields();
+        this.id = id;
     }
 
     public String getUTF8Iso2709() {
