@@ -52,10 +52,16 @@ public class CalendarUtils {
 
         int remainingDays = days;
 
+        // Indexed by DayOfWeek.getValue() (Monday=1 … Sunday=7). Index 0 unused.
         boolean[] isBusinessDay = new boolean[8];
 
         for (int businessDay : businessDays) {
-            isBusinessDay[businessDay - 1] = true;
+            isBusinessDay[toDayOfWeekValue(businessDay)] = true;
+        }
+
+        int businessDaysPerWeek = countBusinessDays(isBusinessDay);
+        if (businessDaysPerWeek == 0) {
+            return toDateInDefaultZone(expectedReturnDate.plusDays(days));
         }
 
         int daysToAdd = 0;
@@ -71,8 +77,6 @@ public class CalendarUtils {
         }
 
         if (remainingDays > 0) {
-            int businessDaysPerWeek = businessDays.size();
-
             int weeks = remainingDays / businessDaysPerWeek;
 
             remainingDays -= weeks * businessDaysPerWeek;
@@ -80,20 +84,44 @@ public class CalendarUtils {
             daysToAdd += weeks * 7;
         }
 
-        for (int i = DayOfWeek.MONDAY.getValue();
-                (remainingDays > 0 || !isBusinessDay[i]) && i <= DayOfWeek.SUNDAY.getValue();
-                i++) {
-
+        int i = DayOfWeek.MONDAY.getValue();
+        while (remainingDays > 0 || !isBusinessDay[i]) {
             daysToAdd++;
 
             if (isBusinessDay[i]) {
                 remainingDays--;
+            }
+
+            i++;
+            if (i > DayOfWeek.SUNDAY.getValue()) {
+                i = DayOfWeek.MONDAY.getValue();
             }
         }
 
         assert remainingDays == 0;
 
         return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
+    }
+
+    /**
+     * Converts {@link Calendar#DAY_OF_WEEK} values (Sunday=1 … Saturday=7), as stored in {@code
+     * general.business_days}, to {@link DayOfWeek#getValue()} (Monday=1 … Sunday=7).
+     */
+    static int toDayOfWeekValue(int calendarDayOfWeek) {
+        if (calendarDayOfWeek == Calendar.SUNDAY) {
+            return DayOfWeek.SUNDAY.getValue();
+        }
+        return calendarDayOfWeek - 1;
+    }
+
+    private static int countBusinessDays(boolean[] isBusinessDay) {
+        int count = 0;
+        for (int d = DayOfWeek.MONDAY.getValue(); d <= DayOfWeek.SUNDAY.getValue(); d++) {
+            if (isBusinessDay[d]) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
