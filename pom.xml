@@ -540,23 +540,23 @@
 				<version>2.0.1</version>
 				<executions>
 					<execution>
-						<id>install node and npm spa-frontend</id>
+						<id>install node and corepack spa-frontend</id>
 						<goals>
-							<goal>install-node-and-yarn</goal>
+							<goal>install-node-and-corepack</goal>
 						</goals>
 						<configuration>
 							<nodeVersion>v24.14.1</nodeVersion>
-							<yarnVersion>v1.22.22</yarnVersion>
+							<corepackVersion>v0.35.0</corepackVersion>
 							<installDirectory>${project.basedir}/src/main/spa-frontend</installDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>yarn install spa-frontend</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>install --production=false</arguments>
+							<arguments>yarn install</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
@@ -564,20 +564,20 @@
 						<id>yarn i18n extract-compile spa-frontend</id>
 						<phase>generate-resources</phase>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>i18n:extract-compile</arguments>
+							<arguments>yarn i18n:extract-compile</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>yarn build spa-frontend</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>build</arguments>
+							<arguments>yarn build</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
