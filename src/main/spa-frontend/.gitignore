@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Yarn Berry local install state (not portable across machines)
+.yarn/install-state.gz
+
 # TypeScript
 *.tsbuildinfo
 

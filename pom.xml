@@ -36,7 +36,7 @@
 		<debug>false</debug>
 		<dockerfile.version>1.4.13</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
-		<aws.java.sdk.version>2.47.1</aws.java.sdk.version>
+		<aws.java.sdk.version>2.50.2</aws.java.sdk.version>
 		<spotless.version>3.8.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.50.0</error-prone.version>
@@ -258,6 +258,16 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.21.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jfree</groupId>
+					<artifactId>jfreechart</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jfree</groupId>
+					<artifactId>jcommon</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- Skip CVE-2025-48734 -->
 		<dependency>
@@ -267,16 +277,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -430,7 +435,7 @@
 					<authId>ossindex</authId>
 					<excludeVulnerabilityIds>
 						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
-						<!-- Disputed JFreeChart finding via jasperreports -->
+						<!-- Disputed finding reported against jasperreports; no community fix as of 6.21.5 -->
 						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>
 						<!-- No community fix for jasperreports as of 6.21.5 -->
 						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>
@@ -445,11 +450,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludeDevtools>true</excludeDevtools>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.10.2.0</version>
+				<version>4.10.3.0</version>
 				<configuration>
 					<includeFilterFile>spotbugs.xml</includeFilterFile>
 				</configuration>
@@ -457,7 +465,7 @@
 					<dependency>
 						<groupId>com.github.spotbugs</groupId>
 						<artifactId>spotbugs</artifactId>
-						<version>4.10.2</version>
+						<version>4.10.3</version>
 					</dependency>
 				</dependencies>
 
@@ -532,23 +540,23 @@
 				<version>2.0.1</version>
 				<executions>
 					<execution>
-						<id>install node and npm spa-frontend</id>
+						<id>install node and corepack spa-frontend</id>
 						<goals>
-							<goal>install-node-and-yarn</goal>
+							<goal>install-node-and-corepack</goal>
 						</goals>
 						<configuration>
 							<nodeVersion>v24.14.1</nodeVersion>
-							<yarnVersion>v1.22.22</yarnVersion>
+							<corepackVersion>v0.35.0</corepackVersion>
 							<installDirectory>${project.basedir}/src/main/spa-frontend</installDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>yarn install spa-frontend</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>install --production=false</arguments>
+							<arguments>yarn install</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
@@ -556,20 +564,20 @@
 						<id>yarn i18n extract-compile spa-frontend</id>
 						<phase>generate-resources</phase>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>i18n:extract-compile</arguments>
+							<arguments>yarn i18n:extract-compile</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
 					<execution>
 						<id>yarn build spa-frontend</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>corepack</goal>
 						</goals>
 						<configuration>
-							<arguments>build</arguments>
+							<arguments>yarn build</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
@@ -653,6 +661,13 @@
 	<profiles>
 		<profile>
 			<id>developer</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-devtools</artifactId>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
 					<plugin>

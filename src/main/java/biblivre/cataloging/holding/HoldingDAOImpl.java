@@ -129,8 +129,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
+                int id = rs.getInt("id");
                 RecordDTO dto = this.populateDTO(rs);
-                map.put(dto.getId(), dto);
+                map.put(id, dto);
             }
         } catch (Exception e) {
             throw new DAOException(e);
@@ -833,12 +834,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         HoldingDTO dto = new HoldingDTO();
 
         dto.setIso2709(rs.getBytes("iso2709"));
-
-        Record holdingMarcRecord = dto.getRecord();
-
-        if (holdingMarcRecord.getControlNumber() == null) {
-            dto.setId(rs.getInt("id"));
-        }
+        dto.setId(rs.getInt("id"));
 
         if (this.hasBiblioColumn(rs)) {
             BiblioRecordDTO biblioRecordDTO = new BiblioRecordDTO();

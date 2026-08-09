@@ -3,7 +3,6 @@ import type { BibliographicRecord, Holding } from '../search/response-types'
 import type {
   Auditable,
   MaybeSuccessfulResponse,
-  NonSuccessfulResponse,
   PaginatedResponsePayload,
   SuccessfulResponse,
 } from '../types'

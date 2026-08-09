@@ -139,6 +139,10 @@ public class Handler extends AbstractHandler {
             HoldingDTO holding =
                     (HoldingDTO) holdingBO.get(lending.getHoldingId(), RecordBO.MARC_INFO);
 
+            if (holding == null) {
+                continue;
+            }
+
             BiblioRecordDTO biblio =
                     (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
@@ -229,10 +233,6 @@ public class Handler extends AbstractHandler {
             Integer holdingId = lending.getHoldingId();
 
             Integer userId = lending.getUserId();
-
-            HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
-
-            UserDTO user = userBO.get(userId);
 
             var lendingBag = createLendingBag(holdingId, userId);
 
