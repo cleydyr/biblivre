@@ -604,9 +604,9 @@ __metadata:
   linkType: hard
 
 "@flagsmith/flagsmith@npm:^12.0.0":
-  version: 12.1.0
-  resolution: "@flagsmith/flagsmith@npm:12.1.0"
-  checksum: 10c0/c5355d4ff0b8589e8497480f1b52f533b39f304d57905cec8384e7a54dba5895dde0692c700ae89e2e5c74a4b5015f1a6f3ab41a462de1ed506e5b556d54bd8d
+  version: 12.1.2
+  resolution: "@flagsmith/flagsmith@npm:12.1.2"
+  checksum: 10c0/0da2c867ac8f5f0719181104b53c899cd83dabddda329cfac29c815f72b92a463b71c7cf93cb941f87c3e9b9f5df5823b071e9ac1da2c6e923893b48d2f1e91f
   languageName: node
   linkType: hard
 
