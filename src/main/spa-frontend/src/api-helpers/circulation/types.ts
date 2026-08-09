@@ -22,8 +22,7 @@ type CirculationAdvancedUserSearchPayload = BaseCirculationUserSearchPayload & {
 }
 
 export type CirculationSearchPayload =
-  | CirculationSimpleUserSearchPayload
-  | CirculationAdvancedUserSearchPayload
+  CirculationSimpleUserSearchPayload | CirculationAdvancedUserSearchPayload
 
 export type CirculationPaginatePayload = CirculationSearchPayload & {
   page: number

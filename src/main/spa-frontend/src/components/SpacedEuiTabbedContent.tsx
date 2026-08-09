@@ -1,5 +1,5 @@
 import { EuiSpacer, EuiTabbedContent } from '@elastic/eui'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import type { EuiSpacerProps, EuiTabbedContentProps } from '@elastic/eui'
 import type { FC } from 'react'
@@ -29,10 +29,10 @@ const SpacedEuiTabbedContent: FC<Props> = ({
   const newTabs = tabs.map((tab) => ({
     ...tab,
     content: (
-      <>
+      <Fragment>
         <EuiSpacer size={spacing} />
         {tab.content}
-      </>
+      </Fragment>
     ),
   }))
 

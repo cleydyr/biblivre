@@ -15,5 +15,9 @@ public interface LendingFineDAO {
 
     boolean update(LendingFineDTO fine);
 
+    boolean adjustValue(Integer fineId, float value);
+
+    boolean delete(Integer fineId);
+
     boolean hasPendingFine(int userID);
 }

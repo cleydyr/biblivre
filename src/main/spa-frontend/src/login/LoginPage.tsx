@@ -8,7 +8,7 @@ import {
   EuiPanel,
   EuiSpacer,
 } from '@elastic/eui'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
@@ -41,7 +41,7 @@ const LoginPage = () => {
     >
       <EuiPanel hasBorder paddingSize='l'>
         {isError ? (
-          <>
+          <Fragment>
             <EuiCallOut
               announceOnMount
               color='danger'
@@ -56,7 +56,7 @@ const LoginPage = () => {
               {error.message}
             </EuiCallOut>
             <EuiSpacer size='m' />
-          </>
+          </Fragment>
         ) : null}
 
         <EuiForm component='form' onSubmit={handleSubmit}>

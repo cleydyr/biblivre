@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
 import { getStoredSchema } from '../api-helpers/schema/storage'
-import { element } from '../lib/arrays'
+import { when } from '../lib/arrays'
 
 import { UserStatusBadge, UserTypeBadge } from './UserBadges'
 
@@ -30,34 +30,34 @@ export function useBiblioDescriptionListItems(
   const location = shelfLocation ?? biblio.shelf_location
 
   return [
-    ...element({
+    ...when(biblio.title).element((title) => ({
       title: formatMessage({
         defaultMessage: 'Título',
         id: 'search.bibliographic.title',
       }),
-      description: biblio.title,
-    }).if(biblio.title !== ''),
-    ...element({
+      description: title,
+    })),
+    ...when(biblio.author).element((author) => ({
       title: formatMessage({
         defaultMessage: 'Autor',
         id: 'search.bibliographic.author',
       }),
-      description: biblio.author,
-    }).if(biblio.author !== ''),
-    ...element({
+      description: author,
+    })),
+    ...when(biblio.publication_year).element((publicationYear) => ({
       title: formatMessage({
         defaultMessage: 'Ano de publicação',
         id: 'search.bibliographic.publication_year',
       }),
-      description: biblio.publication_year,
-    }).if(biblio.publication_year !== ''),
-    ...element({
+      description: publicationYear,
+    })),
+    ...when(location).element((shelfLocationValue) => ({
       title: formatMessage({
         defaultMessage: 'Localização',
         id: 'search.bibliographic.shelf_location',
       }),
-      description: location,
-    }).if(location !== ''),
+      description: shelfLocationValue,
+    })),
   ]
 }
 

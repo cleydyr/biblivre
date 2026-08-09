@@ -6,7 +6,7 @@ import {
   getLegacyTranslation,
   getLegacyUserFieldTranslation,
 } from '../legacy_translations/lib'
-import { element } from '../lib/arrays'
+import { when } from '../lib/arrays'
 
 import { formatFieldValueForDisplay } from './circulationUserFormLogic'
 import { formatCirculationDateTime } from './lib'
@@ -37,14 +37,18 @@ const CirculationUserFormTab: FC<Props> = ({ user }) => {
         userFieldValues[field.key],
       ),
     })),
-    ...element({
+    ...when(user.created).element((created) => ({
       title: getLegacyTranslation('common.created'),
-      description: formatCirculationDateTime(user.created),
-    }).if(Boolean(user.created)),
-    ...element({
+      description: formatCirculationDateTime(created),
+    })),
+    ...when(
+      user.modified && user.modified !== user.created
+        ? user.modified
+        : undefined,
+    ).element((modified) => ({
       title: getLegacyTranslation('common.modified'),
-      description: formatCirculationDateTime(user.modified),
-    }).if(Boolean(user.modified && user.modified !== user.created)),
+      description: formatCirculationDateTime(modified),
+    })),
   ]
 
   return (

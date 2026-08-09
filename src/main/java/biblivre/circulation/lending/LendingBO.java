@@ -29,6 +29,8 @@ import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.reservation.ReservationBO;
+import biblivre.circulation.reservation.ReservationBag;
+import biblivre.circulation.reservation.ReservationDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
@@ -44,13 +46,17 @@ import biblivre.core.utils.StringPool;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
@@ -66,6 +72,10 @@ public class LendingBO {
     private LendingDAO lendingDAO;
     private ITemplateEngine templateEngine;
     private ConfigurationBO configurationBO;
+    private Clock clock;
+
+    @Value("${biblivre.circulation.return-undo-window-seconds:120}")
+    private int returnUndoWindowSeconds;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
@@ -161,7 +171,7 @@ public class LendingBO {
     private @NonNull Date calculateExpectedReturnDate(UserDTO user) {
         UserTypeDTO type = userTypeBO.get(user.getType());
 
-        Date today = new Date();
+        Date today = Date.from(clock.instant());
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
         return CalendarUtils.calculateExpectedReturnDate(
@@ -178,6 +188,135 @@ public class LendingBO {
         }
 
         return true;
+    }
+
+    /**
+     * Immediate Return (ADR-0001): close the Lending and auto-create an unpaid Fine when late.
+     *
+     * @return populated lending details including Fine when created
+     */
+    public LendingBag doReturnImmediate(LendingDTO lending, int loggedUserId) {
+        if (lending == null || lending.getReturnDate() != null) {
+            throw new ValidationException("circulation.lending.return_failure");
+        }
+
+        this.lendingDAO.doReturn(lending.getId());
+        // DAO only persists return_date; keep the in-memory Lending in sync for Fine/undo.
+        Instant returnedAt = clock.instant();
+
+        lending.setReturnDate(Date.from(returnedAt));
+
+        LendingFineDTO fine = generateLendingFine(lending, returnedAt, loggedUserId);
+
+        return this.populateReturnedLendingBag(lending, fine);
+    }
+
+    private LendingFineDTO generateLendingFine(
+            LendingDTO lending, Instant returnedAt, int loggedUserId) {
+        Integer daysLate = lendingFineBO.calculateLateDays(lending, returnedAt);
+
+        if (daysLate <= 0) {
+            return null;
+        }
+
+        UserDTO user = userBO.get(lending.getUserId());
+
+        Float value = lendingFineBO.calculateFineValue(daysLate, user);
+
+        if (value <= 0) {
+            return null;
+        }
+
+        return lendingFineBO.createFine(lending, value, false, loggedUserId);
+    }
+
+    public LendingBag undoReturn(Integer lendingId) {
+        LendingDTO lending = this.lendingDAO.get(lendingId);
+        if (lending == null || lending.getReturnDate() == null) {
+            throw new ValidationException("circulation.lending.undo_return_failure");
+        }
+
+        Instant deadline = this.getUndoAvailableUntil(lending);
+        if (clock.instant().isAfter(deadline)) {
+            throw new ValidationException("circulation.lending.undo_return_window_expired");
+        }
+
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
+        if (this.isLent(holding)) {
+            throw new ValidationException("circulation.lending.undo_return_holding_lent");
+        }
+
+        LendingFineDTO fine = lendingFineBO.getByHistoryId(lendingId);
+        if (fine != null) {
+            if (fine.isPaid()) {
+                throw new ValidationException("circulation.lending.undo_return_fine_paid");
+            }
+
+            if (this.hasFineBeenAltered(lending, fine)) {
+                throw new ValidationException("circulation.lending.undo_return_fine_altered");
+            }
+
+            lendingFineBO.delete(fine.getId());
+        }
+
+        if (!this.lendingDAO.undoReturn(lendingId)) {
+            throw new ValidationException("circulation.lending.undo_return_failure");
+        }
+
+        lending = this.lendingDAO.get(lendingId);
+        return this.populateReturnedLendingBag(lending, null);
+    }
+
+    public int getReturnUndoWindowSeconds() {
+        return returnUndoWindowSeconds;
+    }
+
+    public Instant getUndoAvailableUntil(LendingDTO lending) {
+        if (lending == null || lending.getReturnDate() == null) {
+            return null;
+        }
+        return lending.getReturnDate()
+                .toInstant()
+                .plusSeconds(Math.max(0, returnUndoWindowSeconds));
+    }
+
+    public ReservationBag getNextReservation(HoldingDTO holding) {
+        if (holding == null || holding.getRecordId() == null) {
+            return null;
+        }
+
+        List<ReservationDTO> queue = reservationBO.listByRecordId(holding.getRecordId());
+
+        if (queue.isEmpty()) {
+            return null;
+        }
+
+        ReservationDTO next = queue.get(0);
+        ReservationBag info = new ReservationBag();
+        info.setReservation(next);
+        info.setUser(userBO.get(next.getUserId()));
+        info.setBiblio(
+                (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO));
+        return info;
+    }
+
+    private LendingBag populateReturnedLendingBag(LendingDTO lending, LendingFineDTO fine) {
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
+        BiblioRecordDTO biblio =
+                (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
+        UserDTO user = userBO.get(lending.getUserId());
+        if (user != null) {
+            UserTypeDTO userType = userTypeBO.get(user.getType());
+            user.setUsertypeName(userType.getName());
+        }
+
+        LendingBag info = new LendingBag();
+        info.setHolding(holding);
+        info.setBiblio(biblio);
+        info.setUser(user);
+        info.setLending(lending);
+        info.setLendingFine(fine);
+        return info;
     }
 
     public boolean doRenew(LendingDTO lending) {
@@ -243,6 +382,22 @@ public class LendingBO {
             }
         }
 
+        Map<Integer, LendingDTO> lastClosedMap = new HashMap<>();
+        for (Integer holdingId : holdings) {
+            if (!lendingsMap.containsKey(holdingId)) {
+                HoldingDTO stub = new HoldingDTO();
+                stub.setId(holdingId);
+                List<LendingDTO> history = this.lendingDAO.listHistory(stub);
+                if (!history.isEmpty()) {
+                    LendingDTO lastClosed = history.get(0);
+                    lastClosedMap.put(holdingId, lastClosed);
+                    if (lastClosed.getUserId() != null) {
+                        users.add(lastClosed.getUserId());
+                    }
+                }
+            }
+        }
+
         Map<Integer, RecordDTO> recordsMap = new HashMap<>();
         if (!records.isEmpty()) {
             recordsMap = biblioRecordBO.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
@@ -270,21 +425,28 @@ public class LendingBO {
             }
 
             LendingDTO lending = lendingsMap.get(holdingId);
+            if (lending == null) {
+                lending = lastClosedMap.get(holdingId);
+            }
             if (lending != null) {
                 info.setLending(lending);
 
                 if (lending.getUserId() != null) {
                     UserDTO user = usersMap.get(lending.getUserId());
-                    UserTypeDTO userType = userTypeBO.get(user.getType());
-                    user.setUsertypeName(userType.getName());
-                    info.setUser(user);
+                    if (user != null) {
+                        UserTypeDTO userType = userTypeBO.get(user.getType());
+                        user.setUsertypeName(userType.getName());
+                        info.setUser(user);
 
-                    Integer daysLate = lendingFineBO.calculateLateDays(lending);
-                    if (daysLate > 0) {
-                        Float dailyFine = userType.getFineValue();
-                        lending.setDaysLate(daysLate);
-                        lending.setDailyFine(dailyFine);
-                        lending.setEstimatedFine(dailyFine * daysLate);
+                        if (lending.getReturnDate() == null) {
+                            Integer daysLate = lendingFineBO.calculateLateDays(lending);
+                            if (daysLate > 0) {
+                                Float dailyFine = userType.getFineValue();
+                                lending.setDaysLate(daysLate);
+                                lending.setDailyFine(dailyFine);
+                                lending.setEstimatedFine(dailyFine * daysLate);
+                            }
+                        }
                     }
                 }
             }
@@ -767,6 +929,17 @@ public class LendingBO {
         return writer.toString();
     }
 
+    private boolean hasFineBeenAltered(@Nonnull LendingDTO lending, @Nonnull LendingFineDTO fine) {
+        UserDTO user = userBO.get(lending.getUserId());
+
+        Integer daysLate =
+                lendingFineBO.calculateLateDays(lending, lending.getReturnDate().toInstant());
+
+        Float expectedValue = lendingFineBO.calculateFineValue(daysLate, user);
+
+        return Math.abs(fine.getValue() - expectedValue) > 0.009f;
+    }
+
     public LendingDTO getCurrentLending(HoldingDTO holding) {
         return lendingDAO.getCurrentLending(holding);
     }
@@ -814,5 +987,10 @@ public class LendingBO {
     @Autowired
     public void setConfigurationBO(ConfigurationBO configurationBO) {
         this.configurationBO = configurationBO;
+    }
+
+    @Autowired
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 }

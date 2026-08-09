@@ -10,8 +10,11 @@ const useCirculationNavigation = (): EuiSideNavItemType<unknown> => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { data: isMenuEnabled } = useCheckMenuPermission(
+  const { data: isUserMenuEnabled } = useCheckMenuPermission(
     ACTIONS.CIRCULATION_USER,
+  )
+  const { data: isLendingMenuEnabled } = useCheckMenuPermission(
+    ACTIONS.CIRCULATION_LENDING,
   )
 
   return {
@@ -35,7 +38,21 @@ const useCirculationNavigation = (): EuiSideNavItemType<unknown> => {
           navigate('/spa/circulation_user')
         },
         isSelected: location.pathname === '/spa/circulation_user',
-        disabled: !isMenuEnabled,
+        disabled: !isUserMenuEnabled,
+      },
+      {
+        id: 'return',
+        name: (
+          <FormattedMessage
+            defaultMessage='Devolução'
+            id='app.sideNav.circulation.return'
+          />
+        ),
+        onClick: () => {
+          navigate('/spa/circulation_return')
+        },
+        isSelected: location.pathname === '/spa/circulation_return',
+        disabled: !isLendingMenuEnabled,
       },
     ],
   }

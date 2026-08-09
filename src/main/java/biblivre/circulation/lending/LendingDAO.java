@@ -42,6 +42,8 @@ public interface LendingDAO {
 
     boolean doReturn(int lendingId, Connection con);
 
+    boolean undoReturn(int lendingId);
+
     boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy);
 
     Integer countLentHoldings(int recordId);

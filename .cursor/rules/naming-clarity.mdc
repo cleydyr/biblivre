@@ -1,0 +1,29 @@
+---
+description: Prefer clear names over cryptic shorthand in new code
+alwaysApply: true
+---
+
+# Clear naming
+
+When generating or editing code, use descriptive names. Do not introduce cryptic shorthand for locals, parameters, or fields.
+
+```java
+// ❌ BAD
+LendingBag bag = lendingBO.doReturnImmediate(lending, loggedUserId);
+
+// ✅ GOOD
+LendingBag lendingBag = lendingBO.doReturnImmediate(lending, loggedUserId);
+```
+
+```typescript
+// ❌ BAD
+const bag = response.data
+
+// ✅ GOOD
+const lendingInfo = response.data
+// or, when the type is *Bag, match the type: lendingBag
+```
+
+- Prefer names that state the role or domain meaning (`lendingBag`, `returnedLending`, `holding`).
+- Single-letter names are fine only for conventional loop indices (`i`, `j`) or well-known math locals.
+- When a type name is already established (even if imperfect), name variables after that type rather than inventing a shorter alias like `bag`.

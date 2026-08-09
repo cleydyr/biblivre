@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
 import useCheckMenuPermission from './api-helpers/menu/hooks'
+import CirculationReturnPage from './circulation/return'
 import LoginPage from './login/LoginPage'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
@@ -59,6 +60,13 @@ const useAppRoutes = (): RouteObject[] => [
       element: <CirculationPage />,
     },
     ACTIONS.CIRCULATION_USER,
+  ),
+  useCheckedMenuRoute(
+    {
+      path: 'circulation_return',
+      element: <CirculationReturnPage />,
+    },
+    ACTIONS.CIRCULATION_LENDING,
   ),
   useCheckedMenuRoute(
     {

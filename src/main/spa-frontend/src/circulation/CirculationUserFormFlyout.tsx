@@ -13,7 +13,7 @@ import {
   EuiTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui'
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import { useSaveCirculationUserMutation } from '../api-helpers/circulation/hooks'
@@ -181,7 +181,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
   }, [mode])
 
   return (
-    <>
+    <Fragment>
       <EuiFlyout
         ownFocus
         aria-labelledby={flyoutTitleId}
@@ -196,16 +196,16 @@ const CirculationUserFormFlyout: FC<Props> = ({
           {isLoading ? (
             <LoadingState />
           ) : (
-            <>
+            <Fragment>
               {saveErrorMessage ? (
-                <>
+                <Fragment>
                   <EuiCallOut
                     announceOnMount
                     color='danger'
                     title={saveErrorMessage}
                   />
                   <EuiSpacer />
-                </>
+                </Fragment>
               ) : null}
               <CirculationUserForm
                 existingPhotoId={user?.photo_id}
@@ -218,7 +218,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
                 onChange={setValues}
                 onPhotoSelect={handlePhotoSelect}
               />
-            </>
+            </Fragment>
           )}
         </EuiFlyoutBody>
         {!isLoading ? (
@@ -292,7 +292,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
           </p>
         </EuiConfirmModal>
       ) : null}
-    </>
+    </Fragment>
   )
 }
 

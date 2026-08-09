@@ -10,7 +10,7 @@ import {
   EuiLink,
   EuiText,
 } from '@elastic/eui'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
@@ -71,7 +71,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   }
 
   return (
-    <>
+    <Fragment>
       <EuiHeader>
         <EuiHeaderSection side='left'>
           <EuiHeaderSectionItem>
@@ -163,7 +163,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
           }}
         />
       ) : null}
-    </>
+    </Fragment>
   )
 }
 

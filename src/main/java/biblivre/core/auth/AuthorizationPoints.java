@@ -280,12 +280,15 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint("circulation.lending", "lend", CIRCULATION_LENDING_LEND);
         this.addAuthPoint("circulation.lending", "renew_lending", CIRCULATION_LENDING_LEND);
         this.addAuthPoint("circulation.lending", "return_lending", CIRCULATION_LENDING_RETURN);
+        this.addAuthPoint("circulation.lending", "return_immediate", CIRCULATION_LENDING_RETURN);
+        this.addAuthPoint("circulation.lending", "undo_return", CIRCULATION_LENDING_RETURN);
         this.addAuthPoint(
                 "circulation.lending",
                 "print_receipt",
                 CIRCULATION_LENDING_LEND,
                 CIRCULATION_LENDING_RETURN);
         this.addAuthPoint("circulation.lending", "pay_fine", CIRCULATION_SAVE);
+        this.addAuthPoint("circulation.lending", "adjust_fine", CIRCULATION_SAVE);
 
         this.addAuthPoint("circulation.reservation", "search", CIRCULATION_RESERVATION_LIST);
         this.addAuthPoint("circulation.reservation", "paginate", CIRCULATION_RESERVATION_LIST);

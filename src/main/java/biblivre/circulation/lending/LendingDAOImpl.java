@@ -346,6 +346,22 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
+    public boolean undoReturn(int lendingId) {
+        try (Connection con = datasource.getConnection()) {
+            String sql =
+                    "UPDATE lendings SET return_date = NULL "
+                            + "WHERE id = ? AND return_date IS NOT NULL;";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, lendingId);
+
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
     public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
         return withTransactionContext(
                 con -> {

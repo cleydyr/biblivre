@@ -251,6 +251,10 @@ public class ReservationBO extends AbstractBO {
         }
     }
 
+    public List<ReservationDTO> listByRecordId(int recordId) {
+        return this.reservationDAO.listByRecordId(recordId);
+    }
+
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
         return this.reservationDAO.getReservationsMap(recordIds);
     }
