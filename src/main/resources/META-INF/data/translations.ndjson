@@ -6351,3 +6351,9 @@
 {"language":"en-US","key":"cataloging.import.error.file_upload_error","text":"Couldn't upload file. Please contact the administrator to analyze thisproblem.","user_created":false}
 {"language":"pt-BR","key":"cataloging.import.error.file_upload_error","text":"Não foi possível fazer upload do arquivo. Por favor, contacte o administrador do sistema para anlizar este problema.","user_created":false}
 {"language":"es","key":"cataloging.import.error.file_upload_error","text":"No ha sido posible subir el archivo. Por favor, contacta el administrador del sistema para analizar este problema.","user_created":false}
+{"language":"pt-BR","key":"administration.reports.field.inactive_users","text":"Inativos","user_created":false}
+{"language":"es","key":"administration.reports.field.inactive_users","text":"Inactivos","user_created":false}
+{"language":"en-US","key":"administration.reports.field.inactive_users","text":"Inactive users","user_created":false}
+{"language":"pt-BR","key":"administration.reports.field.no_users_for_criteria","text":"Não há usuários com esse critério","user_created":false}
+{"language":"es","key":"administration.reports.field.no_users_for_criteria","text":"No hay usuarios con este criterio","user_created":false}
+{"language":"en-US","key":"administration.reports.field.no_users_for_criteria","text":"There are no users matching this criterion","user_created":false}

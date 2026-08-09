@@ -32,6 +32,7 @@ import biblivre.marc.MarcUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -278,13 +279,13 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
         try (Connection con = datasource.getConnection()) {
             String sqlTotal =
                     """
-                            SELECT to_char(created, 'DD/MM/YYYY'), user_name, count(created_by)
-                            FROM holding_creation_counter
-                            WHERE created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            GROUP BY user_name, to_char(created, 'DD/MM/YYYY')
-                            ORDER BY to_char(created, 'DD/MM/YYYY'), user_name
-                            """;
+                    SELECT to_char(created, 'DD/MM/YYYY'), user_name, count(created_by)
+                    FROM holding_creation_counter
+                    WHERE created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    GROUP BY user_name, to_char(created, 'DD/MM/YYYY')
+                    ORDER BY to_char(created, 'DD/MM/YYYY'), user_name
+                    """;
             PreparedStatement st = con.prepareStatement(sqlTotal);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
@@ -301,10 +302,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlBiblioMain =
                     """
-                            SELECT COUNT(id) FROM biblio_records
-                            WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            """;
+                    SELECT COUNT(id) FROM biblio_records
+                    WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    """;
 
             st = con.prepareStatement(sqlBiblioMain);
             st.setString(1, initialDate);
@@ -316,10 +317,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlBiblioWork =
                     """
-                            SELECT COUNT(id) FROM biblio_records
-                            WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            """;
+                    SELECT COUNT(id) FROM biblio_records
+                    WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    """;
 
             st = con.prepareStatement(sqlBiblioWork);
             st.setString(1, initialDate);
@@ -331,10 +332,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlHoldingMain =
                     """
-                            SELECT COUNT(id) FROM biblio_holdings
-                            WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            """;
+                    SELECT COUNT(id) FROM biblio_holdings
+                    WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    """;
             st = con.prepareStatement(sqlHoldingMain);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
@@ -345,10 +346,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlHoldingWork =
                     """
-                            SELECT COUNT(id) FROM biblio_holdings
-                            WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            """;
+                    SELECT COUNT(id) FROM biblio_holdings
+                    WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    """;
 
             st = con.prepareStatement(sqlHoldingWork);
             st.setString(1, initialDate);
@@ -379,12 +380,12 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
         try (Connection con = datasource.getConnection()) {
             String sqlLent =
                     """
-                            SELECT count(*)
-                            FROM lendings
-                            WHERE created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                                AND return_date IS NULL
-                            """;
+                    SELECT count(*)
+                    FROM lendings
+                    WHERE created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                        AND return_date IS NULL
+                    """;
             st = con.prepareStatement(sqlLent);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
@@ -396,12 +397,12 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlHistory =
                     """
-                            SELECT count(*)
-                            FROM lendings
-                            WHERE created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                                AND return_date IS NOT NULL
-                            """;
+                    SELECT count(*)
+                    FROM lendings
+                    WHERE created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                        AND return_date IS NOT NULL
+                    """;
 
             st = con.prepareStatement(sqlHistory);
             st.setString(1, initialDate);
@@ -414,13 +415,13 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlLate =
                     """
-                            SELECT count(*)
-                            FROM lendings
-                            WHERE created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                                AND expected_return_date < to_date(?, 'DD-MM-YYYY')
-                                AND return_date IS NULL
-                            """;
+                    SELECT count(*)
+                    FROM lendings
+                    WHERE created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                        AND expected_return_date < to_date(?, 'DD-MM-YYYY')
+                        AND return_date IS NULL
+                    """;
 
             st = con.prepareStatement(sqlLate);
             st.setString(1, initialDate);
@@ -437,16 +438,16 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             String sqlTop20 =
                     """
-                            SELECT b.iso2709, count(b.id) AS rec_count
-                            FROM lendings l, biblio_records b, biblio_holdings h
-                            WHERE l.holding_id = h.id
-                                AND l.created >= to_date(?, 'DD-MM-YYYY')
-                                AND l.created <= to_date(?, 'DD-MM-YYYY')
-                                AND h.record_id = b.id
-                            GROUP BY b.id
-                            ORDER BY rec_count DESC
-                            LIMIT 20;
-                            """;
+                    SELECT b.iso2709, count(b.id) AS rec_count
+                    FROM lendings l, biblio_records b, biblio_holdings h
+                    WHERE l.holding_id = h.id
+                        AND l.created >= to_date(?, 'DD-MM-YYYY')
+                        AND l.created <= to_date(?, 'DD-MM-YYYY')
+                        AND h.record_id = b.id
+                    GROUP BY b.id
+                    ORDER BY rec_count DESC
+                    LIMIT 20;
+                    """;
 
             st = con.prepareStatement(sqlTop20);
             st.setString(1, initialDate);
@@ -517,13 +518,13 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
         try (Connection con = datasource.getConnection()) {
             final String sql =
                     """
-                            SELECT count(created), to_char(created, 'YYYY-MM-DD')
-                            FROM biblio_searches
-                            WHERE created >= to_date(?, 'DD-MM-YYYY')
-                                AND created <= to_date(?, 'DD-MM-YYYY')
-                            GROUP BY to_char(created, 'YYYY-MM-DD')
-                            ORDER BY to_char(created, 'YYYY-MM-DD') ASC
-                            """;
+                    SELECT count(created), to_char(created, 'YYYY-MM-DD')
+                    FROM biblio_searches
+                    WHERE created >= to_date(?, 'DD-MM-YYYY')
+                        AND created <= to_date(?, 'DD-MM-YYYY')
+                    GROUP BY to_char(created, 'YYYY-MM-DD')
+                    ORDER BY to_char(created, 'YYYY-MM-DD') ASC
+                    """;
 
             final PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, initialDate);
@@ -550,13 +551,13 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
     @Override
     public AllUsersReportDto getAllUsersReportData() {
         AllUsersReportDto dto = new AllUsersReportDto();
-        dto.setTypesMap(new HashMap<>());
-        dto.setData(new HashMap<>());
+        dto.setTypesMap(new LinkedHashMap<>());
+        dto.setData(new LinkedHashMap<>());
 
         try (Connection con = datasource.getConnection()) {
 
             String firstSql =
-                            """
+                    """
                     SELECT count(u.type) as total, t.description, t.id
                     FROM users u, users_types t
                     WHERE u.type = t.id
@@ -574,35 +575,71 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                 dto.getTypesMap().put(description, count);
 
                 String secondSql =
-                                """
+                        """
                         SELECT name, id, created, modified
                         FROM users
                         WHERE type = '%s'
+                            AND status <> '%s'
                         ORDER BY name
                         """
-                                .formatted(rs.getInt("id"));
+                                .formatted(rs.getInt("id"), UserStatus.INACTIVE);
 
                 ResultSet rs2 = con.createStatement().executeQuery(secondSql);
                 List<String> dataList = new ArrayList<>();
                 while (rs2.next()) {
-                    var str =
-                                    """
-                            %s\t%d\t%s\t%s
-                            """
-                                    .formatted(
-                                            rs2.getString("name"),
-                                            rs2.getInt("id"),
-                                            dd_MM_yyyy.format(rs2.getDate("created")),
-                                            dd_MM_yyyy.format(rs2.getDate("modified")));
-                    dataList.add(str);
+                    dataList.add(formatUserReportLine(rs2));
                 }
                 dto.getData().put(description, dataList);
             }
+
+            String inactiveStatus = UserStatus.INACTIVE.toString();
+
+            String sqlCountInactive =
+                    """
+                    SELECT count(id) as total
+                    FROM users
+                    WHERE status = '%s'
+                    """
+                            .formatted(UserStatus.INACTIVE);
+
+            ResultSet rsCountInactive = con.createStatement().executeQuery(sqlCountInactive);
+            int inactiveCount = 0;
+            if (rsCountInactive.next()) {
+                inactiveCount = rsCountInactive.getInt("total");
+            }
+            dto.getTypesMap().put(inactiveStatus, inactiveCount);
+
+            String sqlInactive =
+                    """
+                    SELECT name, id, created, modified
+                    FROM users
+                    WHERE status = '%s'
+                    ORDER BY name
+                    """
+                            .formatted(UserStatus.INACTIVE);
+
+            ResultSet rsInactive = con.createStatement().executeQuery(sqlInactive);
+            List<String> inactiveDataList = new ArrayList<>();
+            while (rsInactive.next()) {
+                inactiveDataList.add(formatUserReportLine(rsInactive));
+            }
+            dto.getData().put(inactiveStatus, inactiveDataList);
 
         } catch (Exception e) {
             throw new DAOException(e);
         }
         return dto;
+    }
+
+    private static String formatUserReportLine(ResultSet rs) throws SQLException {
+        return """
+                %s\t%d\t%s\t%s
+                """
+                .formatted(
+                        rs.getString("name"),
+                        rs.getInt("id"),
+                        dd_MM_yyyy.format(rs.getDate("created")),
+                        dd_MM_yyyy.format(rs.getDate("modified")));
     }
 
     @Override
@@ -653,7 +690,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                            """
+                    """
                     SELECT DISTINCT B.id, B.iso2709 FROM biblio_records B
                     INNER JOIN biblio_idx_fields I ON I.record_id = B.id
                     WHERE B.database = ?
@@ -712,7 +749,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                            """
+                    """
                     SELECT iso2709 FROM biblio_records
                     WHERE id IN (%s)
                     ORDER BY id ASC;

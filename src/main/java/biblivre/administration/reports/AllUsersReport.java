@@ -21,6 +21,12 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.AllUsersReportDto;
 import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.circulation.user.UserStatus;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
 import org.openpdf.text.Paragraph;
@@ -28,11 +34,6 @@ import org.openpdf.text.Phrase;
 import org.openpdf.text.Rectangle;
 import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -90,7 +91,11 @@ public class AllUsersReport extends BaseBiblivreReport {
             int count = entry.getValue();
 
             total += count;
-            cell = new PdfPCell(new Paragraph(this.getHeaderChunk(entry.getKey().toUpperCase())));
+            cell =
+                    new PdfPCell(
+                            new Paragraph(
+                                    this.getHeaderChunk(
+                                            resolveTypeLabel(entry.getKey()).toUpperCase())));
             cell.setBackgroundColor(HEADER_BG_COLOR);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -126,13 +131,29 @@ public class AllUsersReport extends BaseBiblivreReport {
             for (Entry<String, List<String>> entry : data.entrySet()) {
                 table = new PdfPTable(4);
                 table.setWidthPercentage(100f);
-                String description = entry.getKey();
+                String description = resolveTypeLabel(entry.getKey());
                 cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
                 cell.setColspan(4);
                 cell.setBorder(Rectangle.NO_BORDER);
                 cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
+
+                List<String> users = entry.getValue();
+                if (users == null || users.isEmpty()) {
+                    cell =
+                            new PdfPCell(
+                                    new Paragraph(
+                                            this.getNormalChunk(
+                                                    this.getText(
+                                                            "administration.reports.field.no_users_for_criteria"))));
+                    cell.setColspan(4);
+                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    table.addCell(cell);
+                    tabelas.add(table);
+                    continue;
+                }
 
                 cell =
                         new PdfPCell(
@@ -182,7 +203,7 @@ public class AllUsersReport extends BaseBiblivreReport {
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
 
-                for (String line : entry.getValue()) {
+                for (String line : users) {
                     String[] dados = line.split("\t");
                     // Nome
                     cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[0])));
@@ -215,6 +236,13 @@ public class AllUsersReport extends BaseBiblivreReport {
             logger.error(e.getMessage(), e);
             return Collections.emptyList();
         }
+    }
+
+    private String resolveTypeLabel(String typeKey) {
+        if (UserStatus.INACTIVE.toString().equals(typeKey)) {
+            return this.getText("administration.reports.field.inactive_users");
+        }
+        return typeKey;
     }
 
     @Override
