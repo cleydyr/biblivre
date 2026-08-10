@@ -13,15 +13,17 @@ on:
   pull_request:
     branches: [master]
 
-# Least privilege for GITHUB_TOKEN (CodeQL actions/missing-workflow-permissions).
-# actions: write covers upload/download-artifact and Buildx type=gha cache.
+# Default least privilege for GITHUB_TOKEN. Write scopes are granted per job
+# (Sonar githubactions:S8233 / CodeQL missing-workflow-permissions).
 permissions:
   contents: read
-  actions: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write # upload-artifact + actions/cache
     env:
       NODE_ENV: production
       BABEL_ENV: production
@@ -93,6 +95,9 @@ jobs:
     needs: build
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write # download-artifact + Buildx type=gha cache
     steps:
       - name: Checkout
         uses: actions/checkout@v7
