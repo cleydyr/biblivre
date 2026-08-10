@@ -47,28 +47,30 @@ jobs:
           server-username: OSSINDEX_USERNAME
           server-password: OSSINDEX_TOKEN
 
-      - name: Get Node and Yarn versions
+      # Node/Corepack come from pom; Yarn version from packageManager (Yarn Berry via Corepack).
+      - name: Get frontend toolchain versions
         id: frontend-versions
         run: |
           echo "node=$(grep -oP '(?<=<nodeVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
-          echo "yarn=$(grep -oP '(?<=<yarnVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
+          echo "corepack=$(grep -oP '(?<=<corepackVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
+          echo "packageManager=$(grep -oP '(?<="packageManager": ")[^"]+' src/main/spa-frontend/package.json)" >> $GITHUB_OUTPUT
 
-      - name: Cache frontend-maven-plugin Node/Yarn downloads
+      - name: Cache frontend-maven-plugin Node/Corepack downloads
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository/com/github/eirslett
-          key: frontend-maven-plugin-${{ runner.os }}-${{ steps.frontend-versions.outputs.node }}-${{ steps.frontend-versions.outputs.yarn }}
+          key: frontend-maven-plugin-${{ runner.os }}-${{ steps.frontend-versions.outputs.node }}-${{ steps.frontend-versions.outputs.corepack }}
           restore-keys: |
             frontend-maven-plugin-${{ runner.os }}-
 
+      # Yarn Berry global cache only — node_modules restore was ~16s and rarely worth it.
       - name: Cache Yarn dependencies
         uses: actions/cache@v6
         with:
-          path: |
-            ~/.cache/yarn
-            src/main/spa-frontend/node_modules
-          key: yarn-${{ runner.os }}-${{ hashFiles('src/main/spa-frontend/yarn.lock') }}
+          path: ~/.yarn/berry/cache
+          key: yarn-${{ runner.os }}-${{ steps.frontend-versions.outputs.packageManager }}-${{ hashFiles('src/main/spa-frontend/yarn.lock') }}
           restore-keys: |
+            yarn-${{ runner.os }}-${{ steps.frontend-versions.outputs.packageManager }}-
             yarn-${{ runner.os }}-
 
       - name: Cache Dart Sass downloads
