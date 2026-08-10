@@ -32,6 +32,7 @@ import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
+import biblivre.login.audit.SuccessfulLoginNotifier;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -58,6 +59,7 @@ public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
     private PermissionBO permissionBO;
     private BackupBO backupBO;
+    private SuccessfulLoginNotifier successfulLoginNotifier;
 
     @Autowired MenuProvider menuProvider;
 
@@ -87,6 +89,8 @@ public class Handler extends AbstractHandler {
             _populateSessionAttributes(request, user, atps);
 
             authenticateWithSpringSecurity(user, request, response);
+
+            successfulLoginNotifier.notifySuccessfulLogin(user, request);
 
             setMessage(ActionResult.NORMAL, "login.welcome");
         } else {
@@ -267,5 +271,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
+    }
+
+    @Autowired
+    public void setSuccessfulLoginNotifier(SuccessfulLoginNotifier successfulLoginNotifier) {
+        this.successfulLoginNotifier = successfulLoginNotifier;
     }
 }
