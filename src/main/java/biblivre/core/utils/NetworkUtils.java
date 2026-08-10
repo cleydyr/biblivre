@@ -41,6 +41,14 @@ public class NetworkUtils {
         }
     }
 
+    public static String remoteIpAddress(final HttpServletRequest request) {
+        try {
+            return remoteIp(request).getHostAddress();
+        } catch (UnknownHostException e) {
+            return request.getRemoteAddr();
+        }
+    }
+
     private static InetAddress remoteIp(final HttpServletRequest request)
             throws UnknownHostException {
         final Enumeration<?> headers = request.getHeaders("X-Forwarded-for");

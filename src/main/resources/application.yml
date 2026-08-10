@@ -9,6 +9,12 @@ biblivre:
     # Override with env BIBLIVRE_CIRCULATION_RETURN_UNDO_WINDOW_SECONDS
     return-undo-window-seconds: 120
 
+login-audit:
+  enabled: ${LOGIN_AUDIT_ENABLED:false}
+  ingest-url: ${LOGIN_AUDIT_INGEST_URL:http://localhost:8091/internal/v1/successful-logins}
+  api-key: ${LOGIN_AUDIT_INTERNAL_API_KEY:dev-internal-key}
+  dispatch-delay-ms: 5000
+
 spring:
   mvc:
     view:
