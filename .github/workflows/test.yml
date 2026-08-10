@@ -13,6 +13,12 @@ on:
   pull_request:
     branches: [master]
 
+# Cancel superseded PR runs (e.g. Renovate force-pushes). Keep master/tag
+# runs so an in-flight Docker publish is not aborted by a later push.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # Default least privilege for GITHUB_TOKEN. Write scopes are granted per job
 # (Sonar githubactions:S8233 / CodeQL missing-workflow-permissions).
 permissions:
