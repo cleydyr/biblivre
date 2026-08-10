@@ -13,6 +13,12 @@ on:
   pull_request:
     branches: [master]
 
+# Least privilege for GITHUB_TOKEN (CodeQL actions/missing-workflow-permissions).
+# actions: write covers upload/download-artifact and Buildx type=gha cache.
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
