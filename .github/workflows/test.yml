@@ -29,6 +29,9 @@ jobs:
       BABEL_ENV: production
       BUILD_PATH: ../resources/META-INF/resources/static/
       PUBLIC_URL: /static/
+      # Consumed by ~/.m2/settings.xml written by setup-java (${env.OSSINDEX_*}).
+      OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
+      OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
 
     steps:
       - uses: actions/checkout@v7
@@ -39,9 +42,10 @@ jobs:
           distribution: "zulu"
           java-version: "25"
           cache: "maven"
+          # setup-java expects env *names* here (not secret values).
           server-id: ossindex
-          server-username: ${{ secrets.OSSINDEX_USERNAME }}
-          server-password: ${{ secrets.OSSINDEX_TOKEN }}
+          server-username: OSSINDEX_USERNAME
+          server-password: OSSINDEX_TOKEN
 
       - name: Get Node and Yarn versions
         id: frontend-versions
