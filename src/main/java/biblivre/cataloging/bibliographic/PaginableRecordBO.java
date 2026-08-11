@@ -9,6 +9,7 @@ import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
+import biblivre.cataloging.search.intelligent.IntelligentSearchService;
 import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.SearchMode;
@@ -22,6 +23,7 @@ public abstract class PaginableRecordBO extends RecordBO {
     protected SearchDAO searchDAO;
     protected IndexingGroupBO indexingGroupBO;
     protected TabFieldsBO tabFieldsBO;
+    protected IntelligentSearchService intelligentSearchService;
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
@@ -119,6 +121,14 @@ public abstract class PaginableRecordBO extends RecordBO {
 
                 break;
 
+            case INTELLIGENT:
+                if (intelligentSearchService == null
+                        || !intelligentSearchService.populateSearch(search, !isNewSearch)) {
+                    return;
+                }
+
+                break;
+
             case LIST_ALL:
                 break;
         }
@@ -178,5 +188,10 @@ public abstract class PaginableRecordBO extends RecordBO {
     @Autowired
     public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired(required = false)
+    public void setIntelligentSearchService(IntelligentSearchService intelligentSearchService) {
+        this.intelligentSearchService = intelligentSearchService;
     }
 }

@@ -2,7 +2,7 @@ name: biblivre-e2e
 
 services:
   database:
-    image: postgres:18-alpine
+    image: pgvector/pgvector:pg18
     container_name: biblivre-e2e-db
     environment:
       POSTGRES_USER: biblivre

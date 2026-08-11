@@ -25,7 +25,8 @@ import org.apache.commons.lang3.EnumUtils;
 public enum SearchMode implements BiblivreEnum {
     LIST_ALL,
     SIMPLE,
-    ADVANCED;
+    ADVANCED,
+    INTELLIGENT;
 
     public static SearchMode fromString(String str) {
         return EnumUtils.getEnum(SearchMode.class, str.toUpperCase(), null);

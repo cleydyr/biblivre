@@ -1,13 +1,13 @@
 version: "3"
 services:
   database:
-    image: postgres:18-alpine
+    image: pgvector/pgvector:pg18
     container_name: biblivre-dev-db
     ports:
       - "5432:5432"
     volumes:
       - "./sql/biblivre4.sql:/docker-entrypoint-initdb.d/populate-initial-data.sql"
-      - "biblivre_dev_db_data:/var/lib/postgresql/data"
+      - "biblivre_dev_db_data:/var/lib/postgresql"
     environment:
       - "POSTGRES_USER=biblivre"
       - "POSTGRES_PASSWORD=abracadabra"

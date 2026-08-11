@@ -43,7 +43,14 @@ export function getSearchTerms(
   }
 }
 
-export function getSearchMode(query: SearchQueryTerms | undefined): SearchMode {
+export function getSearchMode(
+  query: SearchQueryTerms | undefined,
+  explicitMode?: SearchMode,
+): SearchMode {
+  if (explicitMode === 'intelligent') {
+    return 'intelligent'
+  }
+
   if (query === undefined) {
     return 'list_all'
   }
@@ -52,7 +59,11 @@ export function getSearchMode(query: SearchQueryTerms | undefined): SearchMode {
     return 'advanced'
   }
 
-  return 'simple'
+  if (explicitMode === 'simple' || explicitMode === undefined) {
+    return 'simple'
+  }
+
+  return explicitMode
 }
 
 export function isMarcDatafield(value: MarcField): value is MarcDatafield {

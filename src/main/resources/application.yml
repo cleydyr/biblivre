@@ -8,6 +8,21 @@ biblivre:
   circulation:
     # Override with env BIBLIVRE_CIRCULATION_RETURN_UNDO_WINDOW_SECONDS
     return-undo-window-seconds: 120
+  search:
+    intelligent:
+      enabled: false
+      candidate-limit: 40
+      rrf-k: 50
+      embedding:
+        provider: openai_compatible
+        # Override via BIBLIVRE_SEARCH_INTELLIGENT_EMBEDDING_* (see docs/deployment-intelligent-search.md).
+        base-url: http://localhost:11434/v1
+        api-key: ollama
+        model: bge-m3
+        dimensions: 1024
+        batch-size: 32
+        connect-timeout: 2s
+        read-timeout: 30s
 
 login-audit:
   enabled: ${LOGIN_AUDIT_ENABLED:false}

@@ -5,9 +5,12 @@ import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
 import useCheckMenuPermission from './api-helpers/menu/hooks'
 import CirculationReturnPage from './circulation/return'
+import FeatureFlag from './components/FeatureFlag'
+import { SEARCH_INTELLIGENT_FEATURE } from './config/features'
 import LoginPage from './login/LoginPage'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
+import IntelligentBibliographicSearchPage from './search/intelligent/IntelligentBibliographicSearchPage'
 import AppHeader from './AppHeader'
 import AppSideNavigation from './AppSideNavigation'
 import CirculationPage from './circulation'
@@ -45,6 +48,14 @@ const useAppRoutes = (): RouteObject[] => [
   {
     path: 'login',
     element: <LoginPage />,
+  },
+  {
+    path: 'search/intelligent',
+    element: (
+      <FeatureFlag name={SEARCH_INTELLIGENT_FEATURE}>
+        <IntelligentBibliographicSearchPage />
+      </FeatureFlag>
+    ),
   },
   {
     path: 'search',

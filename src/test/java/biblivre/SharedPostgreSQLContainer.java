@@ -7,7 +7,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
 
 public class SharedPostgreSQLContainer extends PostgreSQLContainer<SharedPostgreSQLContainer> {
-    private static final String IMAGE_VERSION = "postgres:16-alpine";
+    private static final String IMAGE_VERSION = "pgvector/pgvector:pg16";
     private static SharedPostgreSQLContainer container;
 
     private SharedPostgreSQLContainer() {
