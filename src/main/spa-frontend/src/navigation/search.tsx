@@ -1,3 +1,4 @@
+import { EuiBadge, EuiFlexGroup, EuiFlexItem } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -32,10 +33,26 @@ const useSearchNavigation = () => {
             {
               id: 'search-intelligent',
               name: (
-                <FormattedMessage
-                  defaultMessage='Pesquisa Inteligente'
-                  id='app.sideNav.search.intelligent'
-                />
+                <EuiFlexGroup
+                  alignItems='center'
+                  gutterSize='s'
+                  responsive={false}
+                >
+                  <EuiFlexItem grow={false}>
+                    <FormattedMessage
+                      defaultMessage='Pesquisa Inteligente'
+                      id='app.sideNav.search.intelligent'
+                    />
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiBadge color='accent'>
+                      <FormattedMessage
+                        defaultMessage='Novo'
+                        id='app.sideNav.search.intelligent.badge.new'
+                      />
+                    </EuiBadge>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
               ),
               onClick: () => {
                 navigate('/spa/search/intelligent')

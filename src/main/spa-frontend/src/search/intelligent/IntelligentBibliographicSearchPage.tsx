@@ -7,6 +7,7 @@ import BibliographicSearchResults from '../BibliographicSearchResults'
 import { usePaginatedSearch } from '../hooks'
 
 import IntelligentBibliographicSearchControls from './IntelligentBibliographicSearchControls'
+import IntelligentSearchInstructionsAccordion from './IntelligentSearchInstructionsAccordion'
 
 import type {
   BibliographicMaterial,
@@ -40,6 +41,7 @@ const IntelligentBibliographicSearchPage = () => {
       }
     >
       <EuiFlexGroup direction='column'>
+        <IntelligentSearchInstructionsAccordion />
         <EuiPanel hasBorder paddingSize='l'>
           <IntelligentBibliographicSearchControls
             isLoading={isSearchFetching}
