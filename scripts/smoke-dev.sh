@@ -32,20 +32,11 @@ stop_server() {
 		return
 	fi
 	echo -e "${YELLOW}Stopping smoke server (pid ${MVN_PID})...${NC}"
-	# spring-boot:run leaves a Java child; kill the Maven tree, then anything
-	# still bound to SMOKE_PORT (portable: no setsid on macOS).
+	# spring-boot:run leaves a Java child; kill only the Maven process tree.
 	if kill -0 "${MVN_PID}" 2>/dev/null; then
 		pkill -TERM -P "${MVN_PID}" 2>/dev/null || true
 		kill -TERM "${MVN_PID}" 2>/dev/null || true
 		wait "${MVN_PID}" 2>/dev/null || true
-	fi
-	if command -v lsof >/dev/null 2>&1; then
-		local listener_pids
-		listener_pids="$(lsof -t -iTCP:"${SMOKE_PORT}" -sTCP:LISTEN 2>/dev/null || true)"
-		if [[ -n "${listener_pids}" ]]; then
-			# shellcheck disable=SC2086
-			kill -TERM ${listener_pids} 2>/dev/null || true
-		fi
 	fi
 	MVN_PID=""
 }
@@ -91,6 +82,20 @@ ensure_database() {
 start_server() {
 	export MAVEN_OPTS="${MAVEN_OPTS:--XX:+UnlockExperimentalVMOptions --enable-preview}"
 	export BIBLIVRE_CORS_ENABLED="${BIBLIVRE_CORS_ENABLED:-true}"
+
+	if command -v lsof >/dev/null 2>&1; then
+		if lsof -t -iTCP:"${SMOKE_PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
+			echo -e "${RED}Port ${SMOKE_PORT} is already in use. Stop the existing listener and retry.${NC}"
+			exit 1
+		fi
+	elif command -v ss >/dev/null 2>&1; then
+		if ss -H -ltn "sport = :${SMOKE_PORT}" | grep -q .; then
+			echo -e "${RED}Port ${SMOKE_PORT} is already in use. Stop the existing listener and retry.${NC}"
+			exit 1
+		fi
+	else
+		echo -e "${YELLOW}Skipping preflight port check: neither lsof nor ss is available.${NC}"
+	fi
 
 	echo -e "${GREEN}Starting Spring Boot (developer profile) on port ${SMOKE_PORT}...${NC}"
 	echo -e "${YELLOW}Log: ${LOG_FILE}${NC}"
