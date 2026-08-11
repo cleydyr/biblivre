@@ -10,7 +10,7 @@ biblivre:
     return-undo-window-seconds: 120
   search:
     intelligent:
-      enabled: true
+      enabled: false
       candidate-limit: 40
       rrf-k: 50
       embedding:
