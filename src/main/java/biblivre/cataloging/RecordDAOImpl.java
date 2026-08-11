@@ -440,8 +440,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         RecordType recordType = search.getRecordType();
 
         SqlParts sqlParts = new SqlParts();
-        sqlParts.append(
-                "SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
+        sqlParts.append("SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
 
         if (useSearchResult) {
             sqlParts.append(recordType + "_records R ");
@@ -504,9 +503,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         }
     }
 
-    /**
-     * Pages intelligent-search hits by stored RRF relevance instead of the classic sort phrase.
-     */
+    /** Pages intelligent-search hits by stored RRF relevance instead of the classic sort phrase. */
     private List<RecordDTO> getIntelligentSearchResults(SearchDTO search, PagingDTO paging) {
         List<RecordDTO> list = new ArrayList<>();
         RecordType recordType = search.getRecordType();

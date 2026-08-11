@@ -23,8 +23,7 @@ public class Update implements UpdateService {
 						ADD COLUMN IF NOT EXISTS relevance DOUBLE PRECISION
 					""");
         } catch (Exception e) {
-            throw new UpdateException(
-                    "Error adding relevance column to biblio_search_results", e);
+            throw new UpdateException("Error adding relevance column to biblio_search_results", e);
         }
     }
 }
