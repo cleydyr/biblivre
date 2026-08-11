@@ -65,10 +65,11 @@ Avoid ad-hoc `pg_upgrade` across majors combined with the PG 18 data-directory l
 
 ## Application deploy
 
-1. Deploy a build that includes updates `v6_0_0$9_0_0$alpha` through `v6_0_0$9_0_2$alpha`.
+1. Deploy a build that includes updates `v6_0_0$9_0_0$alpha` through `v6_0_0$9_0_3$alpha`.
 2. On boot the updater:
    - globally runs `CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public`;
-   - per schema creates `biblio_record_search` and its indexes.
+   - per schema creates `biblio_record_search` and its indexes;
+   - adds `biblio_search_results.relevance` for RRF ranking on intelligent search.
 3. If the extension binaries are missing, the migration fails, rolls back, logs an error, and does **not** mark the version as installed. The app may still start, but intelligent search stays broken until the extension is installed and the app is restarted.
 4. Verify per schema:
 

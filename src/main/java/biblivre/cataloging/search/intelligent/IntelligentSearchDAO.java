@@ -166,8 +166,9 @@ public class IntelligentSearchDAO extends AbstractDAO {
 								) combined
 								GROUP BY record_id
 							)
-							INSERT INTO biblio_search_results (search_id, indexing_group_id, record_id)
-							SELECT ?, 0, record_id
+							INSERT INTO biblio_search_results
+								(search_id, indexing_group_id, record_id, relevance)
+							SELECT ?, 0, record_id, score
 							FROM fused
 							ORDER BY score DESC
 							"""

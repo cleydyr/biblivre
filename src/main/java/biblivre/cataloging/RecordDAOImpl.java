@@ -26,6 +26,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SqlParts;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MaterialType;
@@ -426,98 +427,122 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         }
 
+        if (search.getSearchMode() == SearchMode.INTELLIGENT) {
+            return getIntelligentSearchResults(search, paging);
+        }
+
         boolean useSearchResult = (search.getSearchMode() != SearchMode.LIST_ALL);
         boolean useIndexingGroup = (search.getIndexingGroup() != 0);
         boolean useMaterialType = (search.getQuery().getMaterialType() != MaterialType.ALL);
         boolean useLimit = (paging.getRecordLimit() > 0);
         boolean reservedOnly = search.getQuery().isReservedOnly();
 
-        try (Connection con = datasource.getConnection()) {
-            StringBuilder sql = new StringBuilder();
+        RecordType recordType = search.getRecordType();
 
-            sql.append("SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
+        SqlParts sqlParts = new SqlParts();
+        sqlParts.append(
+                "SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
 
-            RecordType recordType = search.getRecordType();
+        if (useSearchResult) {
+            sqlParts.append(recordType + "_records R ");
+            sqlParts.append("INNER JOIN ( ");
+            sqlParts.append("SELECT DISTINCT record_id FROM " + recordType + "_search_results ");
+            sqlParts.append("WHERE search_id = ? ", search.getId());
 
-            if (useSearchResult) {
-                sql.append(recordType).append("_records R ");
-                sql.append("INNER JOIN ( ");
-                sql.append("SELECT DISTINCT record_id FROM ")
-                        .append(recordType)
-                        .append("_search_results ");
-                sql.append("WHERE search_id = ? ");
-
-                if (useIndexingGroup) {
-                    sql.append("AND indexing_group_id = ? ");
-                }
-
-                sql.append("ORDER BY record_id DESC ");
-
-                if (useLimit) {
-                    sql.append("LIMIT ? ");
-                }
-
-                sql.append(") SR ON SR.record_id = R.id ");
-            } else {
-                sql.append("(SELECT * FROM ").append(recordType).append("_records ");
-                sql.append("WHERE database = ? ");
-
-                if (useMaterialType) {
-                    sql.append("AND material = ? ");
-                }
-
-                if (reservedOnly) {
-                    sql.append(
-                            "AND id in (SELECT DISTINCT record_id FROM reservations WHERE expires > localtimestamp) ");
-                }
-
-                sql.append("ORDER BY id DESC ");
-
-                if (useLimit) {
-                    sql.append("LIMIT ? ");
-                }
-
-                sql.append(") R ");
+            if (useIndexingGroup) {
+                sqlParts.append("AND indexing_group_id = ? ", search.getIndexingGroup());
             }
 
-            sql.append("LEFT JOIN ").append(recordType).append("_idx_sort S ");
-            sql.append("ON S.record_id = R.id AND S.indexing_group_id = ? ");
-
-            sql.append("ORDER BY sort NULLS LAST, R.id ASC OFFSET ? LIMIT ?;");
-
-            int index = 1;
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            if (useSearchResult) {
-                pst.setInt(index++, search.getId());
-
-                if (useIndexingGroup) {
-                    pst.setInt(index++, search.getIndexingGroup());
-                }
-            } else {
-                pst.setString(index++, search.getQuery().getDatabase().toString());
-
-                if (useMaterialType) {
-                    pst.setString(index++, search.getQuery().getMaterialType().toString());
-                }
-            }
+            sqlParts.append("ORDER BY record_id DESC ");
 
             if (useLimit) {
-                pst.setLong(index++, search.getRecordLimit());
+                sqlParts.append("LIMIT ? ", search.getRecordLimit());
             }
 
-            pst.setInt(index++, search.getSort());
+            sqlParts.append(") SR ON SR.record_id = R.id ");
+        } else {
+            sqlParts.append("(SELECT * FROM " + recordType + "_records ");
+            sqlParts.append("WHERE database = ? ", search.getQuery().getDatabase().toString());
 
-            pst.setLong(index++, paging.getRecordOffset());
-            pst.setLong(index, paging.getRecordsPerPage());
+            if (useMaterialType) {
+                sqlParts.append(
+                        "AND material = ? ", search.getQuery().getMaterialType().toString());
+            }
 
-            ResultSet rs = pst.executeQuery();
+            if (reservedOnly) {
+                sqlParts.append(
+                        "AND id in (SELECT DISTINCT record_id FROM reservations WHERE expires >"
+                                + " localtimestamp) ");
+            }
 
+            sqlParts.append("ORDER BY id DESC ");
+
+            if (useLimit) {
+                sqlParts.append("LIMIT ? ", search.getRecordLimit());
+            }
+
+            sqlParts.append(") R ");
+        }
+
+        sqlParts.append("LEFT JOIN " + recordType + "_idx_sort S ");
+        sqlParts.append("ON S.record_id = R.id AND S.indexing_group_id = ? ", search.getSort());
+        sqlParts.append(
+                "ORDER BY sort NULLS LAST, R.id ASC OFFSET ? LIMIT ?;",
+                paging.getRecordOffset(),
+                paging.getRecordsPerPage());
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = sqlParts.prepare(con);
+                ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 list.add(this.populateDTO(rs, recordType.getRecordClass()));
             }
 
+            return list;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Pages intelligent-search hits by stored RRF relevance instead of the classic sort phrase.
+     */
+    private List<RecordDTO> getIntelligentSearchResults(SearchDTO search, PagingDTO paging) {
+        List<RecordDTO> list = new ArrayList<>();
+        RecordType recordType = search.getRecordType();
+        boolean useIndexingGroup = (search.getIndexingGroup() != 0);
+        boolean useLimit = (paging.getRecordLimit() > 0);
+
+        SqlParts sqlParts = new SqlParts();
+        sqlParts.append("SELECT R.* FROM " + recordType + "_records R ");
+        sqlParts.append("INNER JOIN ( ");
+        sqlParts.append("SELECT record_id, MAX(relevance) AS relevance ");
+        sqlParts.append("FROM " + recordType + "_search_results ");
+        sqlParts.append("WHERE search_id = ? ", search.getId());
+
+        if (useIndexingGroup) {
+            sqlParts.append("AND indexing_group_id = ? ", search.getIndexingGroup());
+        }
+
+        sqlParts.append("GROUP BY record_id ");
+        sqlParts.append("ORDER BY relevance DESC NULLS LAST, record_id ASC ");
+
+        if (useLimit) {
+            sqlParts.append("LIMIT ? ", search.getRecordLimit());
+        }
+
+        sqlParts.append(") SR ON SR.record_id = R.id ");
+        sqlParts.append(
+                "ORDER BY SR.relevance DESC NULLS LAST, R.id ASC OFFSET ? LIMIT ?;",
+                paging.getRecordOffset(),
+                paging.getRecordsPerPage());
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = sqlParts.prepare(con);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                list.add(this.populateDTO(rs, recordType.getRecordClass()));
+            }
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
