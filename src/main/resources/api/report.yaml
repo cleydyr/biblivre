@@ -3,6 +3,8 @@ info:
   title: Biblivre REST API
   description: |-
   version: 0.0.1
+servers:
+  - url: /api/v2
 paths:
   /userTypes:
     get:

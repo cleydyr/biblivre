@@ -513,6 +513,7 @@
 								<apiPackage>biblivre.reports.generated.api</apiPackage>
 								<modelPackage>biblivre.reports.generated.api.model</modelPackage>
 								<useSpringBoot3>true</useSpringBoot3>
+								<basePath>/api/v2</basePath>
 							</configOptions>
 							<generateModelTests>false</generateModelTests>
 							<generateModelDocumentation>false</generateModelDocumentation>
