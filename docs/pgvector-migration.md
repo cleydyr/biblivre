@@ -65,7 +65,7 @@ Avoid ad-hoc `pg_upgrade` across majors combined with the PG 18 data-directory l
 
 ## Application deploy
 
-1. Deploy a build that includes updates `v6_0_0$9_0_0$alpha` through `v6_0_0$9_0_3$alpha`.
+1. Deploy a build that includes updates `v6_0_0$9_0_0$alpha` through `v6_0_0$9_0_4$alpha`.
 2. On boot the updater:
    - globally runs `CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public`;
    - per schema creates `biblio_record_search` and its indexes;
@@ -118,7 +118,7 @@ After migrations succeed and the embedding service is up:
 - [ ] pgvector available for the production Postgres major version
 - [ ] Extension `vector` in schema `public` (pre-created or app role allowed)
 - [ ] Full database backup before deploy
-- [ ] App updates `9_0_0`–`9_0_2` applied on **all** library schemas
+- [ ] App updates `9_0_0`–`9_0_4` applied on **all** library schemas
 - [ ] Embedding service reachable from the app; model dims match `1024` (or column + config updated together)
 - [ ] Production config has no developer-only host URLs
 - [ ] Bibliographic reindex finished; `COUNT(embedding)` consistent with the collection

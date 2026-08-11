@@ -458,7 +458,7 @@
 							<div class="value">
 								<select name="holding_availability">
 									<c:forEach var="availability" items="<%= HoldingAvailability.values() %>" >
-										<option value="${availability}"><i18n:text key="cataloging.holding.availability.${availability}" /></option>
+										<option value="${availability.string}"><i18n:text key="cataloging.holding.availability.${availability.string}" /></option>
 									</c:forEach>
 								</select>
 							</div>
@@ -474,7 +474,7 @@
 							<div class="value">
 								<select name="holding_availability">
 									<c:forEach var="availability" items="<%= HoldingAvailability.values() %>" >
-										<option value="${availability}"><i18n:text key="cataloging.holding.availability.${availability}" /></option>
+										<option value="${availability.string}"><i18n:text key="cataloging.holding.availability.${availability.string}" /></option>
 									</c:forEach>
 								</select>
 							</div>
