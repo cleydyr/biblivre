@@ -1,0 +1,20 @@
+---
+description: Always run yarn lint and yarn build after spa-frontend contributions
+globs: src/main/spa-frontend/**/*.{ts,tsx,js,jsx,mjs,cjs}
+alwaysApply: false
+---
+
+# spa-frontend: lint and build sanity check
+
+After editing or adding files under `src/main/spa-frontend`, run both checks before considering the work done:
+
+```bash
+cd src/main/spa-frontend && yarn lint && yarn build
+```
+
+- Fix every reported ESLint error in files you changed.
+- Prefer fixing issues manually; use `yarn lint:fix` only for safe auto-fixes.
+- Treat a failed `yarn build` (TypeScript, Vite, bundling) as a blocker — fix it before finishing.
+- Do not leave lint or build failures in your final suggestions.
+- If either step fails, resolve the issues and re-run until both pass.
+- Use `set -o pipefail` if you pipe the command output through filters.
