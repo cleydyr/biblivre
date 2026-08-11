@@ -1,5 +1,7 @@
 # Migrating plain PostgreSQL to vector search (pgvector)
 
+For an end-to-end **deployment-team runbook** (Docker Compose + `.env`, embeddings service, reindex, Flagsmith, rollback), see [deployment-intelligent-search.md](./deployment-intelligent-search.md).
+
 Biblivre’s intelligent search needs the PostgreSQL **`vector`** extension (pgvector). The application does **not** require the `pgvector/pgvector` Docker image specifically—only that the extension binaries are installed on the server and can be loaded with:
 
 ```sql

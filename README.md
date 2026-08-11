@@ -72,4 +72,4 @@ The following variables are used in Biblivre and can be set on the .env file:
 
 Intelligent (hybrid lexical + vector) search requires the PostgreSQL `vector` extension. Biblivre creates the extension and schema objects on startup once pgvector is installed on the database server.
 
-For migrating an existing plain PostgreSQL deployment, see [docs/pgvector-migration.md](docs/pgvector-migration.md).
+For migrating an existing plain PostgreSQL deployment, see [docs/pgvector-migration.md](docs/pgvector-migration.md). For the full deployment-team tutorial (Compose + `.env`, embeddings, reindex, UI flag), see [docs/deployment-intelligent-search.md](docs/deployment-intelligent-search.md).
