@@ -1,3 +1,13 @@
 spring:
   datasource:
     url: jdbc:tc:postgresql:12:///biblivre4
+
+biblivre:
+  search:
+    intelligent:
+      enabled: true
+      embedding:
+        # Deterministic in-process embeddings; no network dependency in CI.
+        provider: hashing
+        dimensions: 1024
+        batch-size: 32
