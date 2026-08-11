@@ -19,7 +19,8 @@ public class IntelligentSearchDAO extends AbstractDAO {
                 PreparedStatement pst =
                         connection.prepareStatement(
                                 """
-								SELECT record_id, search_text, model_id, content_hash
+								SELECT record_id, search_text, model_id, content_hash,
+									embedding IS NOT NULL AS has_embedding
 								FROM biblio_record_search
 								WHERE record_id = ?
 								""")) {
@@ -33,7 +34,8 @@ public class IntelligentSearchDAO extends AbstractDAO {
                             rs.getInt("record_id"),
                             rs.getString("search_text"),
                             rs.getString("model_id"),
-                            rs.getString("content_hash")));
+                            rs.getString("content_hash"),
+                            rs.getBoolean("has_embedding")));
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -207,5 +209,9 @@ public class IntelligentSearchDAO extends AbstractDAO {
     }
 
     public record StoredSearchRow(
-            int recordId, String searchText, String modelId, String contentHash) {}
+            int recordId,
+            String searchText,
+            String modelId,
+            String contentHash,
+            boolean hasEmbedding) {}
 }

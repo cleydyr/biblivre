@@ -76,6 +76,7 @@ class IntelligentSearchServiceImpl implements IntelligentSearchService {
                 intelligentSearchDAO.findByRecordId(dto.getId());
 
         if (existing.isPresent()
+                && existing.get().hasEmbedding()
                 && contentHash.equals(existing.get().contentHash())
                 && embeddingProvider.modelId().equals(existing.get().modelId())) {
             return;
@@ -124,6 +125,7 @@ class IntelligentSearchServiceImpl implements IntelligentSearchService {
             Optional<IntelligentSearchDAO.StoredSearchRow> existing =
                     intelligentSearchDAO.findByRecordId(dto.getId());
             if (existing.isPresent()
+                    && existing.get().hasEmbedding()
                     && contentHash.equals(existing.get().contentHash())
                     && embeddingProvider.modelId().equals(existing.get().modelId())) {
                 continue;
