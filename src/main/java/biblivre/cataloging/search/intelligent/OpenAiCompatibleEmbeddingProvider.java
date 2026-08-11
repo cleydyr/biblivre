@@ -29,9 +29,7 @@ public class OpenAiCompatibleEmbeddingProvider implements EmbeddingProvider {
                         .withReadTimeout(embedding.getReadTimeout());
         var requestFactory = ClientHttpRequestFactoryBuilder.detect().build(settings);
         var builder =
-                restClientBuilder
-                        .baseUrl(embedding.getBaseUrl())
-                        .requestFactory(requestFactory);
+                restClientBuilder.baseUrl(embedding.getBaseUrl()).requestFactory(requestFactory);
         String apiKey = embedding.getApiKey();
         if (apiKey != null && !apiKey.isBlank()) {
             builder.defaultHeader("Authorization", "Bearer " + apiKey);
