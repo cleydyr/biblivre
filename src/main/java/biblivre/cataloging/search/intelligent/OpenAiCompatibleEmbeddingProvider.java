@@ -1,12 +1,12 @@
 package biblivre.cataloging.search.intelligent;
 
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
-import org.springframework.boot.http.client.HttpClientSettings;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -23,11 +23,10 @@ public class OpenAiCompatibleEmbeddingProvider implements EmbeddingProvider {
             IntelligentSearchProperties properties, RestClient.Builder restClientBuilder) {
         this.properties = properties;
         var embedding = properties.getEmbedding();
-        var settings =
-                HttpClientSettings.defaults()
-                        .withConnectTimeout(embedding.getConnectTimeout())
-                        .withReadTimeout(embedding.getReadTimeout());
-        var requestFactory = ClientHttpRequestFactoryBuilder.detect().build(settings);
+        var httpClient =
+                HttpClient.newBuilder().connectTimeout(embedding.getConnectTimeout()).build();
+        var requestFactory = new JdkClientHttpRequestFactory(httpClient);
+        requestFactory.setReadTimeout(embedding.getReadTimeout());
         var builder =
                 restClientBuilder.baseUrl(embedding.getBaseUrl()).requestFactory(requestFactory);
         String apiKey = embedding.getApiKey();
