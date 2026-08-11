@@ -70,9 +70,57 @@ public class OpenAiCompatibleEmbeddingProvider implements EmbeddingProvider {
             throw new IllegalStateException("Empty embedding response from provider");
         }
 
-        List<float[]> vectors = new ArrayList<>(texts.size());
-        for (EmbeddingData item : response.data()) {
-            vectors.add(toFloatArray(item.embedding()));
+        return toOrderedVectors(response.data(), texts.size(), dimensions());
+    }
+
+    /**
+     * Rebuilds the batch in input order using each item's {@code index}, and validates that every
+     * input has exactly one vector of the expected dimension.
+     */
+    static List<float[]> toOrderedVectors(
+            List<EmbeddingData> data, int expectedCount, int expectedDimensions) {
+        if (data == null) {
+            throw new IllegalStateException("Empty embedding response from provider");
+        }
+
+        float[][] ordered = new float[expectedCount][];
+        boolean[] seen = new boolean[expectedCount];
+
+        for (EmbeddingData item : data) {
+            int index = item.index();
+            if (index < 0 || index >= expectedCount) {
+                throw new IllegalStateException(
+                        "Embedding index out of range: "
+                                + index
+                                + " (batch size "
+                                + expectedCount
+                                + ")");
+            }
+            if (seen[index]) {
+                throw new IllegalStateException("Duplicate embedding index: " + index);
+            }
+
+            float[] vector = toFloatArray(item.embedding());
+            if (vector.length != expectedDimensions) {
+                throw new IllegalStateException(
+                        "Unexpected embedding dimensions at index "
+                                + index
+                                + ": got "
+                                + vector.length
+                                + ", expected "
+                                + expectedDimensions);
+            }
+
+            ordered[index] = vector;
+            seen[index] = true;
+        }
+
+        List<float[]> vectors = new ArrayList<>(expectedCount);
+        for (int i = 0; i < expectedCount; i++) {
+            if (!seen[i]) {
+                throw new IllegalStateException("Missing embedding for input index: " + i);
+            }
+            vectors.add(ordered[i]);
         }
         return vectors;
     }
@@ -90,5 +138,5 @@ public class OpenAiCompatibleEmbeddingProvider implements EmbeddingProvider {
 
     private record EmbeddingResponse(List<EmbeddingData> data) {}
 
-    private record EmbeddingData(List<Double> embedding, int index) {}
+    record EmbeddingData(List<Double> embedding, int index) {}
 }
