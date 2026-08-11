@@ -16,7 +16,7 @@ biblivre:
       embedding:
         provider: openai_compatible
         # Override via BIBLIVRE_SEARCH_INTELLIGENT_EMBEDDING_* (see docs/deployment-intelligent-search.md).
-        base-url: http://192.168.1.145:11434/v1
+        base-url: http://localhost:11434/v1
         api-key: ollama
         model: bge-m3
         dimensions: 1024
