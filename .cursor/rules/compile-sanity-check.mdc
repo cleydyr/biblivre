@@ -1,0 +1,28 @@
+---
+description: Run a basic compile sanity check before treating Java/backend code changes as done
+globs: "**/*.{java,xml,yml,yaml}"
+alwaysApply: false
+---
+
+# Compile sanity check (backend)
+
+After changing Java sources, Maven config, or Spring config that can affect compilation/classpath, verify the project still compiles **before** presenting the change as done (and before commit/push when those were requested).
+
+```bash
+set -o pipefail
+mvn -DskipTests compile -Pdeveloper
+```
+
+## Requirements
+
+- Treat a non-zero Maven exit code as failure; fix it before finishing.
+- If you pipe Maven output (`| tail`, `| rg`, etc.), keep `set -o pipefail` so the pipeline exit code reflects Maven, not the last filter.
+- Prefer a **clean** compile when the change adds/changes imports, Spring Boot/Framework APIs, or dependencies — incremental compile can hide missing packages:
+
+```bash
+set -o pipefail
+mvn -DskipTests clean compile -Pdeveloper
+```
+
+- Do not claim “compiles” from an incremental run alone in those cases.
+- Frontend-only SPA edits: follow `spa-frontend-yarn-lint.mdc` (`yarn lint && yarn build`) instead of this Maven check.
