@@ -21,6 +21,8 @@ biblivre:
         model: bge-m3
         dimensions: 1024
         batch-size: 32
+        connect-timeout: 2s
+        read-timeout: 30s
 
 login-audit:
   enabled: ${LOGIN_AUDIT_ENABLED:false}

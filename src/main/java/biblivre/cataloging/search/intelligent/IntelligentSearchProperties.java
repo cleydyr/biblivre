@@ -1,5 +1,6 @@
 package biblivre.cataloging.search.intelligent;
 
+import java.time.Duration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -26,5 +27,11 @@ public class IntelligentSearchProperties {
         private String model = "bge-m3";
         private int dimensions = 1024;
         private int batchSize = 64;
+
+        /** TCP connect timeout for openai_compatible HTTP calls. */
+        private Duration connectTimeout = Duration.ofSeconds(2);
+
+        /** Response read timeout for openai_compatible HTTP calls. */
+        private Duration readTimeout = Duration.ofSeconds(30);
     }
 }
