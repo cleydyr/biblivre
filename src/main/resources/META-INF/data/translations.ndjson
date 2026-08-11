@@ -6357,3 +6357,6 @@
 {"language":"pt-BR","key":"administration.reports.field.no_users_for_criteria","text":"Não há usuários com esse critério","user_created":false}
 {"language":"es","key":"administration.reports.field.no_users_for_criteria","text":"No hay usuarios con este criterio","user_created":false}
 {"language":"en-US","key":"administration.reports.field.no_users_for_criteria","text":"There are no users matching this criterion","user_created":false}
+{"language":"es","key":"circulation.user_field.fines","text":"Multas","user_created":false}
+{"language":"pt-BR","key":"circulation.user_field.fines","text":"Multas","user_created":false}
+{"language":"en-US","key":"circulation.user_field.fines","text":"Fines","user_created":false}
