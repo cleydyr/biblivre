@@ -95,6 +95,12 @@ jobs:
             mvn -B -ntp clean test package -Pgithub-ci
           fi
 
+      # Real process boot (developer Spring profile + docker-compose.dev DB), not
+      # @SpringBootTest/test profile — catches missing runtime beans such as
+      # RestClient.Builder under Boot 4.1+.
+      - name: Smoke start server (developer mode)
+        run: ./scripts/smoke-dev.sh
+
       - name: Upload packaged app
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v4

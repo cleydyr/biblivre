@@ -18,7 +18,7 @@ GREEN := \033[0;32m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-.PHONY: help dev dev-spa debug build test clean format check docker-up docker-down spa-dev spa-setup frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test
+.PHONY: help dev dev-spa debug build test clean format check docker-up docker-down spa-dev spa-setup frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test smoke
 
 help: ## Show this help message
 	@echo "$(GREEN)Biblivre Development Shortcuts$(NC)"
@@ -67,6 +67,10 @@ test: ## Run all Java tests
 test-specific: ## Run specific test class (usage: make test-specific TEST=OrderDAOImplTest)
 	@echo "$(GREEN)Running test: $(TEST)$(NC)"
 	@mvn test -P developer -Dtest=$(TEST)
+
+smoke: ## Boot developer-profile server against docker-compose.dev DB, then stop
+	@echo "$(GREEN)Running developer-mode startup smoke...$(NC)"
+	@./scripts/smoke-dev.sh
 
 test-frontend: ## Run frontend tests
 	@echo "$(GREEN)Running frontend tests...$(NC)"
