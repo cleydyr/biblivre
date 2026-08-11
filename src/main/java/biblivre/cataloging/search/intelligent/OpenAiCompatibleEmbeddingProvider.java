@@ -19,12 +19,12 @@ public class OpenAiCompatibleEmbeddingProvider implements EmbeddingProvider {
 
     public OpenAiCompatibleEmbeddingProvider(IntelligentSearchProperties properties) {
         this.properties = properties;
-        this.restClient =
-                RestClient.builder()
-                        .baseUrl(properties.getEmbedding().getBaseUrl())
-                        .defaultHeader(
-                                "Authorization", "Bearer " + properties.getEmbedding().getApiKey())
-                        .build();
+        var builder = RestClient.builder().baseUrl(properties.getEmbedding().getBaseUrl());
+        String apiKey = properties.getEmbedding().getApiKey();
+        if (apiKey != null && !apiKey.isBlank()) {
+            builder.defaultHeader("Authorization", "Bearer " + apiKey);
+        }
+        this.restClient = builder.build();
     }
 
     @Override
