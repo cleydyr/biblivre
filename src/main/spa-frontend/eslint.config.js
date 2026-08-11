@@ -161,6 +161,8 @@ export default tseslint.config([
 
       // Prefer <Fragment> over shorthand <> (autofixable)
       'biblivre/prefer-fragment-element': 'error',
+      // Nested ternaries hurt readability; prefer if/else or early returns
+      'no-nested-ternary': 'error',
     },
   },
 
