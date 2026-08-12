@@ -12,6 +12,12 @@ biblivre:
   circulation:
     # Override with env BIBLIVRE_CIRCULATION_RETURN_UNDO_WINDOW_SECONDS
     return-undo-window-seconds: 120
+    address-lookup:
+      # Override with env BIBLIVRE_CIRCULATION_ADDRESS_LOOKUP_ENABLED
+      enabled: true
+      base-url: https://viacep.com.br
+      connect-timeout: 2s
+      read-timeout: 5s
   search:
     intelligent:
       enabled: false

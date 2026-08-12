@@ -9,8 +9,9 @@
 {"key":"address_number","type":"string","required":false,"max_length":100,"sort_order":10}
 {"key":"address_complement","type":"string","required":false,"max_length":100,"sort_order":11}
 {"key":"address_zip","type":"string","required":false,"max_length":20,"sort_order":12}
-{"key":"address_city","type":"string","required":false,"max_length":100,"sort_order":13}
-{"key":"address_state","type":"string","required":false,"max_length":100,"sort_order":14}
-{"key":"birthday","type":"date","required":false,"max_length":0,"sort_order":15}
+{"key":"address_neighborhood","type":"string","required":false,"max_length":100,"sort_order":13}
+{"key":"address_city","type":"string","required":false,"max_length":100,"sort_order":14}
+{"key":"address_state","type":"string","required":false,"max_length":100,"sort_order":15}
+{"key":"birthday","type":"date","required":false,"max_length":0,"sort_order":16}
 {"key":"id_rg","type":"string","required":false,"max_length":20,"sort_order":7}
 {"key":"phone_work_extension","type":"string","required":false,"max_length":10,"sort_order":6}

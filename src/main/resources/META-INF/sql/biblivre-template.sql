@@ -7589,9 +7589,10 @@ INSERT INTO bib4template.users_fields VALUES ('address', 'string', false, 500, 9
 INSERT INTO bib4template.users_fields VALUES ('address_number', 'string', false, 100, 10, '2014-06-07 12:42:30.610671', NULL, '2014-06-07 12:42:30.610671', NULL);
 INSERT INTO bib4template.users_fields VALUES ('address_complement', 'string', false, 100, 11, '2014-06-07 12:44:27.624027', NULL, '2014-06-07 12:44:27.624027', NULL);
 INSERT INTO bib4template.users_fields VALUES ('address_zip', 'string', false, 20, 12, '2014-06-07 12:45:05.425222', NULL, '2014-06-07 12:45:05.425222', NULL);
-INSERT INTO bib4template.users_fields VALUES ('address_city', 'string', false, 100, 13, '2014-06-07 12:45:21.458004', NULL, '2014-06-07 12:45:21.458004', NULL);
-INSERT INTO bib4template.users_fields VALUES ('address_state', 'string', false, 100, 14, '2014-06-07 12:45:31.657995', NULL, '2014-06-07 12:45:31.657995', NULL);
-INSERT INTO bib4template.users_fields VALUES ('birthday', 'date', false, 0, 15, '2014-06-07 12:50:08.933974', NULL, '2014-06-07 12:50:08.933974', NULL);
+INSERT INTO bib4template.users_fields VALUES ('address_neighborhood', 'string', false, 100, 13, '2014-06-07 12:45:15.000000', NULL, '2014-06-07 12:45:15.000000', NULL);
+INSERT INTO bib4template.users_fields VALUES ('address_city', 'string', false, 100, 14, '2014-06-07 12:45:21.458004', NULL, '2014-06-07 12:45:21.458004', NULL);
+INSERT INTO bib4template.users_fields VALUES ('address_state', 'string', false, 100, 15, '2014-06-07 12:45:31.657995', NULL, '2014-06-07 12:45:31.657995', NULL);
+INSERT INTO bib4template.users_fields VALUES ('birthday', 'date', false, 0, 16, '2014-06-07 12:50:08.933974', NULL, '2014-06-07 12:50:08.933974', NULL);
 INSERT INTO bib4template.users_fields VALUES ('id_rg', 'string', false, 20, 7, '2014-06-07 12:46:30.386262', NULL, '2014-06-07 12:46:30.386262', NULL);
 INSERT INTO bib4template.users_fields VALUES ('phone_work_extension', 'string', false, 10, 6, '2014-06-07 12:53:42.743594', NULL, '2014-06-07 12:53:42.743594', NULL);
 

@@ -39,6 +39,7 @@ const emptyUserFields = (): User['fields'] => ({
   address_number: '',
   address_complement: '',
   address_zip: '',
+  address_neighborhood: '',
   address_city: '',
   address_state: '',
   birthday: iso(''),

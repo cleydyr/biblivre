@@ -27,6 +27,7 @@ export type User = Auditable<{
     id_rg: string
     id_cpf: string
     address_number: string
+    address_neighborhood: string
     address_city: string
     phone_home: string
     phone_cel: string

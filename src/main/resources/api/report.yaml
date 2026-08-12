@@ -76,6 +76,58 @@ paths:
       operationId: getUserSearchableFields
       tags:
         - User Field
+  /circulation/address_lookup/enabled:
+    get:
+      description: >
+        Returns whether Brazilian ZIP (CEP) address lookup is enabled on this
+        deployment. Used by clients to hide the lookup button when disabled.
+      responses:
+        200:
+          description: Address lookup enabled flag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressLookupEnabled'
+        403:
+          $ref: '#/components/responses/403ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getAddressLookupEnabled
+      tags:
+        - Address Lookup
+  /circulation/address_lookup/{cep}:
+    get:
+      description: >
+        Looks up a Brazilian postal code (CEP) via the server-side provider
+        proxy and returns address fields for autofill.
+      parameters:
+        - name: cep
+          in: path
+          required: true
+          description: Brazilian CEP (digits only or formatted)
+          schema:
+            type: string
+            example: "01310100"
+      responses:
+        200:
+          description: Address data for the CEP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressLookupResult'
+        400:
+          $ref: '#/components/responses/400ApiError'
+        403:
+          $ref: '#/components/responses/403ApiError'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        503:
+          $ref: '#/components/responses/503ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: lookupAddressByCep
+      tags:
+        - Address Lookup
   /indexing_groups/{recordType}:
     get:
       description: Retrieves the indexing groups for a record type
@@ -408,6 +460,34 @@ components:
         - required
         - maxLength
         - sortOrder
+    AddressLookupEnabled:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+      required:
+        - enabled
+    AddressLookupResult:
+      type: object
+      properties:
+        street:
+          type: string
+          description: Logradouro / street name (may be empty for generic CEPs)
+        neighborhood:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        incomplete:
+          type: boolean
+          description: True when street is missing and should be filled manually
+      required:
+        - street
+        - neighborhood
+        - city
+        - state
+        - incomplete
     ReportTemplateCompileRequest:
       type: object
       required:
@@ -470,6 +550,32 @@ components:
               message:
                 type: string
                 example: An unexpected error occurred on the server. Please contact support.
+    400ApiError:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Invalid CEP
+    403ApiError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 403
+              message:
+                type: string
+                example: Forbidden
     404ApiError:
       description: The requested object couldn't be found in the server
       content:
@@ -486,3 +592,16 @@ components:
                   message:
                     type: string
                     example: Resource with id 42 can't be found
+    503ApiError:
+      description: Service unavailable (feature disabled or upstream unreachable)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 503
+              message:
+                type: string
+                example: Address lookup is disabled on this server
