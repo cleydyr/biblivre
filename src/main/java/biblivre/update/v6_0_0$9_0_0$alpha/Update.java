@@ -1,5 +1,6 @@
 package biblivre.update.v6_0_0$9_0_0$alpha;
 
+import biblivre.cataloging.search.intelligent.ConditionalOnIntelligentSearchEnabled;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
@@ -7,6 +8,7 @@ import java.sql.Statement;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnIntelligentSearchEnabled
 public class Update implements UpdateService {
 
     @Override

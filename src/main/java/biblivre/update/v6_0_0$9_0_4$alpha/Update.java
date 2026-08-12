@@ -1,5 +1,6 @@
 package biblivre.update.v6_0_0$9_0_4$alpha;
 
+import biblivre.cataloging.search.intelligent.ConditionalOnIntelligentSearchEnabled;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /** Persist RRF relevance on biblio_search_results for intelligent-search ranking. */
 @Component
+@ConditionalOnIntelligentSearchEnabled
 public class Update implements UpdateService {
 
     @Override
