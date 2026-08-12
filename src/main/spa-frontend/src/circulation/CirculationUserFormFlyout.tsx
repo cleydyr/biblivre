@@ -13,7 +13,7 @@ import {
   EuiTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import {
@@ -93,6 +93,8 @@ const CirculationUserFormFlyout: FC<Props> = ({
   const [pendingAddressLookup, setPendingAddressLookup] =
     useState<AddressLookupResult | null>(null)
   const overwriteConfirmTitleId = useGeneratedHtmlId()
+  const formValuesRef = useRef(values)
+  formValuesRef.current = values
 
   useEffect(() => {
     if (mode === 'create' && values.type == null) {
@@ -188,8 +190,9 @@ const CirculationUserFormFlyout: FC<Props> = ({
 
     lookupAddressByCep(cep, {
       onSuccess: (result) => {
+        const currentFields = formValuesRef.current.fields
         const lookupValues = addressLookupToFieldValues(result)
-        if (hasAddressFieldsToOverwrite(values.fields, lookupValues)) {
+        if (hasAddressFieldsToOverwrite(currentFields, lookupValues)) {
           setPendingAddressLookup(result)
           return
         }

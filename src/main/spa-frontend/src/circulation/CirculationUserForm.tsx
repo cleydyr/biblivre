@@ -262,6 +262,7 @@ const DynamicUserField: FC<DynamicUserFieldProps> = ({
             <EuiFlexGroup alignItems='center' gutterSize='s'>
               <EuiFlexItem grow>
                 <EuiFieldText
+                  disabled={isAddressLookupLoading}
                   isInvalid={isInvalid}
                   maxLength={field.maxLength > 0 ? field.maxLength : undefined}
                   value={value}

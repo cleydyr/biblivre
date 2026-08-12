@@ -422,7 +422,7 @@ var CirculationInput = new Input({
 		}
 	},
 	lookupAddress() {
-		if (!this.addressLookupEnabled) {
+		if (!this.addressLookupEnabled || this._addressLookupInFlight) {
 			return;
 		}
 
@@ -436,6 +436,9 @@ var CirculationInput = new Input({
 		}
 
 		const normalizedCep = this._normalizeCep(cep);
+		const formRoot = this._getAddressFormRoot();
+		const cepInput = formRoot.find('[name="address_zip"]');
+		const lookupButton = formRoot.find('.address_lookup_button');
 		const headers = {
 			Accept: 'application/json',
 		};
@@ -443,6 +446,10 @@ var CirculationInput = new Input({
 		if (this.schema) {
 			headers['X-Biblivre-Schema'] = this.schema;
 		}
+
+		this._addressLookupInFlight = true;
+		cepInput.prop('disabled', true);
+		lookupButton.addClass('disabled').attr('aria-disabled', 'true');
 
 		$.ajax({
 			url: `${window.location.origin}${this.contextPath || ''}/api/v2/circulation/address_lookup/${encodeURIComponent(normalizedCep)}`,
@@ -484,6 +491,11 @@ var CirculationInput = new Input({
 					message: Translations.get(messageKey),
 					message_level: 'error',
 				});
+			},
+			complete: () => {
+				this._addressLookupInFlight = false;
+				cepInput.prop('disabled', false);
+				lookupButton.removeClass('disabled').removeAttr('aria-disabled');
 			},
 		});
 	},
