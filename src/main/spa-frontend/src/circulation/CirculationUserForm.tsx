@@ -1,13 +1,11 @@
 import {
   EuiAvatar,
-  EuiButton,
   EuiDatePicker,
   EuiFieldNumber,
   EuiFieldText,
   EuiFilePicker,
-  EuiFlexGroup,
-  EuiFlexItem,
   EuiForm,
+  EuiFormAppend,
   EuiFormRow,
   EuiSelect,
   EuiSwitch,
@@ -259,28 +257,25 @@ const DynamicUserField: FC<DynamicUserFieldProps> = ({
       ) {
         return (
           <EuiFormRow error={error} isInvalid={isInvalid} label={label}>
-            <EuiFlexGroup alignItems='center' gutterSize='s'>
-              <EuiFlexItem grow>
-                <EuiFieldText
+            <EuiFieldText
+              append={
+                <EuiFormAppend
                   disabled={isAddressLookupLoading}
-                  isInvalid={isInvalid}
-                  maxLength={field.maxLength > 0 ? field.maxLength : undefined}
-                  value={value}
-                  onChange={(event) => onChange(event.target.value)}
-                />
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  isLoading={isAddressLookupLoading}
-                  size='s'
+                  element='button'
                   onClick={onAddressLookup}
                 >
                   {getLegacyTranslation(
                     'circulation.user.address_lookup.search',
                   )}
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
+                </EuiFormAppend>
+              }
+              disabled={isAddressLookupLoading}
+              isInvalid={isInvalid}
+              isLoading={isAddressLookupLoading}
+              maxLength={field.maxLength > 0 ? field.maxLength : undefined}
+              value={value}
+              onChange={(event) => onChange(event.target.value)}
+            />
           </EuiFormRow>
         )
       }
