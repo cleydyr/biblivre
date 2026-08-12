@@ -454,6 +454,10 @@ var CirculationInput = new Input({
 			},
 			loadingTimedOverlay: true,
 			success: (result) => {
+				if (this._normalizeCep(this._readAddressFieldValue('address_zip')) !== normalizedCep) {
+					return;
+				}
+
 				const lookupValues = this._lookupValuesFromResult(result);
 
 				if (this._hasAddressFieldsToOverwrite(lookupValues)) {
