@@ -145,7 +145,7 @@ var CatalogingFormClass = {
 				if (isBibliographicCutterSubfield) {
 					html.push(`
 						<input type="text" ${dataAutocomplete} name="${subfield.subfield}" class="finput ${autocompleteClass}" style="width: 60%;" />
-						<a class="button center cutter_generate_button" href="javascript:void(0);" onclick="CatalogingCutter.fillAuthorCode($('#biblivre_form'));">
+						<a class="button center cutter_generate_button" href="javascript:void(0);" onclick="CatalogingCutter.fillAuthorCode(this);">
 							${Translations.get('cataloging.bibliographic.cutter.generate')}
 						</a>
 					`);

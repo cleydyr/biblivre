@@ -189,11 +189,40 @@ const CatalogingCutter = {
 		return { surname: '', givenName: '' };
 	},
 
+	_resolveAuthorCodeInput(trigger) {
+		const $trigger = $(trigger);
+		const fromSubfield = $trigger.closest('.subfield').find(':input[name="b"]').first();
+		if (fromSubfield.length) {
+			return fromSubfield;
+		}
+
+		return $trigger
+			.closest('fieldset.datafield[data="090"]')
+			.find(':input[name="b"]')
+			.first();
+	},
+
+	_resolveFormRoot(trigger) {
+		const fromTrigger = $(trigger).closest('#biblivre_form');
+		return fromTrigger.length ? fromTrigger : $('#biblivre_form');
+	},
+
 	_applyAuthorCode(authorCodeInput, authorCode) {
 		authorCodeInput.val(authorCode);
 	},
 
-	fillAuthorCode(formRoot = $('#biblivre_form')) {
+	fillAuthorCode(trigger) {
+		const formRoot = this._resolveFormRoot(trigger);
+		const authorCodeInput = this._resolveAuthorCodeInput(trigger);
+
+		if (!authorCodeInput.length) {
+			Core.msg({
+				message: Translations.get('cataloging.bibliographic.cutter.not_found'),
+				message_level: 'error',
+			});
+			return;
+		}
+
 		const authorParts = this._resolveAuthorParts(formRoot);
 		if (!authorParts.surname) {
 			Core.msg({
@@ -221,20 +250,6 @@ const CatalogingCutter = {
 		);
 
 		if (!authorCode) {
-			Core.msg({
-				message: Translations.get('cataloging.bibliographic.cutter.not_found'),
-				message_level: 'error',
-			});
-			return;
-		}
-
-		const authorCodeInput = formRoot
-			.find('fieldset.datafield[data="090"]')
-			.first()
-			.find(':input[name="b"]')
-			.first();
-
-		if (!authorCodeInput.length) {
 			Core.msg({
 				message: Translations.get('cataloging.bibliographic.cutter.not_found'),
 				message_level: 'error',
