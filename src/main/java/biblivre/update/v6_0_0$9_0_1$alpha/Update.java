@@ -1,5 +1,6 @@
 package biblivre.update.v6_0_0$9_0_1$alpha;
 
+import biblivre.cataloging.search.intelligent.ConditionalOnIntelligentSearchEnabled;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * when the column is already vector(768) or the table does not exist yet.
  */
 @Component
+@ConditionalOnIntelligentSearchEnabled
 public class Update implements UpdateService {
 
     @Override
