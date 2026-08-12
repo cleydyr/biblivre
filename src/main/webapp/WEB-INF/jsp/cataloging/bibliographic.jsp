@@ -18,6 +18,8 @@
 
 	<static:script fileName="biblivre.input.js" />
 	<static:script fileName="biblivre.cataloging.input.js" />
+	<static:script fileName="cutter-sanborn.min.js" />
+	<static:script fileName="biblivre.cataloging.cutter.js" />
 	<static:script fileName="biblivre.holding.input.js" />
 
 	<static:script fileName="${requestScope.biblioCacheFileName}" />

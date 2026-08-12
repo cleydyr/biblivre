@@ -40,7 +40,8 @@ var CatalogingFormClass = {
 		// unfortunately we reduced its readability
 		var html = [];
 		var translationPrefix = 'marc.bibliographic.datafield.';
-		if (this.formElementId && this.formElementId == '#biblivre_holding_form') {
+		var isHoldingForm = this.formElementId && this.formElementId == '#biblivre_holding_form';
+		if (isHoldingForm) {
 			translationPrefix = 'marc.holding.datafield.';
 		}
 
@@ -134,7 +135,26 @@ var CatalogingFormClass = {
 				}
 
 
-				html.push('<div class="value"><input type="text" ', dataAutocomplete ,' name="', subfield.subfield, '" class="finput ', autocompleteClass, '" /></div>');
+				html.push('<div class="value">');
+
+				const isBibliographicCutterSubfield =
+					!isHoldingForm &&
+					datafield.datafield === '090' &&
+					subfield.subfield === 'b';
+
+				if (isBibliographicCutterSubfield) {
+					html.push(`
+						<input type="text" ${dataAutocomplete} name="${subfield.subfield}" class="finput ${autocompleteClass}" style="width: 60%;" />
+						<a class="button center cutter_generate_button" href="javascript:void(0);" onclick="CatalogingCutter.fillAuthorCode($('#biblivre_form'));">
+							${Translations.get('cataloging.bibliographic.cutter.generate')}
+						</a>
+					`);
+				} else {
+					html.push(`
+						<input type="text" ${dataAutocomplete} name="${subfield.subfield}" class="finput ${autocompleteClass}" />
+					`);
+				}
+				html.push('</div>');
 				html.push('<div class="extra"><span class="marc_numbering">$' + subfield.subfield + '</span></div>');
 				html.push('<div class="clear"></div>');
 
