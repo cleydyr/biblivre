@@ -41,6 +41,9 @@
 		CirculationInput.type = 'circulation.user';
 		CirculationInput.root = '#circulation_user';
 		CirculationInput.search = CirculationSearch;
+		CirculationInput.addressLookupEnabled = ${requestScope.addressLookupEnabled ? 'true' : 'false'};
+		CirculationInput.schema = '${schema}';
+		CirculationInput.contextPath = '<%= contextPath %>';
 
 
 		$(document).ready(function() {
@@ -338,7 +341,12 @@
 										<div class="label">{Translations.get('circulation.custom.user_field.' + $T.userfield.key)}</div>
 										<div class="value">
 											{#if $T.userfield.type == 'string'}
-												<input type="text" name="{$T.userfield.key}" maxlength="{$T.userfield.maxLength || ''}" value="{($T.fields || {})[$T.userfield.key]}">
+												{#if $T.userfield.key == 'address_zip' && CirculationInput.addressLookupEnabled}
+													<input type="text" name="{$T.userfield.key}" maxlength="{$T.userfield.maxLength || ''}" value="{($T.fields || {})[$T.userfield.key]}" style="width: 60%;">
+													<a class="button center address_lookup_button" href="javascript:void(0);" onclick="CirculationInput.lookupAddress();"><i18n:text key="circulation.user.address_lookup.search" /></a>
+												{#else}
+													<input type="text" name="{$T.userfield.key}" maxlength="{$T.userfield.maxLength || ''}" value="{($T.fields || {})[$T.userfield.key]}">
+												{#/if}
 											{#/if}
 											{#if $T.userfield.type == 'text'}
 												{$('<textarea/>').attr('name', $T.userfield.key).text(($T.fields || {})[$T.userfield.key] || '')[0].outerHTML}

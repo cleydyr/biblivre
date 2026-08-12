@@ -81,6 +81,7 @@ var CirculationInput = new Input({
 		});
 
 		root.find('.photo_field').hide();
+		root.find('.address_lookup_button').hide();
 
 		var currentPhoto = this.root.find('img.user_photo');
 		if (currentPhoto.data('original_src')) {
@@ -93,6 +94,7 @@ var CirculationInput = new Input({
 		root.find('.readonly_text').remove();
 		root.find('.readonly_hidden').removeClass('readonly_hidden');
 		root.find('.readonly_checkbox').removeClass('readonly_checkbox').removeAttr('disabled');
+		root.find('.address_lookup_button').show();
 	},
 	enablePhotoUpload: function(root) {
 		var photo = root.find('.photo_field').show();
@@ -362,5 +364,124 @@ var CirculationInput = new Input({
 			offset: [-19, -7],
 			readonly_element: false
 		});
-	}
+	},
+	addressLookupEnabled: false,
+	schema: '',
+	contextPath: '',
+	_addressLookupFieldMap: {
+		street: 'address',
+		neighborhood: 'address_neighborhood',
+		city: 'address_city',
+		state: 'address_state',
+	},
+	_normalizeCep(rawCep) {
+		return String(rawCep ?? '').replace(/\D/g, '');
+	},
+	_isValidBrazilianCep(rawCep) {
+		return /^\d{8}$/.test(this._normalizeCep(rawCep));
+	},
+	_getAddressFormRoot() {
+		return $('#biblivre_circulation_form');
+	},
+	_readAddressFieldValue(fieldKey) {
+		return (this._getAddressFormRoot().find(`[name="${fieldKey}"]`).val() || '').trim();
+	},
+	_writeAddressFieldValue(fieldKey, value) {
+		if (!value) {
+			return;
+		}
+
+		this._getAddressFormRoot().find(`[name="${fieldKey}"]`).val(value);
+	},
+	_lookupValuesFromResult(result) {
+		return Object.fromEntries(
+			Object.entries(this._addressLookupFieldMap)
+				.map(([resultKey, fieldKey]) => [fieldKey, String(result[resultKey] ?? '').trim()])
+				.filter(([, value]) => value.length > 0),
+		);
+	},
+	_hasAddressFieldsToOverwrite(lookupValues) {
+		// Confirm whenever a mapped field already has a value that the lookup
+		// would write into — even if the new text is identical.
+		return Object.keys(lookupValues).some((fieldKey) => {
+			return this._readAddressFieldValue(fieldKey).length > 0;
+		});
+	},
+	_applyAddressLookupResult(result) {
+		const lookupValues = this._lookupValuesFromResult(result);
+
+		for (const [fieldKey, value] of Object.entries(lookupValues)) {
+			this._writeAddressFieldValue(fieldKey, value);
+		}
+
+		if (result.incomplete) {
+			Core.msg({
+				message: Translations.get('circulation.user.address_lookup.incomplete'),
+				message_level: 'warning',
+			});
+		}
+	},
+	lookupAddress() {
+		if (!this.addressLookupEnabled) {
+			return;
+		}
+
+		const cep = this._readAddressFieldValue('address_zip');
+		if (!this._isValidBrazilianCep(cep)) {
+			Core.msg({
+				message: Translations.get('circulation.user.address_lookup.invalid_cep'),
+				message_level: 'warning',
+			});
+			return;
+		}
+
+		const normalizedCep = this._normalizeCep(cep);
+		const headers = {
+			Accept: 'application/json',
+		};
+
+		if (this.schema) {
+			headers['X-Biblivre-Schema'] = this.schema;
+		}
+
+		$.ajax({
+			url: `${window.location.origin}${this.contextPath || ''}/api/v2/circulation/address_lookup/${encodeURIComponent(normalizedCep)}`,
+			type: 'GET',
+			dataType: 'json',
+			headers,
+			xhrFields: {
+				withCredentials: true,
+			},
+			loadingTimedOverlay: true,
+			success: (result) => {
+				const lookupValues = this._lookupValuesFromResult(result);
+
+				if (this._hasAddressFieldsToOverwrite(lookupValues)) {
+					Core.popup({
+						title: Translations.get('circulation.user.address_lookup.confirm_overwrite_title'),
+						description: Translations.get('circulation.user.address_lookup.confirm_overwrite_message'),
+						okHandler: () => this._applyAddressLookupResult(result),
+					});
+					return;
+				}
+
+				this._applyAddressLookupResult(result);
+			},
+			error: (xhr) => {
+				let messageKey = 'circulation.user.address_lookup.error';
+
+				if (xhr?.status === 404) {
+					messageKey = 'circulation.user.address_lookup.not_found';
+				} else if (xhr?.status === 400) {
+					messageKey = 'circulation.user.address_lookup.invalid_cep';
+				}
+
+				Core.msg({
+					message: Translations.get(messageKey),
+					message_level: 'error',
+				});
+			},
+		});
+	},
 });
+

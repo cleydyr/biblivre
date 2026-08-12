@@ -16,12 +16,24 @@ import {
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
+import {
+  useAddressLookupEnabled,
+  useLookupAddressByCepMutation,
+} from '../api-helpers/address-lookup/hooks'
 import { useSaveCirculationUserMutation } from '../api-helpers/circulation/hooks'
 import { useUserFields } from '../api-helpers/user-fields/hooks'
 import { useUserTypes } from '../api-helpers/user-type/hooks'
 import LoadingState from '../components/LoadingState'
+import { ResponseError } from '../generated-sources'
+import { getLegacyTranslation } from '../legacy_translations/lib'
 import { useToasts } from '../toasts/useToasts'
 
+import {
+  addressLookupToFieldValues,
+  applyAddressLookupValues,
+  hasAddressFieldsToOverwrite,
+  isValidBrazilianCep,
+} from './addressLookupLogic'
 import CirculationUserForm from './CirculationUserForm'
 import {
   areFormValuesDirty,
@@ -37,6 +49,7 @@ import {
 import type { FC } from 'react'
 
 import type { User } from '../api-helpers/circulation/response-types'
+import type { AddressLookupResult } from '../generated-sources'
 
 import type { CirculationUserFormValues } from './circulationUserFormLogic'
 
@@ -58,6 +71,9 @@ const CirculationUserFormFlyout: FC<Props> = ({
 
   const { data: userFields = [], isLoading: isFieldsLoading } = useUserFields()
   const { data: userTypes = [], isLoading: isTypesLoading } = useUserTypes()
+  const { data: addressLookupEnabled = false } = useAddressLookupEnabled()
+  const { mutate: lookupAddressByCep, isPending: isAddressLookupLoading } =
+    useLookupAddressByCepMutation()
 
   const { mutate: saveUser, isPending: isSaving } =
     useSaveCirculationUserMutation()
@@ -74,6 +90,9 @@ const CirculationUserFormFlyout: FC<Props> = ({
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null)
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false)
   const [isPhotoLoading, setIsPhotoLoading] = useState(false)
+  const [pendingAddressLookup, setPendingAddressLookup] =
+    useState<AddressLookupResult | null>(null)
+  const overwriteConfirmTitleId = useGeneratedHtmlId()
 
   useEffect(() => {
     if (mode === 'create' && values.type == null) {
@@ -129,6 +148,77 @@ const CirculationUserFormFlyout: FC<Props> = ({
         })
         onSaved(response.data)
         onClose()
+      },
+    })
+  }
+
+  const applyLookupResult = (result: AddressLookupResult) => {
+    const lookupValues = addressLookupToFieldValues(result)
+    setValues((currentValues) => ({
+      ...currentValues,
+      fields: applyAddressLookupValues(currentValues.fields, lookupValues),
+    }))
+
+    if (result.incomplete) {
+      showToast({
+        id: `circulation-user-address-incomplete-${Date.now()}`,
+        title: getLegacyTranslation(
+          'circulation.user.address_lookup.incomplete',
+        ),
+        color: 'warning',
+        iconType: 'alert',
+      })
+    }
+  }
+
+  const handleAddressLookup = () => {
+    const cep = values.fields.address_zip || ''
+
+    if (!isValidBrazilianCep(cep)) {
+      showToast({
+        id: `circulation-user-address-invalid-${Date.now()}`,
+        title: getLegacyTranslation(
+          'circulation.user.address_lookup.invalid_cep',
+        ),
+        color: 'warning',
+        iconType: 'alert',
+      })
+      return
+    }
+
+    lookupAddressByCep(cep, {
+      onSuccess: (result) => {
+        const lookupValues = addressLookupToFieldValues(result)
+        if (hasAddressFieldsToOverwrite(values.fields, lookupValues)) {
+          setPendingAddressLookup(result)
+          return
+        }
+
+        applyLookupResult(result)
+      },
+      onError: (error) => {
+        let title = getLegacyTranslation(
+          'circulation.user.address_lookup.error',
+        )
+
+        if (error instanceof ResponseError) {
+          if (error.response.status === 404) {
+            title = getLegacyTranslation(
+              'circulation.user.address_lookup.not_found',
+            )
+          } else if (error.response.status === 400) {
+            title = getLegacyTranslation(
+              'circulation.user.address_lookup.invalid_cep',
+            )
+          }
+        }
+
+        showToast({
+          id: `circulation-user-address-error-${Date.now()}`,
+          title,
+          color: 'danger',
+          iconType: 'alert',
+        })
       },
     })
   }
@@ -208,13 +298,16 @@ const CirculationUserFormFlyout: FC<Props> = ({
                 </Fragment>
               ) : null}
               <CirculationUserForm
+                addressLookupEnabled={addressLookupEnabled}
                 existingPhotoId={user?.photo_id}
                 fieldErrors={fieldErrors}
                 fields={userFields}
+                isAddressLookupLoading={isAddressLookupLoading}
                 isPhotoLoading={isPhotoLoading}
                 mode={mode}
                 userTypes={userTypes}
                 values={values}
+                onAddressLookup={handleAddressLookup}
                 onChange={setValues}
                 onPhotoSelect={handlePhotoSelect}
               />
@@ -289,6 +382,32 @@ const CirculationUserFormFlyout: FC<Props> = ({
               defaultMessage='Todas as alterações serão perdidas'
               id='circulation.user.confirm_cancel_editing.2'
             />
+          </p>
+        </EuiConfirmModal>
+      ) : null}
+      {pendingAddressLookup ? (
+        <EuiConfirmModal
+          aria-labelledby={overwriteConfirmTitleId}
+          cancelButtonText={
+            <FormattedMessage defaultMessage='Não' id='common.no' />
+          }
+          confirmButtonText={
+            <FormattedMessage defaultMessage='Sim' id='common.yes' />
+          }
+          title={getLegacyTranslation(
+            'circulation.user.address_lookup.confirm_overwrite_title',
+          )}
+          titleProps={{ id: overwriteConfirmTitleId }}
+          onCancel={() => setPendingAddressLookup(null)}
+          onConfirm={() => {
+            applyLookupResult(pendingAddressLookup)
+            setPendingAddressLookup(null)
+          }}
+        >
+          <p>
+            {getLegacyTranslation(
+              'circulation.user.address_lookup.confirm_overwrite_message',
+            )}
           </p>
         </EuiConfirmModal>
       ) : null}

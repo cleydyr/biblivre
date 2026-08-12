@@ -30,6 +30,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.circulation.addresslookup.AddressLookupProperties;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldBO;
@@ -57,6 +58,7 @@ public class Handler extends AbstractHandler {
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
     private UserFieldBO userFieldBO;
+    private AddressLookupProperties addressLookupProperties;
     private IndexingGroupBO indexingGroupBO;
     private TabFieldsBO tabFieldsBO;
     private LanguageBO languageBO;
@@ -186,6 +188,8 @@ public class Handler extends AbstractHandler {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
         request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
+
+        request.setAttribute("addressLookupEnabled", addressLookupProperties.isEnabled());
 
         setJspURL("/WEB-INF/jsp/circulation/user.jsp");
     }
@@ -446,6 +450,11 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserFieldBO(UserFieldBO userFieldBO) {
         this.userFieldBO = userFieldBO;
+    }
+
+    @Autowired
+    public void setAddressLookupProperties(AddressLookupProperties addressLookupProperties) {
+        this.addressLookupProperties = addressLookupProperties;
     }
 
     @Autowired

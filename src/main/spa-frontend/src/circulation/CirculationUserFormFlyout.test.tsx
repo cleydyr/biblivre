@@ -35,6 +35,7 @@ const editUserFixture: User = {
     address_number: '',
     address_complement: '',
     address_zip: '',
+    address_neighborhood: '',
     address_city: '',
     address_state: '',
     birthday: '' as User['fields']['birthday'],
@@ -61,6 +62,17 @@ vi.mock('../api-helpers/user-type/hooks', () => ({
   useUserTypes: () => ({
     data: [{ id: 1, name: 'Padrão' }],
     isLoading: false,
+  }),
+}))
+
+vi.mock('../api-helpers/address-lookup/hooks', () => ({
+  useAddressLookupEnabled: () => ({
+    data: false,
+    isLoading: false,
+  }),
+  useLookupAddressByCepMutation: () => ({
+    mutate: vi.fn(),
+    isPending: false,
   }),
 }))
 

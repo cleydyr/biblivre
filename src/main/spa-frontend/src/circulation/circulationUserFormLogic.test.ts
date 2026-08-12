@@ -39,6 +39,7 @@ const sampleUser: User = {
     address_number: '',
     address_complement: '',
     address_zip: '',
+    address_neighborhood: '',
     address_city: '',
     address_state: '',
     birthday: '1990-05-10T00:00:00.000Z' as User['fields']['birthday'],

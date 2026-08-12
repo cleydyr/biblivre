@@ -1,9 +1,12 @@
 import {
   EuiAvatar,
+  EuiButton,
   EuiDatePicker,
   EuiFieldNumber,
   EuiFieldText,
   EuiFilePicker,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiForm,
   EuiFormRow,
   EuiSelect,
@@ -42,8 +45,11 @@ type Props = {
   fieldErrors: CirculationUserFieldErrors
   existingPhotoId?: string
   isPhotoLoading?: boolean
+  addressLookupEnabled?: boolean
+  isAddressLookupLoading?: boolean
   onChange: (values: CirculationUserFormValues) => void
   onPhotoSelect: (file: File | null) => void
+  onAddressLookup?: () => void
 }
 
 const CirculationUserForm: FC<Props> = ({
@@ -54,8 +60,11 @@ const CirculationUserForm: FC<Props> = ({
   fieldErrors,
   existingPhotoId,
   isPhotoLoading = false,
+  addressLookupEnabled = false,
+  isAddressLookupLoading = false,
   onChange,
   onPhotoSelect,
+  onAddressLookup,
 }) => {
   const photoPreviewUrl =
     values.photoPreviewUrl ??
@@ -148,10 +157,13 @@ const CirculationUserForm: FC<Props> = ({
       {fields.map((field) => (
         <DynamicUserField
           key={field.key}
+          addressLookupEnabled={addressLookupEnabled}
           error={getFieldErrorMessage(fieldErrors[field.key])}
           field={field}
+          isAddressLookupLoading={isAddressLookupLoading}
           isInvalid={Boolean(fieldErrors[field.key])}
           value={values.fields[field.key] ?? ''}
+          onAddressLookup={onAddressLookup}
           onChange={(value) => updateFieldValue(field.key, value)}
         />
       ))}
@@ -164,7 +176,10 @@ type DynamicUserFieldProps = {
   value: string
   error?: string
   isInvalid: boolean
+  addressLookupEnabled: boolean
+  isAddressLookupLoading: boolean
   onChange: (value: string) => void
+  onAddressLookup?: () => void
 }
 
 const DynamicUserField: FC<DynamicUserFieldProps> = ({
@@ -172,7 +187,10 @@ const DynamicUserField: FC<DynamicUserFieldProps> = ({
   value,
   error,
   isInvalid,
+  addressLookupEnabled,
+  isAddressLookupLoading,
   onChange,
+  onAddressLookup,
 }) => {
   const label = getLegacyUserFieldTranslation(field.key)
 
@@ -234,6 +252,38 @@ const DynamicUserField: FC<DynamicUserFieldProps> = ({
         </EuiFormRow>
       )
     default:
+      if (
+        field.key === 'address_zip' &&
+        addressLookupEnabled &&
+        onAddressLookup
+      ) {
+        return (
+          <EuiFormRow error={error} isInvalid={isInvalid} label={label}>
+            <EuiFlexGroup alignItems='center' gutterSize='s'>
+              <EuiFlexItem grow>
+                <EuiFieldText
+                  isInvalid={isInvalid}
+                  maxLength={field.maxLength > 0 ? field.maxLength : undefined}
+                  value={value}
+                  onChange={(event) => onChange(event.target.value)}
+                />
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton
+                  isLoading={isAddressLookupLoading}
+                  size='s'
+                  onClick={onAddressLookup}
+                >
+                  {getLegacyTranslation(
+                    'circulation.user.address_lookup.search',
+                  )}
+                </EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFormRow>
+        )
+      }
+
       return (
         <EuiFormRow error={error} isInvalid={isInvalid} label={label}>
           <EuiFieldText

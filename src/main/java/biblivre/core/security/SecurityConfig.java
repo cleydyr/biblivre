@@ -27,7 +27,8 @@ public class SecurityConfig {
                                         .requestMatchers(
                                                 "/api/v2/report_template/**",
                                                 "/api/v2/report_fill/**",
-                                                "/api/v2/userType/**")
+                                                "/api/v2/userType/**",
+                                                "/api/v2/circulation/address_lookup/**")
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
