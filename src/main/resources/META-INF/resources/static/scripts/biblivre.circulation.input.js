@@ -451,6 +451,8 @@ var CirculationInput = new Input({
 		cepInput.prop('disabled', true);
 		lookupButton.addClass('disabled').attr('aria-disabled', 'true');
 
+		// Do not pass a local `complete` option: in jQuery 1.7 it replaces
+		// $.ajaxSetup's complete, so Core.hideLoadingTimedOverlay never runs.
 		$.ajax({
 			url: `${window.location.origin}${this.contextPath || ''}/api/v2/circulation/address_lookup/${encodeURIComponent(normalizedCep)}`,
 			type: 'GET',
@@ -492,11 +494,10 @@ var CirculationInput = new Input({
 					message_level: 'error',
 				});
 			},
-			complete: () => {
-				this._addressLookupInFlight = false;
-				cepInput.prop('disabled', false);
-				lookupButton.removeClass('disabled').removeAttr('aria-disabled');
-			},
+		}).always(() => {
+			this._addressLookupInFlight = false;
+			cepInput.prop('disabled', false);
+			lookupButton.removeClass('disabled').removeAttr('aria-disabled');
 		});
 	},
 });
