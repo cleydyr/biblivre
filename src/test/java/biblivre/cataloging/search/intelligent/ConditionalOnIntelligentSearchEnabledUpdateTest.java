@@ -62,7 +62,9 @@ class ConditionalOnIntelligentSearchEnabledUpdateTest {
             },
             useDefaultFilters = false,
             includeFilters =
-                    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = UpdateService.class),
+                    @ComponentScan.Filter(
+                            type = FilterType.ASSIGNABLE_TYPE,
+                            classes = UpdateService.class),
             nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
     static class IntelligentSearchUpdates {}
 }
