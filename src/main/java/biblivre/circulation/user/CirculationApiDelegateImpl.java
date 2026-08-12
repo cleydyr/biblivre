@@ -9,7 +9,6 @@ import biblivre.reports.generated.api.CirculationApiDelegate;
 import biblivre.reports.generated.api.model.RestAddressLookupEnabled;
 import biblivre.reports.generated.api.model.RestAddressLookupResult;
 import biblivre.reports.generated.api.model.RestUserSearchableField;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ public class CirculationApiDelegateImpl implements CirculationApiDelegate {
     private UserFieldBO userFieldBO;
     private AddressLookupService addressLookupService;
     private CirculationAddressLookupAuth addressLookupAuth;
-    private HttpServletRequest httpServletRequest;
 
     @Override
     public ResponseEntity<List<RestUserSearchableField>> getUserSearchableFields() {
@@ -65,7 +63,7 @@ public class CirculationApiDelegateImpl implements CirculationApiDelegate {
     }
 
     private boolean isAuthorizedForAddressLookup() {
-        return addressLookupAuth.canLookupAddress(httpServletRequest);
+        return addressLookupAuth.canLookupAddress();
     }
 
     private static HttpStatus statusFor(Reason reason) {
@@ -110,10 +108,5 @@ public class CirculationApiDelegateImpl implements CirculationApiDelegate {
     @Autowired
     public void setAddressLookupAuth(CirculationAddressLookupAuth addressLookupAuth) {
         this.addressLookupAuth = addressLookupAuth;
-    }
-
-    @Autowired
-    public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
-        this.httpServletRequest = httpServletRequest;
     }
 }
