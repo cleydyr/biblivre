@@ -13,6 +13,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import messages from '../lang-compiled.json'
 
+import { getContextPath } from './config/context-path.ts'
 import {
   getFlagsmithApiUrl,
   getFlagsmithEnvironmentId,
@@ -25,7 +26,7 @@ const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={getContextPath() || undefined}>
       <FlagsmithProvider
         flagsmith={flagsmith}
         options={{

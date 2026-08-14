@@ -6,10 +6,13 @@ declare global {
   var __FLAGSMITH_ENVIRONMENT_KEY__: string | undefined
   /** Set by Thymeleaf in spa.template from FLAGSMITH_API_URL */
   var __FLAGSMITH_API_URL__: string | undefined
+  /** Set by Thymeleaf in spa.template from the servlet context path */
+  var __CONTEXT_PATH__: string | undefined
 
   interface GlobalThis {
     __FLAGSMITH_ENVIRONMENT_KEY__?: string
     __FLAGSMITH_API_URL__?: string
+    __CONTEXT_PATH__?: string
   }
 }
 

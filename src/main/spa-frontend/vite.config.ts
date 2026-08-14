@@ -4,13 +4,16 @@ import { defineConfig } from 'vite'
 import { formatjsI18nPlugin } from './scripts/formatjs-vite-plugin.ts'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     formatjsI18nPlugin(),
     react({
       jsxImportSource: '@emotion/react',
     }),
   ],
+  // Relative base so hashed chunks resolve next to the script URL under any
+  // servlet context path the container assigns at deploy time.
+  base: command === 'build' ? './' : '/',
   server: {
     port: 5173,
     strictPort: true,
@@ -31,4 +34,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

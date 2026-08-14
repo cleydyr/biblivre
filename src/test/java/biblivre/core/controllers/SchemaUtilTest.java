@@ -39,4 +39,12 @@ class SchemaUtilTest {
                 CONTEXT_PATH + SchemaUtil.SPA_SEARCH_PATH,
                 SchemaUtil.buildSpaSearchHref(CONTEXT_PATH, null));
     }
+
+    @Test
+    void buildSpaStaticBase_prefixesWhateverContextTheContainerProvides() {
+        assertEquals("/catalogo/static/spa", SchemaUtil.buildSpaStaticBase("/catalogo"));
+        assertEquals("/biblivre/static/spa", SchemaUtil.buildSpaStaticBase("/biblivre"));
+        assertEquals("/static/spa", SchemaUtil.buildSpaStaticBase(""));
+        assertEquals("/static/spa", SchemaUtil.buildSpaStaticBase(null));
+    }
 }
