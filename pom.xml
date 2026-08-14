@@ -48,6 +48,7 @@
 		<jackson-2-bom.version>2.21.5</jackson-2-bom.version>
 		<jackson-bom.version>3.1.5</jackson-bom.version>
 		<log4j2.version>2.25.5</log4j2.version>
+		<skip.yarn>false</skip.yarn>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -549,6 +550,9 @@
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
 				<version>2.0.2</version>
+				<configuration>
+					<skip>${skip.yarn}</skip>
+				</configuration>
 				<executions>
 					<execution>
 						<id>install node and corepack spa-frontend</id>

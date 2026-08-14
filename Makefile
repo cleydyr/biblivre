@@ -37,7 +37,7 @@ debug: ## Run Spring Boot application with debug port 5005 exposed
 	@echo "$(GREEN)Starting Spring Boot application with debug on port 5005...$(NC)"
 	@echo "$(YELLOW)Connect your IDE debugger to localhost:5005$(NC)"
 	@set -a; [ -f .env.dev ] && . ./.env.dev; set +a; \
-	export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer -Dskip.yarn
+	export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer -Dskip.yarn=true
 
 debug-suspend: ## Run Spring Boot application with debug port 5005, suspend until debugger connects
 	@$(MAKE) db-start
