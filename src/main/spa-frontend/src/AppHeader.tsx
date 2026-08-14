@@ -178,7 +178,7 @@ function getLegacyLibraryUrl(
   if (schemas.length === 1 && schemas[0].schema === 'single') {
     // TODO: consider the case where single is the single schema activated, but multi-library is enabled
     // In that case, we should return the legacy library url for the single schema
-    return `${window.location.origin}/`
+    return `${BIBLIVRE_ENDPOINT}/`
   }
 
   const schema = schemas.find((s) => s.schema === activeSchemaId)
