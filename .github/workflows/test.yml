@@ -1,8 +1,7 @@
 # CI + Docker publish for Biblivre
 #
-# PRs: build and test.
-# Push to master / tags master-*: build, test, package, then publish Docker image
-# from the packaged artifact (no second Maven run).
+# PRs and pushes: Maven package (includes tests). Push to master / tags master-*
+# then publishes a Docker image from the packaged artifact (no second Maven run).
 
 name: CI
 
@@ -87,13 +86,20 @@ jobs:
           restore-keys: |
             dart-sass-${{ runner.os }}-
 
+      # package already runs tests. `mvn test package` would execute generate-resources
+      # (Yarn/Vite) and compile twice. Pull Testcontainers (pg16, see
+      # SharedPostgreSQLContainer) + smoke DB (pg18) in the background so
+      # surefire/smoke do not wait on docker pull after Maven.
       - name: Build with Maven
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            mvn -B -ntp clean test -Pgithub-ci
-          else
-            mvn -B -ntp clean test package -Pgithub-ci
-          fi
+          docker pull pgvector/pgvector:pg16 >/tmp/docker-pull-pg16.log 2>&1 &
+          docker compose -f docker-compose.dev.yml up -d database >/tmp/docker-compose-smoke-db.log 2>&1 &
+          mvn -B -ntp clean package -Pgithub-ci
+          wait || true
+          echo "---- docker pull pg16 ----"
+          cat /tmp/docker-pull-pg16.log || true
+          echo "---- docker compose smoke db ----"
+          cat /tmp/docker-compose-smoke-db.log || true
 
       # Real process boot (developer Spring profile + docker-compose.dev DB), not
       # @SpringBootTest/test profile — catches missing runtime beans such as
