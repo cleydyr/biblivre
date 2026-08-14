@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Smoke-start Biblivre the same way local "dev mode" does:
-# docker-compose.dev.yml DB + mvn spring-boot:run with the developer Spring profile.
+# Smoke-start Biblivre against docker-compose.dev.yml DB.
+# Prefers the packaged WAR (java -jar) so CI does not pay a second Maven
+# generate-resources/Yarn cycle; falls back to spring-boot:run for local use.
 #
 # Fails on APPLICATION FAILED TO START (the RestClient.Builder class of bug) and
 # succeeds only after the app reports Started and serves HTTP on SMOKE_PORT.
@@ -20,7 +21,8 @@ SMOKE_PORT="${SMOKE_PORT:-18090}"
 SMOKE_TIMEOUT_SECONDS="${SMOKE_TIMEOUT_SECONDS:-180}"
 SKIP_DB_START="${SKIP_DB_START:-0}"
 LOG_FILE="${TMPDIR:-/tmp}/biblivre-smoke-dev.$$.log"
-MVN_PID=""
+SERVER_PID=""
+PACKAGED_WAR="${ROOT_DIR}/target/Biblivre6.war"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -28,17 +30,18 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 stop_server() {
-	if [[ -z "${MVN_PID}" ]]; then
+	if [[ -z "${SERVER_PID}" ]]; then
 		return
 	fi
-	echo -e "${YELLOW}Stopping smoke server (pid ${MVN_PID})...${NC}"
-	# spring-boot:run leaves a Java child; kill only the Maven process tree.
-	if kill -0 "${MVN_PID}" 2>/dev/null; then
-		pkill -TERM -P "${MVN_PID}" 2>/dev/null || true
-		kill -TERM "${MVN_PID}" 2>/dev/null || true
-		wait "${MVN_PID}" 2>/dev/null || true
+	echo -e "${YELLOW}Stopping smoke server (pid ${SERVER_PID})...${NC}"
+	# spring-boot:run leaves a Java child; kill the Maven process tree. java -jar
+	# is a single process — pkill is a no-op when there are no children.
+	if kill -0 "${SERVER_PID}" 2>/dev/null; then
+		pkill -TERM -P "${SERVER_PID}" 2>/dev/null || true
+		kill -TERM "${SERVER_PID}" 2>/dev/null || true
+		wait "${SERVER_PID}" 2>/dev/null || true
 	fi
-	MVN_PID=""
+	SERVER_PID=""
 }
 
 cleanup() {
@@ -97,18 +100,34 @@ start_server() {
 		echo -e "${YELLOW}Skipping preflight port check: neither lsof nor ss is available.${NC}"
 	fi
 
-	echo -e "${GREEN}Starting Spring Boot (developer profile) on port ${SMOKE_PORT}...${NC}"
 	echo -e "${YELLOW}Log: ${LOG_FILE}${NC}"
 
 	# Keep production-default embedding.provider=openai_compatible (application.yml).
 	# Do not activate the test profile — that switches to hashing and hides this smoke.
+	local -a run_arguments=(
+		"--server.port=${SMOKE_PORT}"
+		"--spring.devtools.restart.enabled=false"
+		"--spring.devtools.livereload.enabled=false"
+		"--spring.profiles.active=developer"
+	)
+
+	if [[ -f "${PACKAGED_WAR}" ]]; then
+		echo -e "${GREEN}Starting packaged app on port ${SMOKE_PORT}...${NC}"
+		# shellcheck disable=SC2086
+		java ${MAVEN_OPTS} -jar "${PACKAGED_WAR}" "${run_arguments[@]}" >"${LOG_FILE}" 2>&1 &
+		SERVER_PID=$!
+		return
+	fi
+
+	echo -e "${GREEN}Starting Spring Boot (developer profile) on port ${SMOKE_PORT}...${NC}"
 	mvn -B -ntp spring-boot:run \
 		-Dspring-boot.run.profiles=developer \
-		-Dskip.yarn \
+		-Dskip.yarn=true \
+		-Dopenapi.generator.maven.plugin.skip=true \
 		-Dspring-boot.run.jvmArguments="${MAVEN_OPTS}" \
-		-Dspring-boot.run.arguments="--server.port=${SMOKE_PORT} --spring.devtools.restart.enabled=false --spring.devtools.livereload.enabled=false" \
+		-Dspring-boot.run.arguments="${run_arguments[*]}" \
 		>"${LOG_FILE}" 2>&1 &
-	MVN_PID=$!
+	SERVER_PID=$!
 }
 
 await_started() {
@@ -129,8 +148,8 @@ await_started() {
 			return 0
 		fi
 
-		if ! kill -0 "${MVN_PID}" 2>/dev/null; then
-			echo -e "${RED}Maven/Spring Boot process exited before the app started${NC}"
+		if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
+			echo -e "${RED}Smoke server process exited before the app started${NC}"
 			exit 1
 		fi
 
