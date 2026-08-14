@@ -1,3 +1,5 @@
+import { getLegacyRootUrl } from '../getLegacyLibraryUrl'
+
 import { getStoredSchema } from './schema/storage'
 import { BIBLIVRE_ENDPOINT, DEFAULT_HEADERS } from './constants'
 
@@ -28,7 +30,7 @@ export async function fetchJSONFromLegacyEndpoint({
   action,
   ...otherParams
 }: ParametrizedLegacyEndpointPayloadValues) {
-  const response = await fetch(BIBLIVRE_ENDPOINT, {
+  const response = await fetch(getLegacyRootUrl(BIBLIVRE_ENDPOINT), {
     method: 'POST',
     headers: buildDefaultHeaders(),
     body: new URLSearchParams({
@@ -54,9 +56,12 @@ export async function downloadFromLegacyEndpoint({
     ...otherParams,
   }).toString()
 
-  const response = await fetch(`${BIBLIVRE_ENDPOINT}?${queryParams}`, {
-    headers: buildDefaultHeaders(),
-  })
+  const response = await fetch(
+    `${getLegacyRootUrl(BIBLIVRE_ENDPOINT)}?${queryParams}`,
+    {
+      headers: buildDefaultHeaders(),
+    },
+  )
 
   return {
     blob: await response.blob(),
