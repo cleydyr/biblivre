@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SchemaUtil {
     public static final String SPA_SEARCH_PATH = "/spa/search";
+    public static final String SPA_STATIC_PATH = "/static/spa";
     public static final String SPA_SCHEMA_QUERY_PARAM = "schema";
     public static final String SPA_SHOW_SELECT_SCHEMA_QUERY_PARAM = "showSelectSchema";
 
@@ -72,5 +73,9 @@ public class SchemaUtil {
         }
 
         return href;
+    }
+
+    public static String buildSpaStaticBase(String contextPath) {
+        return StringUtils.defaultString(contextPath) + SPA_STATIC_PATH;
     }
 }

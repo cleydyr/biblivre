@@ -19,6 +19,7 @@ import { useAuthSession, useLegacyLogout } from './api-helpers/login/hooks'
 import { useSchemasList } from './api-helpers/schema/hooks'
 import { useSchemaQueryParams } from './api-helpers/schema/useSchemaQueryParams'
 import LibraryHeading from './components/LibraryHeading'
+import { getLegacyLibraryUrl } from './getLegacyLibraryUrl'
 import messages from './messages'
 import SchemaSelectionModal from './SchemaSelectionModal'
 
@@ -27,7 +28,6 @@ import type { FC } from 'react'
 import type {
   LoggedLoginSessionResponse,
   LoginSessionResponse,
-  SchemaListItem,
 } from './api-helpers/types'
 
 type Props = {
@@ -75,7 +75,13 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
       <EuiHeader>
         <EuiHeaderSection side='left'>
           <EuiHeaderSectionItem>
-            <EuiLink href={getLegacyLibraryUrl(schemas, activeSchemaId)}>
+            <EuiLink
+              href={getLegacyLibraryUrl(
+                schemas,
+                activeSchemaId,
+                BIBLIVRE_ENDPOINT,
+              )}
+            >
               <EuiFlexGroup alignItems='center' gutterSize='s'>
                 <EuiIcon aria-hidden type='chevronSingleLeft' />
                 <FormattedMessage
@@ -165,29 +171,6 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
       ) : null}
     </Fragment>
   )
-}
-
-function getLegacyLibraryUrl(
-  schemas: SchemaListItem[] | undefined,
-  activeSchemaId: string | null,
-): string | undefined {
-  if (!schemas || !activeSchemaId) {
-    return undefined
-  }
-
-  if (schemas.length === 1 && schemas[0].schema === 'single') {
-    // TODO: consider the case where single is the single schema activated, but multi-library is enabled
-    // In that case, we should return the legacy library url for the single schema
-    return `${window.location.origin}/`
-  }
-
-  const schema = schemas.find((s) => s.schema === activeSchemaId)
-
-  if (!schema) {
-    return undefined
-  }
-
-  return `${BIBLIVRE_ENDPOINT}/${schema.schema}`
 }
 
 export default AppHeader
