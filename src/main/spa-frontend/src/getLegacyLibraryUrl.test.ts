@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getLegacyLibraryUrl } from './getLegacyLibraryUrl'
+import { getLegacyLibraryUrl, getLegacyRootUrl } from './getLegacyLibraryUrl'
 
 import type { SchemaListItem } from './api-helpers/types'
 
@@ -11,16 +11,33 @@ const publicSchema: SchemaListItem = {
   name: 'Biblioteca Pública',
 }
 
-describe('getLegacyLibraryUrl', () => {
-  it('returns undefined when schemas or the active schema are missing', () => {
-    expect(getLegacyLibraryUrl(undefined, 'single', endpoint)).toBeUndefined()
-    expect(getLegacyLibraryUrl([singleSchema], null, endpoint)).toBeUndefined()
+describe('getLegacyRootUrl', () => {
+  it('adds a trailing slash so POST does not bounce off the context path', () => {
+    expect(getLegacyRootUrl(endpoint)).toBe(`${endpoint}/`)
+    expect(getLegacyRootUrl('http://library.example')).toBe(
+      'http://library.example/',
+    )
   })
 
-  it('returns undefined when the active schema is not in the list', () => {
-    expect(
-      getLegacyLibraryUrl([singleSchema], 'missing', endpoint),
-    ).toBeUndefined()
+  it('keeps a trailing slash that is already present', () => {
+    expect(getLegacyRootUrl(`${endpoint}/`)).toBe(`${endpoint}/`)
+  })
+})
+
+describe('getLegacyLibraryUrl', () => {
+  it('falls back to the classic root when schemas or the active schema are missing', () => {
+    expect(getLegacyLibraryUrl(undefined, 'single', endpoint)).toBe(
+      `${endpoint}/`,
+    )
+    expect(getLegacyLibraryUrl([singleSchema], null, endpoint)).toBe(
+      `${endpoint}/`,
+    )
+  })
+
+  it('falls back to the classic root when the active schema is not in the list', () => {
+    expect(getLegacyLibraryUrl([singleSchema], 'missing', endpoint)).toBe(
+      `${endpoint}/`,
+    )
   })
 
   it('points at the single schema path when it is the only library, including under multi-library', () => {
