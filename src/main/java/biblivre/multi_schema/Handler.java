@@ -25,6 +25,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.controllers.SchemaUtil;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
@@ -128,7 +129,8 @@ public class Handler extends AbstractHandler {
     public void list(ExtendedRequest request, ExtendedResponse response) {
         try {
             JSONArray array = new JSONArray();
-            for (SchemaDTO dto : schemaBO.getSchemas()) {
+            String boundSchema = SchemaUtil.extractBoundSchema(request);
+            for (SchemaDTO dto : SchemaUtil.visibleSchemas(boundSchema, schemaBO.getSchemas())) {
                 if (dto.isDisabled()) {
                     continue;
                 }

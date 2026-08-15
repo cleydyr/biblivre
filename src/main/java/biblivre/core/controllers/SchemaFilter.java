@@ -26,7 +26,9 @@ import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchemaFilter implements Filter {
@@ -37,7 +39,20 @@ public class SchemaFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String schema = SchemaUtil.extractSchema(request);
+        String boundSchema = SchemaUtil.extractBoundSchema(request);
+        String pathSchema = SchemaUtil.extractPathSchema(request);
+
+        if (StringUtils.isNotBlank(boundSchema)
+                && (schemaBO.isNotLoaded(boundSchema)
+                        || SchemaUtil.isForbiddenPathForBoundSchema(boundSchema, pathSchema))) {
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        String schema =
+                StringUtils.isNotBlank(boundSchema)
+                        ? boundSchema
+                        : SchemaUtil.extractSchema(request);
 
         if (schemaBO.isNotLoaded(schema)) {
             schema =
@@ -50,7 +65,8 @@ public class SchemaFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        request.setAttribute("schemas", schemaBO.getSchemas());
+        request.setAttribute(
+                "schemas", SchemaUtil.visibleSchemas(boundSchema, schemaBO.getSchemas()));
 
         request.setAttribute("configurations", configurationBO);
 
