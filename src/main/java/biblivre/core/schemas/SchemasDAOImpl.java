@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.PGConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -85,15 +84,13 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
                     boolean success = pst.executeUpdate() > 0;
 
                     if (success) {
-                        PGConnection unwrap = con.unwrap(PGConnection.class);
+                        String dropSql = "DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;";
 
-                        String dropSql = "DROP SCHEMA ? CASCADE;";
+                        try (Statement dropStatement = con.createStatement()) {
+                            dropStatement.executeUpdate(dropSql);
+                        }
 
-                        PreparedStatement dropSt = con.prepareStatement(dropSql);
-
-                        dropSt.setString(1, dto.getSchema());
-
-                        dropSt.executeUpdate();
+                        schemas = null;
                     }
 
                     return success;
