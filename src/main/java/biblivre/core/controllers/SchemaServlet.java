@@ -97,9 +97,7 @@ public class SchemaServlet extends HttpServlet {
         // starts with /api
         if (request.getServletPath().startsWith("/api")
                 || request.getServletPath().startsWith("/spa")) {
-            RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
-
-            rd.forward(request, response);
+            forwardToDispatcherServlet(request, response);
 
             return;
         }
@@ -280,8 +278,6 @@ public class SchemaServlet extends HttpServlet {
         }
 
         // Other static files
-        RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
-
         ExtendedRequest wrapped =
                 new ExtendedRequest(request, requestParserHelper, languageBO, translationBO) {
 
@@ -291,7 +287,20 @@ public class SchemaServlet extends HttpServlet {
                     }
                 };
 
-        rd.forward(wrapped, response);
+        forwardToDispatcherServlet(wrapped, response);
+    }
+
+    private void forwardToDispatcherServlet(
+            HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher requestDispatcher =
+                this.getServletContext().getNamedDispatcher("dispatcherServlet");
+
+        if (requestDispatcher == null) {
+            throw new ServletException("Named dispatcher 'dispatcherServlet' is not available");
+        }
+
+        requestDispatcher.forward(request, response);
     }
 
     private String servletContextAwareStaticPath(String path) {
@@ -344,5 +353,10 @@ public class SchemaServlet extends HttpServlet {
     @Autowired
     public void setConfigurationBO(ConfigurationBO configurationBO) {
         this.configurationBO = configurationBO;
+    }
+
+    @Autowired
+    public void setRequestParserHelper(RequestParserHelper requestParserHelper) {
+        this.requestParserHelper = requestParserHelper;
     }
 }
