@@ -75,7 +75,7 @@ public class CorsFilter implements Filter {
         } else {
             httpResponse.setHeader(
                     "Access-Control-Allow-Headers",
-                    "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, X-Biblivre-Schema");
+                    "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, X-Biblivre-Schema, X-Biblivre-Bound-Schema");
         }
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
