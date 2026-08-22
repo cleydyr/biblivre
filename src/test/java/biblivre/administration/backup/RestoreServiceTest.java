@@ -3,8 +3,10 @@ package biblivre.administration.backup;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +34,44 @@ class RestoreServiceTest {
         assertNotNull(
                 setter.getAnnotation(Autowired.class),
                 "DigitalMediaDAO must be Spring-injected for media restore during backup restore");
+    }
+
+    @Test
+    void processRestore_skipsPsqlRestrictMetaCommandsAndExecutesFollowingSql() throws Exception {
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        Statement statement = mock(Statement.class);
+
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+
+        RestoreService service = new RestoreService();
+        service.setDataSource(dataSource);
+
+        Path dump = tempDir.resolve("global.schema.b5b");
+        Files.writeString(
+                dump,
+                """
+                -- PostgreSQL database dump
+                --
+
+                \\restrict Dpg1CK9sasGyNv4DJoJAVOrQ7NnPCsVnFuYfKOlq9UVNnBQ9DWnYhnnxt8dbmhg
+
+                SET statement_timeout = 0;
+
+                --
+                -- PostgreSQL database dump complete
+                --
+
+                \\unrestrict Dpg1CK9sasGyNv4DJoJAVOrQ7NnPCsVnFuYfKOlq9UVNnBQ9DWnYhnnxt8dbmhg
+                """);
+
+        State.start();
+
+        service.processRestore(dump.toFile());
+
+        verify(statement).execute("SET statement_timeout = 0;");
+        verify(statement, never()).execute(argThat(sql -> sql.startsWith("\\")));
     }
 
     @Test

@@ -82,17 +82,20 @@ public class RestoreService {
                     new PostgreSQLStatementIterable(sourceIterator);
 
             for (String statement : postgreSQLStatementIterable) {
-                if (isFunctionOrTriggerRelated(statement)) {
+                String executableStatement = stripPsqlMetaCommands(statement);
+
+                if (executableStatement.isBlank()
+                        || isFunctionOrTriggerRelated(executableStatement)) {
                     continue;
                 }
 
-                if (statement.startsWith("COPY ")) {
-                    executePostgresCopyCommand(statement, sourceIterator);
+                if (executableStatement.startsWith("COPY ")) {
+                    executePostgresCopyCommand(executableStatement, sourceIterator);
 
                     continue;
                 }
 
-                writeLine(statement);
+                writeLine(executableStatement);
             }
         } catch (IOException e) {
             throw new RestoreException(e);
@@ -101,6 +104,22 @@ public class RestoreService {
 
     public static boolean isFunctionOrTriggerRelated(String statement) {
         return Arrays.stream(FILTERED_OUT_STATEMENT_PREFIXES).anyMatch(statement::startsWith);
+    }
+
+    static String stripPsqlMetaCommands(String statement) {
+        String remaining = statement;
+
+        while (remaining.startsWith("\\")) {
+            String stripped = remaining.replaceFirst("^\\\\[A-Za-z.]+(?:\\s+\\S+)?\\s*", "");
+
+            if (stripped.equals(remaining)) {
+                return "";
+            }
+
+            remaining = stripped;
+        }
+
+        return remaining;
     }
 
     private void executePostgresCopyCommand(String copyCommand, Iterator<Character> sourceIterator)
@@ -337,13 +356,19 @@ public class RestoreService {
             Map<Long, Long> oidMap = new HashMap<>();
 
             for (String statement : postgreSQLStatementIterable) {
-                if (statement.startsWith("COPY ")) {
-                    executePostgresCopyCommand(statement, sourceIterator);
+                String executableStatement = stripPsqlMetaCommands(statement);
+
+                if (executableStatement.isBlank()) {
+                    continue;
+                }
+
+                if (executableStatement.startsWith("COPY ")) {
+                    executePostgresCopyCommand(executableStatement, sourceIterator);
 
                     continue;
                 }
 
-                processLOLine(statement, oidMap, sourceIterator);
+                processLOLine(executableStatement, oidMap, sourceIterator);
             }
 
             setPGSearchPath(schema);
