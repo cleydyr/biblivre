@@ -150,6 +150,7 @@ public class Handler extends AbstractHandler {
                 array.put(o);
             }
             put("data", array);
+            put("bound", StringUtils.isNotBlank(boundSchema));
             setMessage(ActionResult.SUCCESS);
         } catch (JSONException e) {
             setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);

@@ -49,7 +49,9 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
 
   const { data: session, isPending: isSessionPending } = useAuthSession()
   const { mutate: logout, isPending: isLogoutPending } = useLegacyLogout()
-  const { data: schemas, isPending: isSchemasPending } = useSchemasList()
+  const { data: schemasList, isPending: isSchemasPending } = useSchemasList()
+  const schemas = schemasList?.schemas
+  const isBoundSchema = schemasList?.bound ?? false
 
   const [isSchemaModalOpen, setIsSchemaModalOpen] = useState(false)
 
@@ -80,6 +82,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
                 schemas,
                 activeSchemaId,
                 BIBLIVRE_ENDPOINT,
+                isBoundSchema,
               )}
             >
               <EuiFlexGroup alignItems='center' gutterSize='s'>

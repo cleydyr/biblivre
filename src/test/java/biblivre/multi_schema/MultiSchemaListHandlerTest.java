@@ -1,6 +1,8 @@
 package biblivre.multi_schema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +59,7 @@ class MultiSchemaListHandlerTest {
         handler.list(request, mock(ExtendedResponse.class));
 
         assertEquals(Set.of("temp", "other"), listedSchemas());
+        assertFalse(handlerContext.getJson().getBoolean("bound"));
     }
 
     @Test
@@ -67,6 +70,7 @@ class MultiSchemaListHandlerTest {
         handler.list(request, mock(ExtendedResponse.class));
 
         assertEquals(Set.of("temp"), listedSchemas());
+        assertTrue(handlerContext.getJson().getBoolean("bound"));
     }
 
     private Set<String> listedSchemas() {
