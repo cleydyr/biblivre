@@ -7,8 +7,9 @@
 # Variables
 MAVEN_OPTS := -XX:+UnlockExperimentalVMOptions --enable-preview
 DEBUG_OPTS := -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-# spring-boot:run does not need tests; skip testCompile so JDT stub .class files
-# cannot fail the run (see maven-compiler-plugin useIncrementalCompilation).
+# spring-boot:run does not need tests. Skip testCompile (JDT stubs in
+# target/test-classes). Main stubs are stripped in process-resources
+# (see maven-antrun-plugin delete-jdt-stubs).
 SPRING_BOOT_RUN_ARGS := -Dmaven.test.skip=true
 DOCKER_COMPOSE_FILE := docker-compose.yml
 E2E_COMPOSE_FILE := $(CURDIR)/docker-compose.e2e.yml
