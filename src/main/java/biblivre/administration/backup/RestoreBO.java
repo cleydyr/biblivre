@@ -37,6 +37,7 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -173,39 +174,98 @@ public class RestoreBO {
 
         State.writeLog("Starting psql");
 
-        restoreService.processSchemaRenames(context.getPreRenameSchemas());
+        boolean dataRestoreCompleted = false;
 
-        String extension = getExtension(dto);
+        try {
+            restoreService.processSchemaRenames(context.getPreRenameSchemas());
 
-        if (restoreSchemas.containsKey(globalSchema)) {
-            processGlobalSchema(explodedBackupDirectory, extension);
-        }
+            String extension = getExtension(dto);
 
-        for (String schema : restoreSchemas.keySet()) {
-            if (globalSchema.equals(schema)) {
-                continue;
+            if (restoreSchemas.containsKey(globalSchema)) {
+                processGlobalSchema(explodedBackupDirectory, extension);
             }
 
-            withSchema(
-                    schema,
-                    () ->
-                            restoreService.processSchemaRestores(
-                                    explodedBackupDirectory, extension, schema));
+            for (String schema : restoreSchemas.keySet()) {
+                if (globalSchema.equals(schema)) {
+                    continue;
+                }
+
+                withSchema(
+                        schema,
+                        () ->
+                                restoreService.processSchemaRestores(
+                                        explodedBackupDirectory, extension, schema));
+            }
+
+            dataRestoreCompleted = true;
+
+            restoreService.processSchemaRenames(context.getPostRenameSchemas());
+
+            restoreService.processSchemaRenames(context.getRestoreRenamedSchemas());
+
+            postProcessDeletes(context.getDeleteSchemas());
+
+            postProcessRenames(dto, restoreSchemas);
+
+            restoreService.removeNonExistingPGSchemaFromSchemasTable();
+        } catch (Exception exception) {
+            if (!dataRestoreCompleted) {
+                revertTemporarySchemaNames(context, restoreSchemas, exception);
+            }
+
+            throw toRestoreException(exception);
         }
-
-        restoreService.processSchemaRenames(context.getPostRenameSchemas());
-
-        restoreService.processSchemaRenames(context.getRestoreRenamedSchemas());
-
-        postProcessDeletes(context.getDeleteSchemas());
-
-        postProcessRenames(dto, restoreSchemas);
-
-        restoreService.removeNonExistingPGSchemaFromSchemasTable();
 
         logger.info("===== Restoring backup finished =====");
 
         return true;
+    }
+
+    private void revertTemporarySchemaNames(
+            RestoreContextHelper context,
+            Map<String, String> restoreSchemas,
+            Exception restoreFailure) {
+        try {
+            State.writeLog("Restore failed; reverting temporary schema names");
+
+            for (String sourceSchemaName : restoreSchemas.keySet()) {
+                try {
+                    restoreService.dropSchemaIfExists(sourceSchemaName);
+                } catch (Exception dropException) {
+                    logger.error(
+                            "Failed to drop partial schema {} after restore failure",
+                            sourceSchemaName,
+                            dropException);
+                    restoreFailure.addSuppressed(dropException);
+                }
+            }
+
+            Map<String, String> reverseRenames = new LinkedHashMap<>();
+
+            context.getPreRenameSchemas()
+                    .forEach(
+                            (originalSchemaName, temporarySchemaName) ->
+                                    reverseRenames.put(temporarySchemaName, originalSchemaName));
+
+            restoreService.processSchemaRenames(reverseRenames);
+        } catch (Exception rollbackException) {
+            logger.error(
+                    "Failed to revert temporary schema names after restore failure",
+                    rollbackException);
+            restoreFailure.addSuppressed(rollbackException);
+        }
+    }
+
+    private static RestoreException toRestoreException(Exception exception) {
+        if (exception instanceof RestoreException restoreException) {
+            return restoreException;
+        }
+
+        if (exception.getCause() instanceof RestoreException restoreException) {
+            return restoreException;
+        }
+
+        return new RestoreException(exception);
     }
 
     private void processGlobalSchema(File directory, String extension) throws RestoreException {
