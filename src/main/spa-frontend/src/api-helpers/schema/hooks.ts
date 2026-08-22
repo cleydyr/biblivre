@@ -8,6 +8,9 @@ export function useSchemasList() {
   return useQuery({
     queryKey: SCHEMAS_LIST_QUERY_KEY,
     queryFn: fetchSchemasList,
-    select: (data) => data.data,
+    select: (response) => ({
+      schemas: response.data,
+      bound: Boolean(response.bound),
+    }),
   })
 }

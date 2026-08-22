@@ -35,6 +35,7 @@ export type SchemaListItem = {
 
 export type SchemasListResponse = SuccessfulResponse & {
   data: SchemaListItem[]
+  bound?: boolean
 }
 
 /** Session probe from `login.session`; extends the usual JSON success payload. */

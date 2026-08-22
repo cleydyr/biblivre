@@ -51,4 +51,18 @@ describe('getLegacyLibraryUrl', () => {
       getLegacyLibraryUrl([singleSchema, publicSchema], 'public', endpoint),
     ).toBe(`${endpoint}/public`)
   })
+
+  it('uses the classic root when the host is bound to a schema', () => {
+    expect(getLegacyLibraryUrl([singleSchema], 'single', endpoint, true)).toBe(
+      `${endpoint}/`,
+    )
+    expect(
+      getLegacyLibraryUrl(
+        [singleSchema, publicSchema],
+        'public',
+        endpoint,
+        true,
+      ),
+    ).toBe(`${endpoint}/`)
+  })
 })

@@ -8,10 +8,11 @@ export function getLegacyLibraryUrl(
   schemas: SchemaListItem[] | undefined,
   activeSchemaId: string | null,
   endpoint: string,
+  isBoundSchema = false,
 ): string {
   const rootUrl = getLegacyRootUrl(endpoint)
 
-  if (!schemas || !activeSchemaId) {
+  if (isBoundSchema || !schemas || !activeSchemaId) {
     return rootUrl
   }
 
