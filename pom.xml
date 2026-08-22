@@ -396,6 +396,10 @@
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+					<!-- Cursor/JDT writes stub .class files into target/classes while OpenAPI
+						generate-sources is mid-run. Incremental compile then treats those stubs
+						as up to date and testCompile fails with "class file for X not found". -->
+					<useIncrementalCompilation>false</useIncrementalCompilation>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>com.google.errorprone</groupId>
