@@ -7,6 +7,9 @@
 # Variables
 MAVEN_OPTS := -XX:+UnlockExperimentalVMOptions --enable-preview
 DEBUG_OPTS := -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+# spring-boot:run does not need tests; skip testCompile so JDT stub .class files
+# cannot fail the run (see maven-compiler-plugin useIncrementalCompilation).
+SPRING_BOOT_RUN_ARGS := -Dmaven.test.skip=true
 DOCKER_COMPOSE_FILE := docker-compose.yml
 E2E_COMPOSE_FILE := $(CURDIR)/docker-compose.e2e.yml
 E2E_BASE_URL := http://localhost:8090
@@ -30,21 +33,21 @@ dev: ## Run Spring Boot application with hot reload
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with hot reload...$(NC)"
 	@set -a; [ -f .env.dev ] && . ./.env.dev; set +a; \
-	export MAVEN_OPTS="$(MAVEN_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	export MAVEN_OPTS="$(MAVEN_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer $(SPRING_BOOT_RUN_ARGS)
 
 debug: ## Run Spring Boot application with debug port 5005 exposed
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with debug on port 5005...$(NC)"
 	@echo "$(YELLOW)Connect your IDE debugger to localhost:5005$(NC)"
 	@set -a; [ -f .env.dev ] && . ./.env.dev; set +a; \
-	export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer -Dskip.yarn=true
+	export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer -Dskip.yarn=true $(SPRING_BOOT_RUN_ARGS)
 
 debug-suspend: ## Run Spring Boot application with debug port 5005, suspend until debugger connects
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with debug (suspended) on port 5005...$(NC)"
 	@echo "$(YELLOW)Application will wait for debugger connection on localhost:5005$(NC)"
 	@set -a; [ -f .env.dev ] && . ./.env.dev; set +a; \
-	export MAVEN_OPTS="$(MAVEN_OPTS) -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	export MAVEN_OPTS="$(MAVEN_OPTS) -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer $(SPRING_BOOT_RUN_ARGS)
 
 # Build Commands
 build: ## Clean build the entire project
@@ -176,7 +179,7 @@ dev-spa: ## Run backend + spa-frontend Vite HMR together
 	fi; \
 	trap 'if [ "$$SPA_STARTED_BY_US" = "1" ]; then kill $$SPA_PID 2>/dev/null || true; fi' EXIT INT TERM; \
 	export MAVEN_OPTS="$(MAVEN_OPTS)" BIBLIVRE_CORS_ENABLED=true BIBLIVRE_VITE_DEV_SERVER; \
-	mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	mvn spring-boot:run -Dspring-boot.run.profiles=developer $(SPRING_BOOT_RUN_ARGS)
 
 frontend-setup: spa-setup ## Alias for spa-setup
 
@@ -287,4 +290,4 @@ prod: ## Run Spring Boot application in production mode (no CORS)
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application in production mode...$(NC)"
 	@echo "$(YELLOW)CORS is disabled for security$(NC)"
-	@export MAVEN_OPTS="$(MAVEN_OPTS)" && mvn spring-boot:run
+	@export MAVEN_OPTS="$(MAVEN_OPTS)" && mvn spring-boot:run $(SPRING_BOOT_RUN_ARGS)
