@@ -100,4 +100,21 @@ class RestoreServiceTest {
         verify(statement)
                 .execute(contains("UPDATE digital_media SET blob = '42' WHERE id = '123'"));
     }
+
+    @Test
+    void dropSchemaIfExists_executesConditionalDrop() throws Exception {
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        Statement statement = mock(Statement.class);
+
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+
+        RestoreService service = new RestoreService();
+        service.setDataSource(dataSource);
+
+        service.dropSchemaIfExists("single");
+
+        verify(statement).execute(contains("DROP SCHEMA IF EXISTS \"single\" CASCADE"));
+    }
 }
