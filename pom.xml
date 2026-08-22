@@ -393,6 +393,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>recompile-after-jdt-stub-cleanup</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
@@ -614,6 +623,45 @@
 					</dependency>
 				</dependencies>
 				<executions>
+					<execution>
+						<id>delete-jdt-stubs</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<!-- Cursor/JDT writes "proceed with errors" stubs into
+									target/classes (default-package descriptors). Maven then
+									skips those sources because the stub .class is newer. -->
+								<delete verbose="true">
+									<fileset dir="${project.build.outputDirectory}"
+											erroronmissingdir="false">
+										<include name="**/*.class"/>
+										<contains text="Unresolved compilation"/>
+									</fileset>
+								</delete>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>delete-jdt-stubs-after-compile</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete verbose="true">
+									<fileset dir="${project.build.outputDirectory}"
+											erroronmissingdir="false">
+										<include name="**/*.class"/>
+										<contains text="Unresolved compilation"/>
+									</fileset>
+								</delete>
+							</target>
+						</configuration>
+					</execution>
 					<execution>
 						<id>update-spa-template</id>
 						<phase>generate-resources</phase>
