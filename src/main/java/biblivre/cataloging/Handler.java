@@ -36,16 +36,17 @@ import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,13 +56,9 @@ public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
     private ImportBO importBO;
 
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 
         MemoryFile file = request.getFile("file");
-
-        InputStream memoryFileInputStream = file.getInputStream();
 
         Path tmpFile;
 

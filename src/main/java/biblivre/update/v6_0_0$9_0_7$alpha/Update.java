@@ -56,7 +56,7 @@ public class Update implements UpdateService {
                             + " ALTER COLUMN id SET DEFAULT nextval('"
                             + qualifiedSequence
                             + "')");
-            try (ResultSet ignored =
+            try (ResultSet _ =
                     statement.executeQuery(
                             "SELECT setval('"
                                     + qualifiedSequence

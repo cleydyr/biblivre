@@ -8,7 +8,6 @@ import biblivre.TestDatasourceConfiguration;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.ConfigurationBO;
 import biblivre.login.LoginBO;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 class MultiSchemaHandlerTest extends AbstractContainerDatabaseTest {
     @Autowired LoginBO loginBO;
-    @Autowired private ConfigurationBO configurationBO;
     @Autowired private Handler multiSchemaHandler;
 
     @Test

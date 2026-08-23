@@ -383,9 +383,7 @@ public class MarcUtils {
     }
 
     static class SubfieldIterable implements Iterable<String> {
-        private String next;
         private final char subfieldSplitter;
-        private boolean hasNext;
         private final String field;
 
         private int pos;

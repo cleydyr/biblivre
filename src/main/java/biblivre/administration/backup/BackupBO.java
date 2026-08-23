@@ -360,7 +360,6 @@ public class BackupBO extends AbstractBO {
         boolean isSchemaOnly = false;
         boolean isDataOnly = true;
         String excludeTablePattern = schema + ".digital_media";
-        String includeTablePattern = null;
 
         dump(dto, schema, dataBackup, isSchemaOnly, isDataOnly, excludeTablePattern, null);
     }
@@ -369,8 +368,6 @@ public class BackupBO extends AbstractBO {
         File schemaBackup = new File(tmpDir, schema + ".schema.b5b");
         boolean isSchemaOnly = true;
         boolean isDataOnly = false;
-        String excludeTablePattern = null;
-        String includeTablePattern = null;
 
         dump(dto, schema, schemaBackup, isSchemaOnly, isDataOnly, null, null);
     }
@@ -379,7 +376,6 @@ public class BackupBO extends AbstractBO {
         File mediaBackup = new File(tmpDir, schema + ".media.b5b");
         boolean isSchemaOnly = false;
         boolean isDataOnly = true;
-        String excludeTablePattern = null;
         String includeTablePattern = schema + ".digital_media";
 
         dump(dto, schema, mediaBackup, isSchemaOnly, isDataOnly, null, includeTablePattern);

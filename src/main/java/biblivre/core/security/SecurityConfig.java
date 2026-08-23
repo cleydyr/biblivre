@@ -1,7 +1,5 @@
 package biblivre.core.security;
 
-import biblivre.login.LoginBO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired private LoginBO loginBO;
-
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         // Allow access to static resources

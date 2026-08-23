@@ -321,10 +321,6 @@ public class RestoreBO {
         return new JSONObject(writer.toString());
     }
 
-    private static String buildUpdateDigitalMediaQuery(long oid, long newOid) {
-        return "UPDATE digital_media SET blob = '%d' WHERE blob = '%d';".formatted(newOid, oid);
-    }
-
     private static void countRestoreSteps(RestoreOperation dto, File tmpDir, String extension)
             throws RestoreException {
         long steps = 0;

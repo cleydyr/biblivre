@@ -1,20 +1,13 @@
 package biblivre.update.v6_0_0$5_0_0$alpha;
 
-import biblivre.cataloging.RecordDAO;
-import biblivre.cataloging.holding.HoldingDAO;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
 import java.sql.Statement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Update implements UpdateService {
-
-    @Autowired private RecordDAO recordDAO;
-
-    @Autowired private HoldingDAO holdingDAO;
 
     @Override
     public void doUpdate(Connection connection) {
