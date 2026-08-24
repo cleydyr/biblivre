@@ -133,6 +133,8 @@ jobs:
       BIBLIVRE_BASE_URL: http://localhost:8090
       CI: "1"
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/e2e/.cache/ms-playwright
+      # Yarn Berry dropped --ignore-scripts; this is the equivalent (githubactions:S6505).
+      YARN_ENABLE_SCRIPTS: "false"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -151,24 +153,24 @@ jobs:
         with:
           node-version: "24.14.1"
 
-      - name: Enable Yarn classic
+      - name: Enable Yarn Berry
         run: |
           corepack enable
-          corepack prepare yarn@1.22.22 --activate
+          corepack prepare yarn@4.18.0 --activate
 
       - name: Cache Yarn and e2e node_modules
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
-            ~/.cache/yarn
+            ~/.yarn/berry/cache
             e2e/node_modules
-          key: e2e-yarn-${{ runner.os }}-node-24.14.1-${{ hashFiles('e2e/yarn.lock') }}
+          key: e2e-yarn-${{ runner.os }}-node-24.14.1-${{ hashFiles('e2e/yarn.lock', 'e2e/.yarnrc.yml') }}
           restore-keys: |
             e2e-yarn-${{ runner.os }}-node-24.14.1-
 
       - name: Install e2e dependencies
         working-directory: e2e
-        run: yarn install --frozen-lockfile
+        run: YARN_ENABLE_SCRIPTS=false yarn install --immutable
 
       - name: Resolve Playwright version
         id: playwright
@@ -186,7 +188,7 @@ jobs:
       - name: Install Playwright Chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: e2e
-        run: yarn playwright install --with-deps chromium
+        run: YARN_ENABLE_SCRIPTS=false yarn playwright install --with-deps chromium
 
       - name: Install Playwright OS dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
