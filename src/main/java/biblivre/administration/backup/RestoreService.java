@@ -228,6 +228,14 @@ public class RestoreService {
                         .formatted(schemaToBeDeleted));
     }
 
+    public void dropSchemaIfExists(String schemaToBeDeleted) throws RestoreException {
+        writeLine(
+                """
+                        DROP SCHEMA IF EXISTS "%s" CASCADE
+                        """
+                        .formatted(schemaToBeDeleted));
+    }
+
     public void deleteAllDigitalMedia(String schemaToBeDeleted) throws RestoreException {
         writeLine(
                 """

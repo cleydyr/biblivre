@@ -94,7 +94,7 @@ e2e-run: ## Start Biblivre in Docker and run Playwright e2e tests
 	$(DOCKER_COMPOSE) -f $(E2E_COMPOSE_FILE) up -d --pull missing; \
 	$(MAKE) e2e-wait; \
 	echo "$(GREEN)Running Playwright e2e tests...$(NC)"; \
-	( cd e2e && yarn install --frozen-lockfile && yarn install:browsers && \
+	( cd e2e && yarn install --immutable && yarn install:browsers && \
 	BIBLIVRE_BASE_URL=$(E2E_BASE_URL) CI=1 yarn test )
 
 e2e-up: e2e-build ## Start Biblivre e2e Docker environment (without running tests)
@@ -123,7 +123,7 @@ e2e-wait: ## Wait until the e2e Biblivre instance is ready
 
 e2e-test: ## Run Playwright e2e tests against a running e2e environment
 	@echo "$(GREEN)Running Playwright e2e tests...$(NC)"
-	@cd e2e && yarn install --frozen-lockfile && yarn install:browsers && \
+	@cd e2e && yarn install --immutable && yarn install:browsers && \
 	BIBLIVRE_BASE_URL=$(E2E_BASE_URL) CI=1 yarn test
 
 # Code Quality Commands
