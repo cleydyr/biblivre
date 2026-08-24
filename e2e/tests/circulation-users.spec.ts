@@ -187,10 +187,32 @@ test.describe('Circulation users', () => {
   test('searches users with advanced search and created_start filter', async ({
     page,
   }) => {
+    const timestamp = Date.now()
+    const userName = `E2E Search ${timestamp}`
+    const userEmail = `e2e-search-${timestamp}@example.com`
     const createdStartDate = '01/01/2020'
 
     await login(page)
     await navigateToCirculationUsers(page)
+
+    await page.getByRole('button', { name: 'Novo usuário' }).click()
+    await expect(
+      page.getByRole('heading', { name: 'Novo usuário', level: 2 }),
+    ).toBeVisible()
+
+    await page.getByLabel('Nome').fill(userName)
+    await page.getByLabel('Email').fill(userEmail)
+
+    const createResponse = page.waitForResponse(
+      isCirculationUserAction('save'),
+    )
+
+    await page.getByRole('button', { name: 'Salvar', exact: true }).click()
+    await createResponse
+    await expect(
+      page.getByRole('heading', { name: 'Detalhes do usuário', level: 2 }),
+    ).toBeVisible()
+    await page.keyboard.press('Escape')
 
     await page.getByRole('switch', { name: 'Pesquisa avançada' }).click()
     await expect(page.getByText('Cadastrado entre')).toBeVisible()
@@ -226,6 +248,6 @@ test.describe('Circulation users', () => {
     await expect(
       page.getByText('Resultados da busca de usuários'),
     ).toBeVisible()
-    await expect(page.locator('tbody tr').first()).toBeVisible()
+    await expect(page.locator('tr', { hasText: userName })).toBeVisible()
   })
 })
