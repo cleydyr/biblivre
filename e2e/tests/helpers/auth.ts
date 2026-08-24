@@ -21,6 +21,20 @@ export async function login(page: Page): Promise<void> {
   )
 }
 
+export async function navigateToClassicCirculationUsers(
+  page: Page,
+): Promise<void> {
+  const schema = await page.evaluate(
+    (storageKey) => localStorage.getItem(storageKey),
+    SCHEMA_STORAGE_KEY,
+  )
+
+  expect(schema).toBeTruthy()
+
+  await page.goto(`/${schema}/?action=circulation_user`)
+  await expect(page.locator('#circulation_user')).toBeVisible()
+}
+
 export async function navigateToCirculationUsers(page: Page): Promise<void> {
   const circulationNav = page.getByRole('button', { name: 'Circulação' })
 
