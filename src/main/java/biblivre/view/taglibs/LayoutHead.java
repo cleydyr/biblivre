@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import java.io.Serial;
@@ -44,8 +44,7 @@ public class LayoutHead extends TagSupport {
     }
 
     private void init() {
-        HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
-        this.schema = (String) request.getAttribute("schema");
+        this.schema = SchemaThreadLocal.get();
     }
 
     @Override

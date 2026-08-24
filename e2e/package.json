@@ -1,6 +1,7 @@
 {
   "name": "biblivre-e2e",
   "private": true,
+  "packageManager": "yarn@4.18.0",
   "type": "module",
   "scripts": {
     "test": "playwright test",
