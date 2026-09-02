@@ -74,6 +74,6 @@
     "vitest": "4.1.10"
   },
   "resolutions": {
-    "minimatch@^3.1.2": "3.1.5"
+    "minimatch@^3.1.2": "10.2.6"
   }
 }
