@@ -21,7 +21,6 @@ package biblivre.core.configurations;
 
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +34,7 @@ import org.springframework.stereotype.Component;
 public class ConfigurationBO {
     private ConfigurationsDAO configurationsDAO;
 
-    private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationBO.class);
 
     public String getString(String key) {
         return getValue(key);
