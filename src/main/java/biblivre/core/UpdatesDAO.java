@@ -20,7 +20,6 @@
 package biblivre.core;
 
 import biblivre.core.exceptions.DAOException;
-import jakarta.annotation.Nonnull;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,7 +70,7 @@ public class UpdatesDAO extends AbstractDAO {
         }
     }
 
-    public void rollbackUpdate(@Nonnull Connection con) {
+    public void rollbackUpdate(Connection con) {
         try (con) {
             this.rollback(con);
         } catch (SQLException e) {
