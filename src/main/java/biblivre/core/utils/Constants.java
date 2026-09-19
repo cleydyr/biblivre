@@ -40,8 +40,6 @@ public class Constants {
 
     public static final String BIBLIVRE = "Biblivre";
     public static final String BIBLIVRE_VERSION = "5.0.5";
-    public static final String UPDATE_URL = "http://update.biblivre.org.br";
-    public static final String DOWNLOAD_URL = "http://update.biblivre.org.br";
 
     public static final DateParser DEFAULT_DATE_FORMAT =
             FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
@@ -50,7 +48,6 @@ public class Constants {
     public static final DatePrinter DEFAULT_DATE_PRINTER_TIMEZONE =
             FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
 
-    public static final String LINE_BREAK = System.getProperty("line.separator");
     public static final float MM_UNIT = 72.0f / 25.4f;
 
     // Configurations
