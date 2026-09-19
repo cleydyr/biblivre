@@ -77,7 +77,7 @@ public class ConfigurationBO {
         String value = getValue(key);
 
         if (StringUtils.isBlank(value)) {
-            logger.debug("Configuration is empty: " + key);
+            logger.debug("Configuration is empty: {}", key);
 
             return def;
         }
@@ -87,7 +87,7 @@ public class ConfigurationBO {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
-            logger.warn("Configuration is not an integer: " + schema + "." + key + " = " + value);
+            logger.warn("Configuration is not an integer: {}.{} = {}", schema, key, value);
             return def;
         }
     }
@@ -100,7 +100,7 @@ public class ConfigurationBO {
         try {
             return Float.parseFloat(value.replace(',', '.'));
         } catch (Exception e) {
-            logger.warn("Configuration is not a float: " + schema + "." + key + " = " + value);
+            logger.warn("Configuration is not a float: {}.{} = {}", schema, key, value);
             return 0.0f;
         }
     }
