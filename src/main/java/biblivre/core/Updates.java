@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
 import biblivre.update.UpdateService;
 import java.sql.Connection;
@@ -36,10 +35,6 @@ public class Updates {
     private Map<String, UpdateService> updateServicesMap;
 
     private UpdatesDAO updatesDAO;
-
-    public static String getVersion() {
-        return Constants.BIBLIVRE_VERSION;
-    }
 
     public void globalUpdate() {
         SchemaThreadLocal.withGlobalSchema(this::processGlobalUpdate);
