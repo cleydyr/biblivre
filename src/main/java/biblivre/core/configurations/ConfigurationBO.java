@@ -259,15 +259,6 @@ public class ConfigurationBO {
         return StringUtils.defaultString(value);
     }
 
-    public void setMultipleSchemasEnabled(Integer loggedUser) {
-        ConfigurationsDTO config =
-                SchemaThreadLocal.withGlobalSchema(() -> get(Constants.CONFIG_MULTI_SCHEMA));
-
-        config.setValue("true");
-
-        save(config, loggedUser);
-    }
-
     private ConfigurationsDTO get(String key) {
         Map<String, ConfigurationsDTO> map = getMap();
 
