@@ -57,10 +57,6 @@ public class ReservationBO extends AbstractBO {
     private IndexingGroupBO indexingGroupBO;
     private ConfigurationBO configurationBO;
 
-    public boolean deleteExpired() {
-        return this.reservationDAO.deleteExpired();
-    }
-
     public ReservationDTO get(Integer id) {
         return this.reservationDAO.get(id);
     }
@@ -68,14 +64,6 @@ public class ReservationBO extends AbstractBO {
     public List<ReservationDTO> get(RecordDTO record) {
         return this.reservationDAO.list(
                 null, record, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
-    }
-
-    public int countReserved(RecordDTO record) {
-        return this.reservationDAO.count(null, record);
-    }
-
-    public int countReserved(UserDTO user) {
-        return this.reservationDAO.count(user, null);
     }
 
     public List<Integer> listReservedRecordIds(UserDTO user) {
