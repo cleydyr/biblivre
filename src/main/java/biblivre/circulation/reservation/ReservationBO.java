@@ -147,7 +147,7 @@ public class ReservationBO extends AbstractBO {
         this.reservationDAO.delete(userId, recordId);
     }
 
-    public void checkReservation(RecordDTO record, UserDTO user) {
+    public void checkReservation(UserDTO user) {
 
         // User cannot be blocked
         if (UserStatus.BLOCKED.equals(user.getStatus())
@@ -172,11 +172,12 @@ public class ReservationBO extends AbstractBO {
     }
 
     public int reserve(RecordDTO record, UserDTO user, int createdBy) {
-        this.checkReservation(record, user);
+        this.checkReservation(user);
 
         ReservationDTO reservation = new ReservationDTO();
         reservation.setRecordId(record.getId());
         reservation.setUserId(user.getId());
+        reservation.setCreatedBy(createdBy);
 
         UserTypeDTO type = userTypeBO.get(user.getType());
 
