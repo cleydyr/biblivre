@@ -20,7 +20,6 @@
 package biblivre.core;
 
 import biblivre.core.exceptions.DAOException;
-import jakarta.annotation.Nonnull;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,33 +70,11 @@ public class UpdatesDAO extends AbstractDAO {
         }
     }
 
-    public void rollbackUpdate(@Nonnull Connection con) {
+    public void rollbackUpdate(Connection con) {
         try (con) {
             this.rollback(con);
         } catch (SQLException e) {
             throw new DAOException(e);
-        }
-    }
-
-    public void createArrayAgg() throws SQLException {
-        try (Connection con = datasource.getConnection()) {
-            String sql =
-                    "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);";
-
-            Statement st = con.createStatement();
-            st.execute(sql);
-        }
-    }
-
-    public void create81ArrayAgg() throws SQLException {
-
-        try (Connection con = datasource.getConnection();
-                Statement st = con.createStatement()) {
-
-            String sql =
-                    "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');";
-
-            st.execute(sql);
         }
     }
 }

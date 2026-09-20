@@ -49,10 +49,7 @@ public final class MarcConstants {
 
     public static final String SHELF_LOCATION = "090";
     public static final String DDCN = "082";
-    public static final String CNPQ = "095";
-    public static final String PATENT = "013";
 
-    public static final String NETWORK_LOCATION = "852";
     public static final String ELECTRONIC_LOCATION = "856";
 
     public static final String SUBJECT_ADDED_ENTRY_PERSONAL_NAME = "600";

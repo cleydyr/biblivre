@@ -48,6 +48,7 @@
 		<jackson-2-bom.version>2.21.6</jackson-2-bom.version>
 		<jackson-bom.version>3.1.6</jackson-bom.version>
 		<log4j2.version>2.25.5</log4j2.version>
+		<tomcat.version>11.0.26</tomcat.version>
 		<skip.yarn>false</skip.yarn>
 	</properties>
 	<dependencyManagement>
@@ -452,16 +453,18 @@
 				<configuration>
 					<authId>ossindex</authId>
 					<excludeVulnerabilityIds>
-						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
-						<!-- Disputed finding reported against jasperreports; no community fix as of 6.21.5 -->
 						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>
-						<!-- No community fix for jasperreports as of 6.21.5 -->
+						<!-- jasperreports 6.21.5; fixed in 7.0.4 (major 6→7 deferred) -->
 						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>
-						<!-- No fix available for jasperreports as of 6.21.5 -->
-						<excludeVulnerabilityId>CVE-2026-22747</excludeVulnerabilityId>
-						<!-- Sonatype false positive: deprecated SubjectDnX509PrincipalExtractor still in jar -->
+						<!-- jasperreports 6.21.5; fixed in 7.0.7 (major 6→7 deferred) -->
 						<excludeVulnerabilityId>CVE-2026-47838</excludeVulnerabilityId>
-						<!-- Sonatype false positive for 7.x; fixed in SubjectX500PrincipalExtractor since 7.0.5 -->
+						<!-- Sonatype false positive on spring-security-web 7.1.1; advisory is 6.5.x only -->
+						<excludeVulnerabilityId>CVE-2026-47842</excludeVulnerabilityId>
+						<!-- OSS Index residual on spring-security-crypto 7.1.1 (OSS fix); AesBytesEncryptor unused -->
+						<excludeVulnerabilityId>CVE-2026-91776</excludeVulnerabilityId>
+						<!-- jackson-databind 2.21.6 / 3.1.6; awaiting unpublished 2.21.7 / 3.1.7 -->
+						<excludeVulnerabilityId>CVE-2026-91777</excludeVulnerabilityId>
+						<!-- jackson-databind 2.21.6 / 3.1.6; awaiting unpublished 2.21.7 / 3.1.7 -->
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>

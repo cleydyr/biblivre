@@ -63,7 +63,7 @@ public class Handler extends AbstractHandler {
                             }
                         });
 
-        if (configs.size() == 0) {
+        if (configs.isEmpty()) {
             return;
         }
 
@@ -81,10 +81,6 @@ public class Handler extends AbstractHandler {
         this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
 
         put("reload", multiSchemaBefore != multiSchemaAfter);
-    }
-
-    public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
-        request.getSession().removeAttribute(".system_warning_new_version");
     }
 
     @Autowired

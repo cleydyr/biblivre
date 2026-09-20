@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
+import lombok.Getter;
 
+@Getter
 public enum PimacoTagSheet {
     _3080(SheetSize.LETTER, "3080", 1.27, 0.48, 2.54, 6.98, 2.54, 6.67, 3, 10),
     _3180(SheetSize.LETTER, "3180", 1.27, 0.48, 2.54, 6.98, 2.54, 6.67, 3, 10),
@@ -172,46 +174,6 @@ public enum PimacoTagSheet {
         }
 
         return Optional.empty();
-    }
-
-    public SheetSize getSheetSize() {
-        return sheetSize;
-    }
-
-    public String getPimacoCode() {
-        return pimacoCode;
-    }
-
-    public Quantity<Length> getHorizontalDensity() {
-        return horizontalDensity;
-    }
-
-    public Quantity<Length> getVerticalDensity() {
-        return verticalDensity;
-    }
-
-    public Quantity<Length> getTagWidth() {
-        return tagWidth;
-    }
-
-    public Quantity<Length> getTagHeight() {
-        return tagHeight;
-    }
-
-    public Quantity<Length> getHorizontalMargin() {
-        return horizontalMargin;
-    }
-
-    public Quantity<Length> getVerticalMargin() {
-        return verticalMargin;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
     }
 
     public Quantity<Length> getHoriziontalSpacing() {

@@ -39,9 +39,6 @@ public class Constants {
     public static final Charset WINDOWS_CHARSET = Charset.forName("cp1252");
 
     public static final String BIBLIVRE = "Biblivre";
-    public static final String BIBLIVRE_VERSION = "5.0.5";
-    public static final String UPDATE_URL = "http://update.biblivre.org.br";
-    public static final String DOWNLOAD_URL = "http://update.biblivre.org.br";
 
     public static final DateParser DEFAULT_DATE_FORMAT =
             FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
@@ -50,7 +47,6 @@ public class Constants {
     public static final DatePrinter DEFAULT_DATE_PRINTER_TIMEZONE =
             FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
 
-    public static final String LINE_BREAK = System.getProperty("line.separator");
     public static final float MM_UNIT = 72.0f / 25.4f;
 
     // Configurations
@@ -58,7 +54,6 @@ public class Constants {
     public static final String CONFIG_MULTI_SCHEMA = "general.multi_schema";
     public static final String CONFIG_TITLE = "general.title";
     public static final String CONFIG_SUBTITLE = "general.subtitle";
-    public static final String CONFIG_UID = "general.uid";
     public static final String CONFIG_BUSINESS_DAYS = "general.business_days";
     public static final String CONFIG_CURRENCY = "general.currency";
 
@@ -76,9 +71,6 @@ public class Constants {
             "circulation.lending_receipt.printer.type";
 
     // Translations
-    public static final String TRANSLATION_RECORD_TAB_FIELD_LABEL =
-            "cataloging.tab.record.custom.field_label.";
-    public static final String TRANSLATION_INDEXING_GROUP = "cataloging.custom.indexing_group.";
     public static final String TRANSLATION_USER_FIELD = "circulation.custom.user_field.";
     public static final String TRANSLATION_FORMAT_DATE = "format.date";
     public static final String TRANSLATION_FORMAT_DATETIME = "format.datetime";
@@ -127,6 +119,5 @@ public class Constants {
     public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
     public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
 
-    public static final char RECORD_SEPARATOR = 0x1e;
     public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
 }

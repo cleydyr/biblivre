@@ -126,7 +126,6 @@
 					<c:set var="passwordWarning" value='${schema}.system_warning_password' />
 					<c:set var="backupWarning" value='${schema}.system_warning_backup' />
 					<c:set var="indexingWarning" value='${schema}.system_warning_reindex' />
-					<c:set var="updateWarning" value='${schema}.system_warning_new_version' />
 
 					<c:if test='${sessionScope[passwordWarning]}'>
 						<div class="message sticky error system_warning_password">
@@ -156,23 +155,6 @@
 								<a href="?action=administration_maintenance" class="fright">
 									<i18n:text key="warning.fix_now" escapeHTML="true" />
 								</a>
-							</div>
-						</div>
-					</c:if>
-
-					<c:if test="${sessionScope[updateWarning]}">
-						<div class="message sticky error system_warning_new_version">
-							<div>
-								<div class="fright">
-									<a href="javascript:void(0)" onclick="Core.ignoreUpdate(this);"
-										class="close" target="_blank">&times;</a>
-									<br>
-									<a href="<c:out value='<%= Constants.DOWNLOAD_URL %>' />"
-										target="_blank">
-										<i18n:text key="warning.download_site" escapeHTML="true" />
-									</a>
-								</div>
-								<c:out value='${message}' escapeXml="false" />
 							</div>
 						</div>
 					</c:if>
