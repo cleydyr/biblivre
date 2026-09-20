@@ -257,21 +257,6 @@ Core.getCachedElement = function (sel) {
 	return el;
 };
 
-Core.ignoreUpdate = function (el) {
-	$(el).closest('.message').remove();
-
-	$.ajax({
-		type: 'POST',
-		url: window.location.pathname,
-		dataType: 'json',
-		data: {
-			controller: 'json',
-			module: 'administration.configurations',
-			action: 'ignore_update'
-		}
-	});
-};
-
 Core.fixResize = function () {
 	var html = Core.getCachedElement('html');
 
