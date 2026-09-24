@@ -6,6 +6,25 @@ type LendingSearchPayload = ParametrizedLegacyEndpointPayload<
   'search_parameters'
 >
 
+type LendingUserSearchPayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'user_search',
+  'search_parameters',
+  'page'
+>
+
+type LendingCreatePayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'lend',
+  'holding_id' | 'user_id'
+>
+
+type LendingRenewPayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'renew_lending',
+  'id'
+>
+
 type LendingReturnImmediatePayload = ParametrizedLegacyEndpointPayload<
   'circulation.lending',
   'return_immediate',
@@ -40,6 +59,9 @@ type LendingPrintReceiptPayload = ParametrizedLegacyEndpointPayload<
 declare module '../../registry' {
   interface ParametrizedLegacyEndpointPayloadRegistry {
     LendingSearchPayload: LendingSearchPayload
+    LendingUserSearchPayload: LendingUserSearchPayload
+    LendingCreatePayload: LendingCreatePayload
+    LendingRenewPayload: LendingRenewPayload
     LendingReturnImmediatePayload: LendingReturnImmediatePayload
     LendingUndoReturnPayload: LendingUndoReturnPayload
     LendingPayFinePayload: LendingPayFinePayload

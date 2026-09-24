@@ -2,19 +2,45 @@ import { useMutation } from '@tanstack/react-query'
 
 import {
   adjustLendingFine,
+  createLending,
   payLendingFine,
   printLendingReceipt,
+  renewLending,
   returnLendingImmediate,
   searchHoldingsForReturn,
+  searchLendingUsers,
   undoLendingReturn,
 } from '.'
 
-import type { LendingHoldingSearchPayload } from './types'
+import type {
+  CreateLendingPayload,
+  LendingHoldingSearchPayload,
+  LendingUserSearchPayload,
+} from './types'
 
 export const useLendingHoldingSearchMutation = () => {
   return useMutation({
     mutationFn: (payload: LendingHoldingSearchPayload) =>
       searchHoldingsForReturn(payload),
+  })
+}
+
+export const useLendingUserSearchMutation = () => {
+  return useMutation({
+    mutationFn: (payload: LendingUserSearchPayload) =>
+      searchLendingUsers(payload),
+  })
+}
+
+export const useCreateLendingMutation = () => {
+  return useMutation({
+    mutationFn: (payload: CreateLendingPayload) => createLending(payload),
+  })
+}
+
+export const useRenewLendingMutation = () => {
+  return useMutation({
+    mutationFn: (lendingId: number) => renewLending(lendingId),
   })
 }
 

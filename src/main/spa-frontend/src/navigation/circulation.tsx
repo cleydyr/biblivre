@@ -41,6 +41,20 @@ const useCirculationNavigation = (): EuiSideNavItemType<unknown> => {
         disabled: !isUserMenuEnabled,
       },
       {
+        id: 'lending',
+        name: (
+          <FormattedMessage
+            defaultMessage='Empréstimo e renovação'
+            id='app.sideNav.circulation.lending'
+          />
+        ),
+        onClick: () => {
+          navigate('/spa/circulation_lending')
+        },
+        isSelected: location.pathname === '/spa/circulation_lending',
+        disabled: !isLendingMenuEnabled,
+      },
+      {
         id: 'return',
         name: (
           <FormattedMessage

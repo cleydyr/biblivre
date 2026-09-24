@@ -1,7 +1,9 @@
 import type {
   HoldingLendingBag,
+  LendingBag,
   LendingFine,
   ReservationInfo,
+  User,
 } from '../circulation/response-types'
 import type {
   MaybeSuccessfulResponse,
@@ -10,6 +12,21 @@ import type {
 
 export type LendingHoldingSearchResponse =
   PaginatedResponsePayload<HoldingLendingBag>
+
+export type LendingPatron = {
+  id: number
+  user: User
+  lendingInfo: LendingBag[]
+  reservedRecords: number[]
+}
+
+export type LendingUserSearchResponse = PaginatedResponsePayload<LendingPatron>
+
+export type LendingMutationResponse = MaybeSuccessfulResponse<{
+  data: LendingBag
+  full_data?: boolean
+  message?: string
+}>
 
 export type LendingReturnImmediateResponse = MaybeSuccessfulResponse<{
   data: HoldingLendingBag

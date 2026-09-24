@@ -5,11 +5,17 @@ import { fetchJSONFromLegacyEndpoint } from '..'
 import type {
   LendingFineMutationResponse,
   LendingHoldingSearchResponse,
+  LendingMutationResponse,
   LendingPrintReceiptResponse,
   LendingReturnImmediateResponse,
   LendingUndoReturnResponse,
+  LendingUserSearchResponse,
 } from './response-types'
-import type { LendingHoldingSearchPayload } from './types'
+import type {
+  CreateLendingPayload,
+  LendingHoldingSearchPayload,
+  LendingUserSearchPayload,
+} from './types'
 
 export const searchHoldingsForReturn = async (
   payload: LendingHoldingSearchPayload,
@@ -21,6 +27,43 @@ export const searchHoldingsForReturn = async (
       query: payload.query,
       holding_list_lendings: payload.holding_list_lendings ?? false,
     }),
+  })
+}
+
+export const searchLendingUsers = async (
+  payload: LendingUserSearchPayload,
+): Promise<LendingUserSearchResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.lending',
+    action: 'user_search',
+    search_parameters: JSON.stringify({
+      mode: 'simple',
+      query: payload.query,
+      field: payload.field ?? '',
+    }),
+    page: String(payload.page ?? 1),
+  })
+}
+
+export const createLending = async ({
+  holdingId,
+  userId,
+}: CreateLendingPayload): Promise<LendingMutationResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.lending',
+    action: 'lend',
+    holding_id: String(holdingId),
+    user_id: String(userId),
+  })
+}
+
+export const renewLending = async (
+  lendingId: number,
+): Promise<LendingMutationResponse> => {
+  return fetchJSONFromLegacyEndpoint({
+    module: 'circulation.lending',
+    action: 'renew_lending',
+    id: String(lendingId),
   })
 }
 
