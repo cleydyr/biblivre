@@ -157,63 +157,75 @@ const PatronSearch: FC<{
         </form>
       </EuiPanel>
 
-      {patrons !== null ? (
-        patrons.length > 0 ? (
-          patrons.map((patron) => (
-            <EuiPanel key={patron.id} hasBorder paddingSize='m'>
-              <EuiFlexGroup alignItems='center'>
-                <EuiFlexItem>
-                  <CirculationUserSummaryPanel user={patron.user} />
-                  <EuiSpacer size='s' />
-                  <EuiText size='s'>
-                    <FormattedMessage
-                      defaultMessage='{count, plural, =0 {Nenhum empréstimo ativo} one {# empréstimo ativo} other {# empréstimos ativos}}'
-                      id='circulation.lending.patron_search.active_count'
-                      values={{ count: patron.lendingInfo.length }}
-                    />
-                  </EuiText>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiButton disabled={isBusy} onClick={() => onSelect(patron)}>
-                    <FormattedMessage
-                      defaultMessage='Selecionar usuário'
-                      id='circulation.lending.button.select_patron'
-                    />
-                  </EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
-          ))
-        ) : (
-          <EuiEmptyPrompt
-            body={
-              <FormattedMessage
-                defaultMessage='Tente outro nome, matrícula ou campo de cadastro.'
-                id='circulation.lending.patron_search.empty.body'
-              />
-            }
-            iconType='users'
-            title={
-              <FormattedMessage
-                defaultMessage='Nenhum usuário encontrado'
-                id='circulation.lending.patron_search.empty.title'
-              />
-            }
-          />
-        )
-      ) : (
-        <EuiEmptyPrompt
-          body={
-            <FormattedMessage
-              defaultMessage='Pesquise um usuário para iniciar o atendimento.'
-              id='circulation.lending.patron_search.initial.body'
-            />
-          }
-          iconType='user'
-        />
-      )}
+      <PatronResults isBusy={isBusy} patrons={patrons} onSelect={onSelect} />
     </EuiFlexGroup>
   )
+}
+
+const PatronResults: FC<{
+  patrons: LendingPatron[] | null
+  isBusy: boolean
+  onSelect: (patron: LendingPatron) => void
+}> = ({ patrons, isBusy, onSelect }) => {
+  if (patrons === null) {
+    return (
+      <EuiEmptyPrompt
+        body={
+          <FormattedMessage
+            defaultMessage='Pesquise um usuário para iniciar o atendimento.'
+            id='circulation.lending.patron_search.initial.body'
+          />
+        }
+        iconType='user'
+      />
+    )
+  }
+
+  if (patrons.length === 0) {
+    return (
+      <EuiEmptyPrompt
+        body={
+          <FormattedMessage
+            defaultMessage='Tente outro nome, matrícula ou campo de cadastro.'
+            id='circulation.lending.patron_search.empty.body'
+          />
+        }
+        iconType='users'
+        title={
+          <FormattedMessage
+            defaultMessage='Nenhum usuário encontrado'
+            id='circulation.lending.patron_search.empty.title'
+          />
+        }
+      />
+    )
+  }
+
+  return patrons.map((patron) => (
+    <EuiPanel key={patron.id} hasBorder paddingSize='m'>
+      <EuiFlexGroup alignItems='center'>
+        <EuiFlexItem>
+          <CirculationUserSummaryPanel user={patron.user} />
+          <EuiSpacer size='s' />
+          <EuiText size='s'>
+            <FormattedMessage
+              defaultMessage='{count, plural, =0 {Nenhum empréstimo ativo} one {# empréstimo ativo} other {# empréstimos ativos}}'
+              id='circulation.lending.patron_search.active_count'
+              values={{ count: patron.lendingInfo.length }}
+            />
+          </EuiText>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton disabled={isBusy} onClick={() => onSelect(patron)}>
+            <FormattedMessage
+              defaultMessage='Selecionar usuário'
+              id='circulation.lending.button.select_patron'
+            />
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    </EuiPanel>
+  ))
 }
 
 const SelectedPatron: FC<{
@@ -311,13 +323,13 @@ const SelectedPatron: FC<{
 
       <EuiSpacer size='m' />
       <EuiAccordion
-        id={`lending-fines-${patron.user.id}`}
         buttonContent={
           <FormattedMessage
             defaultMessage='Multas e pendências'
             id='circulation.lending.fines'
           />
         }
+        id={`lending-fines-${patron.user.id}`}
         paddingSize='m'
       >
         <CirculationUserFinesTab userId={patron.user.id} />
@@ -437,38 +449,58 @@ const HoldingSearch: FC<{
         </form>
       </EuiPanel>
 
-      {holdings !== null ? (
-        holdings.length > 0 ? (
-          holdings.map((holdingBag) => (
-            <HoldingCard
-              key={holdingBag.holding.id}
-              holdingBag={holdingBag}
-              isBusy={isBusy}
-              patron={patron}
-              onLend={onLend}
-              onRenew={onRenew}
-            />
-          ))
-        ) : (
-          <EuiEmptyPrompt
-            body={
-              <FormattedMessage
-                defaultMessage='Confira o tombo ou tente buscar por outro título ou autor.'
-                id='circulation.lending.holding_search.empty.body'
-              />
-            }
-            iconType='search'
-            title={
-              <FormattedMessage
-                defaultMessage='Nenhum exemplar encontrado'
-                id='circulation.lending.holding_search.empty.title'
-              />
-            }
-          />
-        )
-      ) : null}
+      <HoldingResults
+        holdings={holdings}
+        isBusy={isBusy}
+        patron={patron}
+        onLend={onLend}
+        onRenew={onRenew}
+      />
     </EuiFlexGroup>
   )
+}
+
+const HoldingResults: FC<{
+  holdings: HoldingLendingBag[] | null
+  patron: LendingPatron
+  isBusy: boolean
+  onLend: (holdingBag: HoldingLendingBag) => void
+  onRenew: (lendingId: number) => void
+}> = ({ holdings, patron, isBusy, onLend, onRenew }) => {
+  if (holdings === null) {
+    return null
+  }
+
+  if (holdings.length === 0) {
+    return (
+      <EuiEmptyPrompt
+        body={
+          <FormattedMessage
+            defaultMessage='Confira o tombo ou tente buscar por outro título ou autor.'
+            id='circulation.lending.holding_search.empty.body'
+          />
+        }
+        iconType='magnify'
+        title={
+          <FormattedMessage
+            defaultMessage='Nenhum exemplar encontrado'
+            id='circulation.lending.holding_search.empty.title'
+          />
+        }
+      />
+    )
+  }
+
+  return holdings.map((holdingBag) => (
+    <HoldingCard
+      key={holdingBag.holding.id}
+      holdingBag={holdingBag}
+      isBusy={isBusy}
+      patron={patron}
+      onLend={onLend}
+      onRenew={onRenew}
+    />
+  ))
 }
 
 const HoldingCard: FC<{
@@ -496,6 +528,7 @@ const HoldingCard: FC<{
           {reservationWarning ? <FragmentReservationWarning /> : null}
           {openLending && renewalEligibility === 'different_patron' ? (
             <EuiCallOut
+              announceOnMount
               color='warning'
               iconType='user'
               size='s'
@@ -509,38 +542,66 @@ const HoldingCard: FC<{
           ) : null}
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          {openLending && renewalEligibility === 'eligible' ? (
-            <EuiButton
-              disabled={isBusy}
-              onClick={() => onRenew(openLending.id)}
-            >
-              <FormattedMessage
-                defaultMessage='Renovar'
-                id='circulation.lending.button.renew'
-              />
-            </EuiButton>
-          ) : (
-            <EuiButton
-              fill
-              disabled={lendingEligibility !== 'eligible' || isBusy}
-              onClick={() => onLend(holdingBag)}
-            >
-              {lendingEligibility === 'eligible' ? (
-                <FormattedMessage
-                  defaultMessage='Emprestar'
-                  id='circulation.lending.button.lend'
-                />
-              ) : (
-                <FormattedMessage
-                  defaultMessage='Indisponível'
-                  id='circulation.lending.button.unavailable'
-                />
-              )}
-            </EuiButton>
-          )}
+          <HoldingAction
+            holdingBag={holdingBag}
+            isBusy={isBusy}
+            lendingEligibility={lendingEligibility}
+            openLendingId={
+              renewalEligibility === 'eligible' ? openLending?.id : undefined
+            }
+            onLend={onLend}
+            onRenew={onRenew}
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiPanel>
+  )
+}
+
+const HoldingAction: FC<{
+  holdingBag: HoldingLendingBag
+  lendingEligibility: ReturnType<typeof getLendingEligibility>
+  openLendingId: number | undefined
+  isBusy: boolean
+  onLend: (holdingBag: HoldingLendingBag) => void
+  onRenew: (lendingId: number) => void
+}> = ({
+  holdingBag,
+  lendingEligibility,
+  openLendingId,
+  isBusy,
+  onLend,
+  onRenew,
+}) => {
+  if (openLendingId !== undefined) {
+    return (
+      <EuiButton disabled={isBusy} onClick={() => onRenew(openLendingId)}>
+        <FormattedMessage
+          defaultMessage='Renovar'
+          id='circulation.lending.button.renew'
+        />
+      </EuiButton>
+    )
+  }
+
+  return (
+    <EuiButton
+      fill
+      disabled={lendingEligibility !== 'eligible' || isBusy}
+      onClick={() => onLend(holdingBag)}
+    >
+      {lendingEligibility === 'eligible' ? (
+        <FormattedMessage
+          defaultMessage='Emprestar'
+          id='circulation.lending.button.lend'
+        />
+      ) : (
+        <FormattedMessage
+          defaultMessage='Indisponível'
+          id='circulation.lending.button.unavailable'
+        />
+      )}
+    </EuiButton>
   )
 }
 
@@ -548,8 +609,9 @@ const FragmentReservationWarning = () => (
   <Fragment>
     <EuiSpacer size='s' />
     <EuiCallOut
+      announceOnMount
       color='warning'
-      iconType='alert'
+      iconType='warning'
       size='s'
       title={
         <FormattedMessage
