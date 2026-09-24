@@ -106,7 +106,6 @@ const useCirculationLending = () => {
     try {
       const response = await holdingSearchMutation.mutateAsync({
         query: holdingQuery.trim(),
-        holding_list_lendings: true,
       })
       if (!response.success) {
         setHoldings([])
