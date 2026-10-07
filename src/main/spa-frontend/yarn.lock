@@ -709,58 +709,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-darwin-arm64@npm:1.1.25":
-  version: 1.1.25
-  resolution: "@formatjs/cli-native-darwin-arm64@npm:1.1.25"
+"@formatjs/cli-native-darwin-arm64@npm:1.1.27":
+  version: 1.1.27
+  resolution: "@formatjs/cli-native-darwin-arm64@npm:1.1.27"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-arm64-musl@npm:1.0.23":
-  version: 1.0.23
-  resolution: "@formatjs/cli-native-linux-arm64-musl@npm:1.0.23"
+"@formatjs/cli-native-linux-arm64-musl@npm:1.0.25":
+  version: 1.0.25
+  resolution: "@formatjs/cli-native-linux-arm64-musl@npm:1.0.25"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-arm64@npm:1.2.25":
-  version: 1.2.25
-  resolution: "@formatjs/cli-native-linux-arm64@npm:1.2.25"
+"@formatjs/cli-native-linux-arm64@npm:1.2.27":
+  version: 1.2.27
+  resolution: "@formatjs/cli-native-linux-arm64@npm:1.2.27"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-x64-musl@npm:1.0.23":
-  version: 1.0.23
-  resolution: "@formatjs/cli-native-linux-x64-musl@npm:1.0.23"
+"@formatjs/cli-native-linux-x64-musl@npm:1.0.25":
+  version: 1.0.25
+  resolution: "@formatjs/cli-native-linux-x64-musl@npm:1.0.25"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-x64@npm:1.1.25":
-  version: 1.1.25
-  resolution: "@formatjs/cli-native-linux-x64@npm:1.1.25"
+"@formatjs/cli-native-linux-x64@npm:1.1.27":
+  version: 1.1.27
+  resolution: "@formatjs/cli-native-linux-x64@npm:1.1.27"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-win32-x64@npm:1.1.26":
-  version: 1.1.26
-  resolution: "@formatjs/cli-native-win32-x64@npm:1.1.26"
+"@formatjs/cli-native-win32-x64@npm:1.1.28":
+  version: 1.1.28
+  resolution: "@formatjs/cli-native-win32-x64@npm:1.1.28"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
 "@formatjs/cli@npm:^6.7.2":
-  version: 6.16.31
-  resolution: "@formatjs/cli@npm:6.16.31"
+  version: 6.16.33
+  resolution: "@formatjs/cli@npm:6.16.33"
   dependencies:
-    "@formatjs/cli-native-darwin-arm64": "npm:1.1.25"
-    "@formatjs/cli-native-linux-arm64": "npm:1.2.25"
-    "@formatjs/cli-native-linux-arm64-musl": "npm:1.0.23"
-    "@formatjs/cli-native-linux-x64": "npm:1.1.25"
-    "@formatjs/cli-native-linux-x64-musl": "npm:1.0.23"
-    "@formatjs/cli-native-win32-x64": "npm:1.1.26"
+    "@formatjs/cli-native-darwin-arm64": "npm:1.1.27"
+    "@formatjs/cli-native-linux-arm64": "npm:1.2.27"
+    "@formatjs/cli-native-linux-arm64-musl": "npm:1.0.25"
+    "@formatjs/cli-native-linux-x64": "npm:1.1.27"
+    "@formatjs/cli-native-linux-x64-musl": "npm:1.0.25"
+    "@formatjs/cli-native-win32-x64": "npm:1.1.28"
   peerDependencies:
     "@glimmer/syntax": ^0.84.3 || ^0.95.0
     "@vue/compiler-core": 3
@@ -796,7 +796,7 @@ __metadata:
       optional: true
   bin:
     formatjs: bin/formatjs
-  checksum: 10c0/c93c025804590eb6443d282b2ef2d7a90ec329ef3ffc74e55a37839a0653907fa098ea48c41552baaaba17d2307e39b603c23c2ce86efe1d0663e9bdeeee2ce7
+  checksum: 10c0/e3ac99950ec9e2c6eb2f5f48bb9397c43422292dc5344362fd3b5fcb9dbff2496d183621b66a2401a306be4a70755f1949b42f0ee1086e1f6088f04c83c05acf
   languageName: node
   linkType: hard
 
