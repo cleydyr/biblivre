@@ -25,7 +25,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.circulation.lending.LendingDAO;
+import biblivre.circulation.lending.persistence.LendingDAO;
 import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;

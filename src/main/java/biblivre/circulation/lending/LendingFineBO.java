@@ -26,6 +26,8 @@ import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.circulation.lending.persistence.LendingDAO;
+import biblivre.circulation.lending.persistence.LendingFineDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.utils.CalendarUtils;

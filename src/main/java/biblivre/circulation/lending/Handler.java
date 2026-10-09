@@ -62,6 +62,31 @@ public class Handler extends AbstractHandler {
     private ReservationBO reservationBO;
     private PagedUserSearchWebHelper pagedUserSearchWebHelper;
 
+    /**
+     * Searches for holdings and returns them with current lending information.
+     *
+     * <p>Searches holdings in the MAIN database, optionally filtered by a query string and/or a
+     * flag to show only lent holdings. For each matching holding, populates lending information
+     * including the current borrower (if any), due date, and associated bibliographic record
+     * details.
+     *
+     * <p>Returns a JSON response with the following structure:
+     *
+     * <pre>
+     * {
+     *   "search": {
+     *     "data": [...],        // Array of LendingBag objects
+     *     "paging": { ... }     // Pagination metadata
+     *   }
+     * }
+     * </pre>
+     *
+     * Each LendingBag contains: lending (if borrowed), holding (item), and bibliographic record.
+     *
+     * @param request the HTTP request containing search parameters
+     * @param response the HTTP response to populate with results
+     * @see biblivre.circulation.lending.LendingBag
+     */
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
