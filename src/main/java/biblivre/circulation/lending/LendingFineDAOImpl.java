@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
+import biblivre.circulation.lending.persistence.LendingFineDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
