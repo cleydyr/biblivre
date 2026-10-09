@@ -1,7 +1,8 @@
 version: "3"
 services:
   database:
-    image: pgvector/pgvector:pg18
+    # CI sets BIBLIVRE_POSTGRES_IMAGE to the GHCR mirror (see test.yml).
+    image: "${BIBLIVRE_POSTGRES_IMAGE:-pgvector/pgvector:pg18}"
     container_name: biblivre-dev-db
     ports:
       - "5432:5432"

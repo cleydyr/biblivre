@@ -5,7 +5,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
 
 public class SharedPostgreSQLContainer extends PostgreSQLContainer<SharedPostgreSQLContainer> {
-    private static final String IMAGE_VERSION = "pgvector/pgvector:pg16";
+    // CI sets BIBLIVRE_TEST_POSTGRES_IMAGE to the GHCR mirror (see test.yml).
+    private static final String IMAGE_VERSION =
+            System.getenv().getOrDefault("BIBLIVRE_TEST_POSTGRES_IMAGE", "pgvector/pgvector:pg16");
     private static SharedPostgreSQLContainer container;
 
     private SharedPostgreSQLContainer() {

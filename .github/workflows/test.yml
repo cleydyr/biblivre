@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read # pull mirrored images from GHCR
       actions: write # upload-artifact + actions/cache
     env:
       NODE_ENV: production
@@ -38,6 +39,10 @@ jobs:
       # Consumed by ~/.m2/settings.xml written by setup-java (${env.OSSINDEX_*}).
       OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
       OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
+      # Docker Hub's shared githubactions quota rejects unauthenticated pulls.
+      # These names are published by mirror-container-images.yml.
+      BIBLIVRE_TEST_POSTGRES_IMAGE: ghcr.io/${{ github.repository_owner }}/biblivre-pgvector:pg16
+      BIBLIVRE_POSTGRES_IMAGE: ghcr.io/${{ github.repository_owner }}/biblivre-pgvector:pg18
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -87,13 +92,20 @@ jobs:
           restore-keys: |
             dart-sass-${{ runner.os }}-
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       # package already runs tests. `mvn test package` would execute generate-resources
       # (Yarn/Vite) and compile twice. Pull Testcontainers (pg16, see
       # SharedPostgreSQLContainer) + smoke DB (pg18) in the background so
       # surefire/smoke do not wait on docker pull after Maven.
       - name: Build with Maven
         run: |
-          docker pull pgvector/pgvector:pg16 >/tmp/docker-pull-pg16.log 2>&1 &
+          docker pull "$BIBLIVRE_TEST_POSTGRES_IMAGE" >/tmp/docker-pull-pg16.log 2>&1 &
           docker compose -f docker-compose.dev.yml up -d database >/tmp/docker-compose-smoke-db.log 2>&1 &
           mvn -B -ntp clean package -Pgithub-ci
           wait || true
@@ -128,10 +140,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read # pull mirrored images from GHCR
       actions: write # download-artifact + upload-artifact
     env:
       BIBLIVRE_BASE_URL: http://localhost:8090
       CI: "1"
+      BIBLIVRE_POSTGRES_IMAGE: ghcr.io/${{ github.repository_owner }}/biblivre-pgvector:pg18
+      BIBLIVRE_JRE_IMAGE: ghcr.io/${{ github.repository_owner }}/biblivre-eclipse-temurin:25.0.3_9-jre-jammy
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/e2e/.cache/ms-playwright
       # Yarn Berry dropped --ignore-scripts; this is the equivalent (githubactions:S6505).
       YARN_ENABLE_SCRIPTS: "false"
@@ -143,6 +158,13 @@ jobs:
         with:
           name: biblivre6-war
           path: target
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Pull images and boot the app while Yarn/Playwright install below.
       - name: Start e2e stack
