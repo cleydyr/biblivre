@@ -31,8 +31,7 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldBO;
 import biblivre.circulation.user.UserFieldDTO;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import biblivre.core.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -48,7 +47,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserReport extends BaseBiblivreReport {
-    public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
     private UserBO userBO;
     private LendingBO lendingBO;
     private LendingFineBO lendingFineBO;
@@ -69,7 +67,7 @@ public class UserReport extends BaseBiblivreReport {
         List<String[]> returnedLendings = new ArrayList<>();
         for (LendingBag lidto : historyInfo) {
             String[] data = new String[3];
-            data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
+            data[0] = DateUtils.formatDate(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();
             data[2] = lidto.getBiblio().getAuthor();
             returnedLendings.add(data);
@@ -84,7 +82,7 @@ public class UserReport extends BaseBiblivreReport {
                 lendingBO.populateLendingBag(currentLendingsList);
         for (LendingBag lidto : currentLendingsInfo) {
             String[] data = new String[3];
-            data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
+            data[0] = DateUtils.formatDate(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();
             data[2] = lidto.getBiblio().getAuthor();
             if (lendingFineBO.isLateReturn(lidto.getLending())) {
