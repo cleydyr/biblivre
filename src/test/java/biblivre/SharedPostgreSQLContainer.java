@@ -2,14 +2,19 @@ package biblivre;
 
 import biblivre.core.utils.Constants;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 public class SharedPostgreSQLContainer extends PostgreSQLContainer<SharedPostgreSQLContainer> {
-    private static final String IMAGE_VERSION = "pgvector/pgvector:pg16";
+    // CI sets BIBLIVRE_TEST_POSTGRES_IMAGE to the GHCR mirror (see test.yml).
+    // That name is the same pgvector image; Testcontainers accepts it only after
+    // it is declared as a postgres substitute.
+    private static final String IMAGE_VERSION =
+            System.getenv().getOrDefault("BIBLIVRE_TEST_POSTGRES_IMAGE", "pgvector/pgvector:pg16");
     private static SharedPostgreSQLContainer container;
 
     private SharedPostgreSQLContainer() {
-        super(IMAGE_VERSION);
+        super(DockerImageName.parse(IMAGE_VERSION).asCompatibleSubstituteFor("postgres"));
     }
 
     public static SharedPostgreSQLContainer getInstance() {
