@@ -25,6 +25,7 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.DateUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
@@ -34,7 +35,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
@@ -426,7 +426,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             st = con.prepareStatement(sqlLate);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
-            st.setString(3, dd_MM_yyyy.format(new Date()));
+            st.setString(3, DateUtils.formatDate(new Date()));
             rs = st.executeQuery();
             if (rs.next()) {
                 late = rs.getInt(1);
@@ -486,7 +486,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             + "AND h.record_id = b.id "
                             + "AND l.return_date is null; ";
             final PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, dd_MM_yyyy.format(new Date()));
+            st.setString(1, DateUtils.formatDate(new Date()));
 
             final ResultSet rs = st.executeQuery();
             List<String[]> data = new ArrayList<>();
@@ -500,7 +500,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                                 new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
                 MarcDataReader dataReader = new MarcDataReader(record);
                 lending[2] = dataReader.getTitle(false); // titulo
-                lending[3] = dd_MM_yyyy.format(rs.getDate("expected_return_date"));
+                lending[3] = DateUtils.formatDate(rs.getDate("expected_return_date"));
                 data.add(lending);
             }
             dto.setData(data);
@@ -534,12 +534,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             dto.setFinalDate(finalDate);
             List<String[]> data = new ArrayList<>();
             dto.setData(data);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             while (rs.next()) {
                 String[] arrayData = new String[2];
                 arrayData[0] = rs.getString(1);
-                Date date = format.parse(rs.getString(2));
-                arrayData[1] = dd_MM_yyyy.format(date);
+                arrayData[1] = DateUtils.formatDate(rs.getString(2));
                 dto.getData().add(arrayData);
             }
         } catch (Exception e) {
@@ -638,8 +636,8 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                 .formatted(
                         rs.getString("name"),
                         rs.getInt("id"),
-                        dd_MM_yyyy.format(rs.getDate("created")),
-                        dd_MM_yyyy.format(rs.getDate("modified")));
+                        DateUtils.formatDate(rs.getDate("created")),
+                        DateUtils.formatDate(rs.getDate("modified")));
     }
 
     @Override
