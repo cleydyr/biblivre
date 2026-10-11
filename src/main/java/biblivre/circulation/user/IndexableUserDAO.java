@@ -1,7 +1,7 @@
 package biblivre.circulation.user;
 
-import biblivre.circulation.lending.LendingDAO;
-import biblivre.circulation.lending.LendingFineDAO;
+import biblivre.circulation.lending.persistence.LendingDAO;
+import biblivre.circulation.lending.persistence.LendingFineDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.SchemaThreadLocal;

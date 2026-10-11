@@ -13,14 +13,10 @@ import biblivre.administration.reports.dto.ReservationReportDto;
 import biblivre.administration.reports.dto.SearchesByDateReportDto;
 import biblivre.administration.reports.dto.SummaryReportDto;
 import biblivre.cataloging.enums.RecordDatabase;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.TreeMap;
 
 public interface ReportsDAO {
-
-    DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
     SummaryReportDto getSummaryReportData(RecordDatabase database);
 

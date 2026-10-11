@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import org.jspecify.annotations.NonNull;
 
 public class CalendarUtils {
 
@@ -35,6 +37,8 @@ public class CalendarUtils {
     public static java.sql.Timestamp toSqlTimestamp(Date date) {
         return new java.sql.Timestamp(date.getTime());
     }
+
+    private static final Map<String, Integer> expectedReturnDateCache = new ConcurrentHashMap<>();
 
     public static boolean isMidnight(Date date) {
         Calendar cal = new GregorianCalendar();
@@ -49,8 +53,21 @@ public class CalendarUtils {
 
     public static Date calculateExpectedReturnDate(
             Date lendingDate, int days, List<Integer> businessDays) {
+
         LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
 
+        int daysToAdd =
+                expectedReturnDateCache.computeIfAbsent(
+                        getCacheKey(expectedReturnDate, days, businessDays),
+                        key -> calculateDaysToAdd(expectedReturnDate, days, businessDays));
+
+        return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
+    }
+
+    private static int calculateDaysToAdd(
+            LocalDate startDate, int days, List<Integer> businessDays) {
+        // Only invoked from {@link Map#computeIfAbsent} below, so the key is known to be
+        // absent; the mapping function must not mutate the cache itself.
         int remainingDays = days;
 
         // Indexed by DayOfWeek.getValue() (Monday=1 … Sunday=7). Index 0 unused.
@@ -61,13 +78,14 @@ public class CalendarUtils {
         }
 
         int businessDaysPerWeek = countBusinessDays(isBusinessDay);
+
         if (businessDaysPerWeek == 0) {
-            return toDateInDefaultZone(expectedReturnDate.plusDays(days));
+            return days;
         }
 
         int daysToAdd = 0;
 
-        for (int i = expectedReturnDate.getDayOfWeek().getValue();
+        for (int i = startDate.getDayOfWeek().getValue();
                 i <= DayOfWeek.SUNDAY.getValue() && remainingDays > 0;
                 i++) {
             daysToAdd++;
@@ -101,7 +119,17 @@ public class CalendarUtils {
 
         assert remainingDays == 0;
 
-        return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
+        return daysToAdd;
+    }
+
+    private static @NonNull String getCacheKey(
+            LocalDate startDate, int days, List<Integer> businessDays) {
+        return String.format(
+                "%s|%d|%s",
+                startDate.toString(),
+                days,
+                String.join(
+                        ",", businessDays.stream().map(String::valueOf).toArray(String[]::new)));
     }
 
     /**

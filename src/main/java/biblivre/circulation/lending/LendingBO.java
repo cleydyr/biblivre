@@ -28,6 +28,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.circulation.lending.persistence.LendingDAO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.reservation.ReservationBag;
 import biblivre.circulation.reservation.ReservationDTO;
@@ -52,6 +53,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.NonNull;
@@ -74,6 +76,7 @@ public class LendingBO {
     private ConfigurationBO configurationBO;
     private Clock clock;
 
+    @Getter
     @Value("${biblivre.circulation.return-undo-window-seconds:120}")
     private int returnUndoWindowSeconds;
 
@@ -265,10 +268,6 @@ public class LendingBO {
 
         lending = this.lendingDAO.get(lendingId);
         return this.populateReturnedLendingBag(lending, null);
-    }
-
-    public int getReturnUndoWindowSeconds() {
-        return returnUndoWindowSeconds;
     }
 
     public Instant getUndoAvailableUntil(LendingDTO lending) {
