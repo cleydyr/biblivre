@@ -20,7 +20,7 @@ services:
 
   app:
     # CI sets BIBLIVRE_JRE_IMAGE to the GHCR mirror (see test.yml).
-    image: "${BIBLIVRE_JRE_IMAGE:-eclipse-temurin:25.0.3_9-jre-jammy}"
+    image: "${BIBLIVRE_JRE_IMAGE:-eclipse-temurin:25.0.4_7-jre-jammy}"
     container_name: biblivre-e2e-app
     ports:
       - "8090:8090"
