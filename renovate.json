@@ -4,5 +4,14 @@
     "config:recommended"
   ],
   "minimumReleaseAge": "7 days",
-  "internalChecksFilter": "strict"
+  "internalChecksFilter": "strict",
+  "packageRules": [
+    {
+      "description": "eslint-plugin-jsx-a11y calls minimatch's default export while linting labels. minimatch 10's CommonJS build sets __esModule and does not export a default, so the resolution that satisfies minimatch@^3.1.2 must stay on 3.x.",
+      "matchFileNames": ["src/main/spa-frontend/package.json"],
+      "matchPackageNames": ["minimatch"],
+      "matchDepTypes": ["resolutions"],
+      "allowedVersions": "<4.0.0"
+    }
+  ]
 }
