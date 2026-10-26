@@ -162,6 +162,12 @@ public class SchemaServlet extends HttpServlet {
     protected void processDynamicRequest(
             HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
             throws ServletException, IOException {
+        // A 403 from SchemaFilter is forwarded by the error page after that filter has cleared
+        // the schema. Rendering this request would read configuration with a null schema.
+        if (SchemaThreadLocal.get() == null) {
+            return;
+        }
+
         ExtendedRequest xRequest = (ExtendedRequest) request;
         ExtendedResponse xResponse = (ExtendedResponse) response;
 

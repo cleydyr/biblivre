@@ -92,6 +92,13 @@ class SchemaUtilTest {
     }
 
     @Test
+    void extractPathSchema_ignoresReservedRobotsTxt() {
+        MockHttpServletRequest request = requestAt("/Biblivre6", "/Biblivre6/robots.txt");
+
+        assertNull(SchemaUtil.extractPathSchema(request));
+    }
+
+    @Test
     void extractSchema_stillPrefersClientSchemaHeaderWhenUnbound() {
         MockHttpServletRequest request = requestAt("/Biblivre6", "/Biblivre6/temp/");
         request.addHeader("X-Biblivre-Schema", "other");
