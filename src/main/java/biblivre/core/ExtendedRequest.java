@@ -70,6 +70,12 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
             return;
         }
 
+        // A 403 from SchemaFilter is forwarded after that filter has cleared the schema.
+        // Loading translations would query an unqualified "translations" relation.
+        if (SchemaThreadLocal.get() == null) {
+            return;
+        }
+
         this.loadMultiPart(request);
 
         String requestPath = this.getRequestURI().substring(this.getContextPath().length() + 1);
