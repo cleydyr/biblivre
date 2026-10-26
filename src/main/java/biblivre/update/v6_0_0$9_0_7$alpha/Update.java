@@ -44,10 +44,15 @@ public class Update implements UpdateService {
         }
 
         String qualifiedTable = schema + "." + table;
-        String qualifiedSequence = schema + "." + table + "_id_seq";
+        String sequence = table + "_id_seq";
+        String qualifiedSequence = schema + "." + sequence;
 
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE SEQUENCE IF NOT EXISTS " + qualifiedSequence);
+            // OWNED BY requires the sequence and the table to have the same owner.
+            // CREATE SEQUENCE leaves the sequence owned by the current role, which may
+            // differ from a table created earlier by another role.
+            alignSequenceOwnerWithTable(connection, schema, table, sequence);
             statement.execute(
                     "ALTER SEQUENCE " + qualifiedSequence + " OWNED BY " + qualifiedTable + ".id");
             statement.execute(
@@ -64,6 +69,60 @@ public class Update implements UpdateService {
                                     + qualifiedTable
                                     + "), 0) + 1, false)")) {
                 // setval is invoked by executing the query
+            }
+        }
+    }
+
+    private static void alignSequenceOwnerWithTable(
+            Connection connection, String schema, String table, String sequence)
+            throws SQLException {
+        String alignOwner = ownerAlignmentStatement(connection, schema, table, sequence);
+        if (alignOwner == null) {
+            return;
+        }
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(alignOwner);
+        }
+    }
+
+    /**
+     * Builds {@code ALTER SEQUENCE ... OWNER TO} when the sequence owner differs from the table
+     * owner. Identifiers are quoted by PostgreSQL {@code format(%I)}. Returns null when the owners
+     * already match, so an update running as the table owner does not need extra schema privileges.
+     */
+    private static String ownerAlignmentStatement(
+            Connection connection, String schema, String table, String sequence)
+            throws SQLException {
+        try (PreparedStatement statement =
+                connection.prepareStatement(
+                        """
+                        SELECT CASE
+                                   WHEN seq.relowner = tab.relowner THEN NULL
+                                   ELSE format(
+                                       'ALTER SEQUENCE %I.%I OWNER TO %I',
+                                       seq_ns.nspname,
+                                       seq.relname,
+                                       pg_get_userbyid(tab.relowner))
+                               END
+                        FROM pg_class seq
+                        JOIN pg_namespace seq_ns ON seq_ns.oid = seq.relnamespace
+                        JOIN pg_class tab ON tab.relname = ? AND tab.relkind = 'r'
+                        JOIN pg_namespace tab_ns
+                            ON tab_ns.oid = tab.relnamespace AND tab_ns.nspname = ?
+                        WHERE seq_ns.nspname = ?
+                          AND seq.relname = ?
+                          AND seq.relkind = 'S'
+                        """)) {
+            statement.setString(1, table);
+            statement.setString(2, schema);
+            statement.setString(3, schema);
+            statement.setString(4, sequence);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString(1);
             }
         }
     }
