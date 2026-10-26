@@ -425,13 +425,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@elastic/eui-theme-borealis@npm:8.0.0":
-  version: 8.0.0
-  resolution: "@elastic/eui-theme-borealis@npm:8.0.0"
+"@elastic/eui-theme-borealis@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@elastic/eui-theme-borealis@npm:8.1.0"
   dependencies:
-    "@elastic/eui-theme-common": "npm:10.0.0"
+    "@elastic/eui-theme-common": "npm:10.1.0"
     chroma-js: "npm:^2.4.2"
-  checksum: 10c0/787a6a6e50da536463824acfc9f628b14e151a7c3f810a3522e7b7ff87974c66beae4e54dd3fa4a55c6c3bc1eb683524cbabc442a875cb40cb9f0956f51a36e7
+  checksum: 10c0/03b7f0581136ad7ed86b76667dd79beceef147f465da63b86c4ba92ce47b1f0e90e31a6c29af47c4cb2b8106ed301e87a0b46c9a79d06723014dbe213520528a
   languageName: node
   linkType: hard
 
@@ -447,6 +447,21 @@ __metadata:
     react: ^17.0 || ^18.0
     react-dom: ^17.0 || ^18.0
   checksum: 10c0/51819e2a3c70eadd49ee3d9d969673233771683cb4385293f82868ae46a037c6d533710b9058228d2d6a56dbbbdabab04299c5da33032c4449e3b2ea0a1cdbff
+  languageName: node
+  linkType: hard
+
+"@elastic/eui-theme-common@npm:10.1.0":
+  version: 10.1.0
+  resolution: "@elastic/eui-theme-common@npm:10.1.0"
+  dependencies:
+    "@types/lodash": "npm:^4.14.202"
+    chroma-js: "npm:^2.4.2"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@emotion/react": 11.x
+    react: ^17.0 || ^18.0
+    react-dom: ^17.0 || ^18.0
+  checksum: 10c0/17fd65e8f27be7b9a6c75ef8ecea7ab5897691b831b3873f35df26e990b059bc00f545578a9c2497a4d8d90984818033228c4e8b7a9e355383f80bb45ecb910a
   languageName: node
   linkType: hard
 
@@ -6666,7 +6681,7 @@ __metadata:
     "@elastic/datemath": "npm:^5.0.3"
     "@elastic/eslint-plugin-eui": "npm:^2.3.0"
     "@elastic/eui": "npm:116.5.0"
-    "@elastic/eui-theme-borealis": "npm:8.0.0"
+    "@elastic/eui-theme-borealis": "npm:8.1.0"
     "@emotion/css": "npm:^11.13.5"
     "@emotion/react": "npm:^11.14.0"
     "@eslint/js": "npm:^10.0.0"
