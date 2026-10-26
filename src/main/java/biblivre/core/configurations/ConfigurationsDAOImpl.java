@@ -40,6 +40,10 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
     public List<ConfigurationsDTO> list() {
         String schema = SchemaThreadLocal.get();
 
+        if (schema == null) {
+            return List.of();
+        }
+
         if (this.cache.get(schema) != null) {
             return this.cache.get(schema);
         }

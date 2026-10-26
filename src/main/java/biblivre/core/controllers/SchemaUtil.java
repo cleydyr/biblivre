@@ -26,6 +26,7 @@ public class SchemaUtil {
                     "DigitalMediaController",
                     "static",
                     "favicon.ico",
+                    "robots.txt",
                     "login",
                     "logout",
                     "spa");

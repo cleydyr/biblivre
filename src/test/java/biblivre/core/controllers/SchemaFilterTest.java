@@ -76,6 +76,20 @@ class SchemaFilterTest {
     }
 
     @Test
+    void usesBoundSchemaForRobotsTxt() throws Exception {
+        SchemaDTO temp = new SchemaDTO("temp", "Temp");
+        SchemaFilter filter = boundFilter("temp", true, Set.of(temp));
+        MockHttpServletRequest request = requestAt("/Biblivre6/robots.txt");
+        request.addHeader(SchemaUtil.BOUND_SCHEMA_HEADER, "temp");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(
+                request, response, (req, res) -> assertEquals("temp", SchemaThreadLocal.get()));
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+    }
+
+    @Test
     void allowsPathThatMatchesBoundSchema() throws Exception {
         SchemaDTO temp = new SchemaDTO("temp", "Temp");
         SchemaFilter filter = boundFilter("temp", true, Set.of(temp));

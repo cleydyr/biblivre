@@ -4,13 +4,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import biblivre.core.ExtendedRequest;
+import biblivre.core.ExtendedResponse;
 import biblivre.core.RequestParserHelper;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.configurations.ConfigurationBO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import java.lang.reflect.Method;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -19,6 +29,11 @@ import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 
 class SchemaServletTest {
+
+    @AfterEach
+    void tearDown() {
+        SchemaThreadLocal.remove();
+    }
 
     @Test
     void setRequestParserHelper_isAutowired() throws Exception {
@@ -56,6 +71,26 @@ class SchemaServletTest {
                 assertThrows(ServletException.class, () -> servlet.service(request, response));
 
         assertTrue(exception.getMessage().contains("dispatcherServlet"));
+    }
+
+    @Test
+    void doGet_doesNotReadConfigurationWhenSchemaIsUnset() throws Exception {
+        SchemaThreadLocal.remove();
+        ConfigurationBO configurationBO = mock(ConfigurationBO.class);
+        SchemaServlet servlet = new SchemaServlet();
+        servlet.setConfigurationBO(configurationBO);
+        servlet.init(new MockServletConfig(new MockServletContext()));
+
+        ExtendedRequest request = mock(ExtendedRequest.class);
+        when(request.getServletPath()).thenReturn("/other");
+        when(request.getController()).thenReturn("");
+        when(request.getString(anyString())).thenReturn("");
+        when(request.getBoolean(anyString())).thenReturn(false);
+        ExtendedResponse response = mock(ExtendedResponse.class);
+
+        servlet.doGet(request, response);
+
+        verify(configurationBO, never()).getBoolean(anyString());
     }
 
     private static SchemaServlet servletWithNamedDispatcher(RequestDispatcher requestDispatcher)
