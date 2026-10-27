@@ -21,7 +21,7 @@ package biblivre.circulation.reservation;
 
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +34,7 @@ public class ReservationDTO extends AbstractDTO {
     private Integer id;
     private Integer recordId;
     private Integer userId;
-    private Date expires;
+    private LocalDate expires;
 
     private transient String title;
 

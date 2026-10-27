@@ -21,7 +21,7 @@ package biblivre.circulation.lending;
 
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
-import java.util.Date;
+import java.time.Instant;
 
 public class LendingFineDTO extends AbstractDTO {
 
@@ -31,7 +31,7 @@ public class LendingFineDTO extends AbstractDTO {
     private Integer lendingId;
     private Integer userId;
     private Float value;
-    private Date payment;
+    private Instant payment;
 
     private transient String title;
     private transient String author;
@@ -68,7 +68,7 @@ public class LendingFineDTO extends AbstractDTO {
         this.value = value;
     }
 
-    public Date getPayment() {
+    public Instant getPayment() {
         return this.payment;
     }
 
@@ -76,7 +76,7 @@ public class LendingFineDTO extends AbstractDTO {
         return this.payment != null;
     }
 
-    public void setPayment(Date payment) {
+    public void setPayment(Instant payment) {
         this.payment = payment;
     }
 

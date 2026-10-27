@@ -21,7 +21,8 @@ package biblivre.circulation.lending;
 
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,8 +36,8 @@ public class LendingDTO extends AbstractDTO {
     private Integer holdingId;
     private Integer userId;
     private Integer previousLendingId;
-    private Date expectedReturnDate;
-    private Date returnDate;
+    private LocalDate expectedReturnDate;
+    private Instant returnDate;
 
     private transient Float dailyFine;
     private transient Integer daysLate;

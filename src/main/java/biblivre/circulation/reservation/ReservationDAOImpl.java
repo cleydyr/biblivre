@@ -23,7 +23,6 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.utils.CalendarUtils;
 import java.sql.*;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -213,7 +212,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, dto.getRecordId());
             pst.setInt(2, dto.getUserId());
-            pst.setTimestamp(3, CalendarUtils.toSqlTimestamp(dto.getExpires()));
+            pst.setObject(3, dto.getExpires().atStartOfDay(), Types.TIMESTAMP);
             pst.setInt(4, dto.getCreatedBy());
 
             pst.executeUpdate();
@@ -235,7 +234,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         dto.setId(rs.getInt("id"));
         dto.setRecordId(rs.getInt("record_id"));
         dto.setUserId(rs.getInt("user_id"));
-        dto.setExpires(rs.getTimestamp("expires"));
+        dto.setExpires(getLocalDate(rs, "expires"));
 
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));

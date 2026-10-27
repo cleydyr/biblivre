@@ -45,11 +45,9 @@ import biblivre.core.utils.CharPool;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
@@ -160,8 +158,7 @@ public class LendingBO {
         lending.setHoldingId(holding.getId());
         lending.setUserId(user.getId());
 
-        Date expectedReturnDate = calculateExpectedReturnDate(user);
-        lending.setExpectedReturnDate(expectedReturnDate);
+        lending.setExpectedReturnDate(calculateExpectedReturnDate(user));
 
         if (this.lendingDAO.doLend(lending)) {
             reservationBO.delete(user.getId(), holding.getRecordId());
@@ -171,10 +168,10 @@ public class LendingBO {
         }
     }
 
-    private @NonNull Date calculateExpectedReturnDate(UserDTO user) {
+    private @NonNull LocalDate calculateExpectedReturnDate(UserDTO user) {
         UserTypeDTO type = userTypeBO.get(user.getType());
 
-        Date today = Date.from(clock.instant());
+        LocalDate today = CalendarUtils.toLocalDateInDefaultZone(clock.instant());
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
         return CalendarUtils.calculateExpectedReturnDate(
@@ -207,7 +204,7 @@ public class LendingBO {
         // DAO only persists return_date; keep the in-memory Lending in sync for Fine/undo.
         Instant returnedAt = clock.instant();
 
-        lending.setReturnDate(Date.from(returnedAt));
+        lending.setReturnDate(returnedAt);
 
         LendingFineDTO fine = generateLendingFine(lending, returnedAt, loggedUserId);
 
@@ -274,9 +271,7 @@ public class LendingBO {
         if (lending == null || lending.getReturnDate() == null) {
             return null;
         }
-        return lending.getReturnDate()
-                .toInstant()
-                .plusSeconds(Math.max(0, returnUndoWindowSeconds));
+        return lending.getReturnDate().plusSeconds(Math.max(0, returnUndoWindowSeconds));
     }
 
     public ReservationBag getNextReservation(HoldingDTO holding) {
@@ -327,9 +322,7 @@ public class LendingBO {
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
-        Date expectedReturnDate = calculateExpectedReturnDate(userDto);
-
-        lending.setExpectedReturnDate(expectedReturnDate);
+        lending.setExpectedReturnDate(calculateExpectedReturnDate(userDto));
 
         return this.lendingDAO.doRenew(
                 lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
@@ -554,11 +547,7 @@ public class LendingBO {
 
     private String generateTxtReceipt(
             List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
-        DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
-
-        // Sets the time zone of the formatter to the one configured for the JVM through the TZ
-        // environment variable
-        receiptDateFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+        ReceiptDateFormatter formats = receiptDateFormatter(i18n);
 
         Collection<LendingDTO> lendings = this.listLendings(lendingsIds);
 
@@ -586,7 +575,7 @@ public class LendingBO {
                 .append(StringUtils.repeat(CharPool.SPACE, columns - 2))
                 .append("*\n");
         receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns)).append(CharPool.NEW_LINE);
-        receipt.append(StringUtils.center(receiptDateFormat.format(new Date()), columns))
+        receipt.append(StringUtils.center(formats.formatDateTime(clock.instant()), columns))
                 .append(CharPool.NEW_LINE);
         receipt.append(CharPool.NEW_LINE);
 
@@ -651,9 +640,6 @@ public class LendingBO {
             String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
             String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
 
-            DateFormat returnDateFormat =
-                    new SimpleDateFormat(i18n.getText(Constants.TRANSLATION_FORMAT_DATE));
-
             if (!currentLendings.isEmpty()) {
 
                 String header = "**" + i18n.getText("circulation.lending.receipt.lendings") + "**";
@@ -686,15 +672,15 @@ public class LendingBO {
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
                     receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
-                    Date lendingDate = info.getLending().getCreated();
+                    Instant lendingDate = info.getLending().getCreated().toInstant();
                     receipt.append("   ")
-                            .append(receiptDateFormat.format(lendingDate))
+                            .append(formats.formatDateTime(lendingDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(expectedDateLabel).append(":\n");
-                    Date expectedReturnDate = info.getLending().getExpectedReturnDate();
+                    LocalDate expectedReturnDate = info.getLending().getExpectedReturnDate();
 
                     receipt.append("   ")
-                            .append(returnDateFormat.format(expectedReturnDate))
+                            .append(formats.formatDate(expectedReturnDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
@@ -734,14 +720,14 @@ public class LendingBO {
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
                     receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
-                    Date lendingDate = info.getLending().getCreated();
+                    Instant lendingDate = info.getLending().getCreated().toInstant();
                     receipt.append("   ")
-                            .append(receiptDateFormat.format(lendingDate))
+                            .append(formats.formatDateTime(lendingDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(expectedDateLabel).append(":\n");
-                    Date expectedReturnDate = info.getLending().getExpectedReturnDate();
+                    LocalDate expectedReturnDate = info.getLending().getExpectedReturnDate();
                     receipt.append("   ")
-                            .append(returnDateFormat.format(expectedReturnDate))
+                            .append(formats.formatDate(expectedReturnDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
@@ -781,14 +767,14 @@ public class LendingBO {
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
                     receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
-                    Date lendingDate = info.getLending().getCreated();
+                    Instant lendingDate = info.getLending().getCreated().toInstant();
                     receipt.append("   ")
-                            .append(receiptDateFormat.format(lendingDate))
+                            .append(formats.formatDateTime(lendingDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(returnDateLabel).append(":\n");
-                    Date returnDate = info.getLending().getReturnDate();
+                    Instant returnDate = info.getLending().getReturnDate();
                     receipt.append("   ")
-                            .append(receiptDateFormat.format(returnDate))
+                            .append(formats.formatDateTime(returnDate))
                             .append(CharPool.NEW_LINE);
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
@@ -803,19 +789,20 @@ public class LendingBO {
         return receipt.toString();
     }
 
+    private static ReceiptDateFormatter receiptDateFormatter(TranslationsMap i18n) {
+        return new ReceiptDateFormatter(
+                i18n.getText(Constants.TRANSLATION_FORMAT_DATE),
+                i18n.getText(Constants.TRANSLATION_FORMAT_DATETIME));
+    }
+
     private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
 
         Map<String, Object> root = new HashMap<>();
 
-        String formatDateTime = i18n.getText(Constants.TRANSLATION_FORMAT_DATETIME);
+        ReceiptDateFormatter formats = receiptDateFormatter(i18n);
 
-        DateFormat dateTimeFormat = new SimpleDateFormat(formatDateTime);
-
-        root.put("dateTimeFormat", formatDateTime);
-
-        String formatDate = i18n.getText(Constants.TRANSLATION_FORMAT_DATE);
-
-        root.put("dateFormat", formatDate);
+        // Used by the receipt template to print lending dates
+        root.put("formats", formats);
 
         Collection<LendingDTO> lendings = this.listLendings(lendingsIds);
 
@@ -832,7 +819,7 @@ public class LendingBO {
         root.put("lendingInfo", lendingInfo);
 
         String libraryName = configurationBO.getString("general.title");
-        String now = dateTimeFormat.format(new Date());
+        String now = formats.formatDateTime(clock.instant());
 
         root.put("libraryName", libraryName);
         root.put("now", now);
@@ -931,8 +918,7 @@ public class LendingBO {
     private boolean hasFineBeenAltered(@Nonnull LendingDTO lending, @Nonnull LendingFineDTO fine) {
         UserDTO user = userBO.get(lending.getUserId());
 
-        Integer daysLate =
-                lendingFineBO.calculateLateDays(lending, lending.getReturnDate().toInstant());
+        Integer daysLate = lendingFineBO.calculateLateDays(lending, lending.getReturnDate());
 
         Float expectedValue = lendingFineBO.calculateFineValue(daysLate, user);
 

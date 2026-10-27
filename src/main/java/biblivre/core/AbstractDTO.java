@@ -24,6 +24,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +43,13 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDTO implements IFJson, Serializable {
     @Serial private static final long serialVersionUID = 1L;
+
+    /**
+     * Same layout as {@link DateFormatUtils#ISO_8601_EXTENDED_DATETIME_FORMAT}, which is what the
+     * legacy {@link Date} fields have always been serialized with. Clients parse it as local time.
+     */
+    private static final DateTimeFormatter JSON_DATE_TIME =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private Date created;
     private int createdBy;
@@ -148,6 +159,13 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                                     name,
                                     DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(
                                             (Date) value));
+                        } else if (value instanceof LocalDate localDate) {
+                            // A date-only value keeps the shape clients already receive: midnight.
+                            json.putOpt(name, JSON_DATE_TIME.format(localDate.atStartOfDay()));
+                        } else if (value instanceof Instant instant) {
+                            json.putOpt(
+                                    name,
+                                    JSON_DATE_TIME.format(instant.atZone(ZoneId.systemDefault())));
                         } else if (value instanceof String) {
                             json.putOpt(name, ((String) value).trim());
                         } else {

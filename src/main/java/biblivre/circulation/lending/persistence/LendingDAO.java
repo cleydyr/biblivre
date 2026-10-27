@@ -4,7 +4,7 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.user.UserDTO;
 import java.sql.Connection;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +45,7 @@ public interface LendingDAO {
 
     boolean undoReturn(int lendingId);
 
-    boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy);
+    boolean doRenew(int lendingId, LocalDate expectedReturnDate, int createdBy);
 
     Integer countLentHoldings(int recordId);
 

@@ -25,10 +25,36 @@ import biblivre.core.function.UnsafeFunction;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractDAO {
+    /**
+     * Reads a {@code timestamp without time zone} column as a calendar date, dropping the time of
+     * day. Returns {@code null} for SQL {@code NULL}.
+     */
+    protected static LocalDate getLocalDate(ResultSet rs, String column) throws SQLException {
+        LocalDateTime value = rs.getObject(column, LocalDateTime.class);
+
+        return value == null ? null : value.toLocalDate();
+    }
+
+    /**
+     * Reads a {@code timestamp without time zone} column as an {@link Instant}, interpreting the
+     * stored wall-clock time in the JVM default zone (what {@link ResultSet#getTimestamp} does).
+     * Returns {@code null} for SQL {@code NULL}.
+     */
+    protected static Instant getInstant(ResultSet rs, String column) throws SQLException {
+        LocalDateTime value = rs.getObject(column, LocalDateTime.class);
+
+        return value == null ? null : value.atZone(ZoneId.systemDefault()).toInstant();
+    }
+
     protected final void rollback(Connection con) {
         try {
             if (con != null) {

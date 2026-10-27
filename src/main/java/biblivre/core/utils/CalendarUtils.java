@@ -26,19 +26,26 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.jspecify.annotations.NonNull;
 
 public class CalendarUtils {
-
-    public static java.sql.Date toSqlDate(Date date) {
-        return new java.sql.Date(date.getTime());
-    }
 
     public static java.sql.Timestamp toSqlTimestamp(Date date) {
         return new java.sql.Timestamp(date.getTime());
     }
 
-    private static final Map<String, Integer> expectedReturnDateCache = new ConcurrentHashMap<>();
+    /**
+     * The number of calendar days to add only depends on the weekday the count starts on, the
+     * number of business days requested and which weekdays are business days, so the cache is
+     * bounded by 7 entries per configuration instead of growing with every distinct date.
+     */
+    private record DaysToAddKey(DayOfWeek startDayOfWeek, int days, List<Integer> businessDays) {
+        DaysToAddKey {
+            businessDays = List.copyOf(businessDays);
+        }
+    }
+
+    private static final Map<DaysToAddKey, Integer> expectedReturnDateCache =
+            new ConcurrentHashMap<>();
 
     public static boolean isMidnight(Date date) {
         Calendar cal = new GregorianCalendar();
@@ -51,21 +58,19 @@ public class CalendarUtils {
         return date.getTime() == cal.getTimeInMillis();
     }
 
-    public static Date calculateExpectedReturnDate(
-            Date lendingDate, int days, List<Integer> businessDays) {
-
-        LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
+    public static LocalDate calculateExpectedReturnDate(
+            LocalDate lendingDate, int days, List<Integer> businessDays) {
 
         int daysToAdd =
                 expectedReturnDateCache.computeIfAbsent(
-                        getCacheKey(expectedReturnDate, days, businessDays),
-                        key -> calculateDaysToAdd(expectedReturnDate, days, businessDays));
+                        new DaysToAddKey(lendingDate.getDayOfWeek(), days, businessDays),
+                        key -> calculateDaysToAdd(key.startDayOfWeek(), days, businessDays));
 
-        return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
+        return lendingDate.plusDays(daysToAdd);
     }
 
     private static int calculateDaysToAdd(
-            LocalDate startDate, int days, List<Integer> businessDays) {
+            DayOfWeek startDayOfWeek, int days, List<Integer> businessDays) {
         // Only invoked from {@link Map#computeIfAbsent} below, so the key is known to be
         // absent; the mapping function must not mutate the cache itself.
         int remainingDays = days;
@@ -85,7 +90,7 @@ public class CalendarUtils {
 
         int daysToAdd = 0;
 
-        for (int i = startDate.getDayOfWeek().getValue();
+        for (int i = startDayOfWeek.getValue();
                 i <= DayOfWeek.SUNDAY.getValue() && remainingDays > 0;
                 i++) {
             daysToAdd++;
@@ -122,16 +127,6 @@ public class CalendarUtils {
         return daysToAdd;
     }
 
-    private static @NonNull String getCacheKey(
-            LocalDate startDate, int days, List<Integer> businessDays) {
-        return String.format(
-                "%s|%d|%s",
-                startDate.toString(),
-                days,
-                String.join(
-                        ",", businessDays.stream().map(String::valueOf).toArray(String[]::new)));
-    }
-
     /**
      * Converts {@link Calendar#DAY_OF_WEEK} values (Sunday=1 … Saturday=7), as stored in {@code
      * general.business_days}, to {@link DayOfWeek#getValue()} (Monday=1 … Sunday=7).
@@ -153,11 +148,6 @@ public class CalendarUtils {
         return count;
     }
 
-    public static Date toDateInDefaultZone(LocalDate expectedReturnDate) {
-        return Date.from(
-                expectedReturnDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-    }
-
     public static LocalDate toLocalDateInDefaultZone(Date lendingDate) {
         return toLocalDateInDefaultZone(lendingDate.toInstant());
     }
@@ -169,11 +159,6 @@ public class CalendarUtils {
     public static int calculateDateDifference(Date initialDate, Date finalDate) {
         return calculateDateDifference(
                 toLocalDateInDefaultZone(initialDate), toLocalDateInDefaultZone(finalDate));
-    }
-
-    public static int calculateDateDifference(Instant initialInstant, Instant finalInstant) {
-        return calculateDateDifference(
-                toLocalDateInDefaultZone(initialInstant), toLocalDateInDefaultZone(finalInstant));
     }
 
     public static int calculateDateDifference(LocalDate initialDate, LocalDate finalDate) {

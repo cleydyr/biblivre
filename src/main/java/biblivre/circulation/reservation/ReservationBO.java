@@ -37,8 +37,9 @@ import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,7 @@ public class ReservationBO extends AbstractBO {
     private UserTypeBO userTypeBO;
     private IndexingGroupBO indexingGroupBO;
     private ConfigurationBO configurationBO;
+    private Clock clock;
 
     public ReservationDTO get(Integer id) {
         return this.reservationDAO.get(id);
@@ -181,9 +183,9 @@ public class ReservationBO extends AbstractBO {
 
         UserTypeDTO type = userTypeBO.get(user.getType());
 
-        Date today = new Date();
+        LocalDate today = CalendarUtils.toLocalDateInDefaultZone(clock.instant());
         int days = (type != null) ? type.getReservationTimeLimit() : 7;
-        Date expires =
+        LocalDate expires =
                 CalendarUtils.calculateExpectedReturnDate(
                         today,
                         days,
@@ -276,5 +278,10 @@ public class ReservationBO extends AbstractBO {
     @Autowired
     public void setConfigurationBO(ConfigurationBO configurationBO) {
         this.configurationBO = configurationBO;
+    }
+
+    @Autowired
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 }
