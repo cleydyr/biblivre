@@ -107,10 +107,11 @@ jobs:
           distribution: "zulu"
           java-version: "25"
           cache: "maven"
-          # setup-java expects env *names* here (not secret values).
+          # These inputs are environment variable names, not secret values.
+          # The job env above maps OSSINDEX_* from secrets.
           server-id: ossindex
-          server-username: OSSINDEX_USERNAME
-          server-password: OSSINDEX_TOKEN
+          server-username-env-var: OSSINDEX_USERNAME
+          server-password-env-var: OSSINDEX_TOKEN
 
       # Node/Corepack come from pom; Yarn version from packageManager (Yarn Berry via Corepack).
       - name: Get frontend toolchain versions
