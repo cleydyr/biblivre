@@ -38,7 +38,7 @@
     "react-router-dom": "7.18.4"
   },
   "devDependencies": {
-    "@elastic/eslint-plugin-eui": "^2.3.0",
+    "@elastic/eslint-plugin-eui": "^3.0.0",
     "@eslint/js": "^10.0.0",
     "@formatjs/cli": "^6.7.2",
     "@stylistic/eslint-plugin": "^5.3.1",
