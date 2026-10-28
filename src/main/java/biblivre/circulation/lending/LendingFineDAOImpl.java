@@ -46,7 +46,9 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
             pst.setInt(2, fine.getLendingId());
             pst.setFloat(3, fine.getValue());
             if (fine.isPaid()) {
-                pst.setDate(4, CalendarUtils.toSqlDate(fine.getPayment()));
+                // The payment date is stored with day precision when a fine is created as paid.
+                pst.setObject(
+                        4, CalendarUtils.toLocalDateInDefaultZone(fine.getPayment()), Types.DATE);
             } else {
                 pst.setNull(4, Types.DATE);
             }
@@ -212,7 +214,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         dto.setLendingId(rs.getInt("lending_id"));
         dto.setUserId(rs.getInt("user_id"));
         dto.setValue(rs.getFloat("fine_value"));
-        dto.setPayment(rs.getTimestamp("payment_date"));
+        dto.setPayment(getInstant(rs, "payment_date"));
 
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));

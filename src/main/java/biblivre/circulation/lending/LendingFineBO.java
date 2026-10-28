@@ -33,7 +33,6 @@ import biblivre.core.AbstractBO;
 import biblivre.core.utils.CalendarUtils;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -101,7 +100,7 @@ public class LendingFineBO extends AbstractBO {
         fine.setLendingId(lending.getId());
         fine.setValue(value);
         if (paid) {
-            fine.setPayment(Date.from(clock.instant()));
+            fine.setPayment(clock.instant());
         }
         fine.setCreatedBy(createdBy);
         this.lendingFineDAO.insert(fine);
@@ -130,8 +129,8 @@ public class LendingFineBO extends AbstractBO {
     }
 
     public Integer calculateLateDays(LendingDTO lending, Instant asOf) {
-        Instant expectedReturn = lending.getExpectedReturnDate().toInstant();
-        return CalendarUtils.calculateDateDifference(expectedReturn, asOf);
+        return CalendarUtils.calculateDateDifference(
+                lending.getExpectedReturnDate(), CalendarUtils.toLocalDateInDefaultZone(asOf));
     }
 
     @Autowired

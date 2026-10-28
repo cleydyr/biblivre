@@ -24,11 +24,10 @@ import biblivre.circulation.lending.persistence.LendingDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.utils.CalendarUtils;
 import jakarta.annotation.Nonnull;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -314,7 +313,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             } else {
                 pst.setNull(3, Types.INTEGER);
             }
-            pst.setTimestamp(4, CalendarUtils.toSqlTimestamp(lending.getExpectedReturnDate()));
+            pst.setObject(4, lending.getExpectedReturnDate().atStartOfDay(), Types.TIMESTAMP);
             pst.setInt(5, lending.getCreatedBy());
 
             return pst.executeUpdate() > 0;
@@ -363,7 +362,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-    public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
+    public boolean doRenew(int lendingId, LocalDate expectedReturnDate, int createdBy) {
         return withTransactionContext(
                 con -> {
                     this.doReturn(lendingId, con);
@@ -461,8 +460,8 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         dto.setHoldingId(rs.getInt("holding_id"));
         dto.setUserId(rs.getInt("user_id"));
         dto.setPreviousLendingId(rs.getInt("previous_lending_id"));
-        dto.setExpectedReturnDate(rs.getTimestamp("expected_return_date"));
-        dto.setReturnDate(rs.getTimestamp("return_date"));
+        dto.setExpectedReturnDate(getLocalDate(rs, "expected_return_date"));
+        dto.setReturnDate(getInstant(rs, "return_date"));
 
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));

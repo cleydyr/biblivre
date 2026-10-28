@@ -3,7 +3,7 @@ package biblivre.circulation.lending;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Date;
+import java.time.Instant;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ public class LendingFineDTOTest {
         fine.setLendingId(10);
         fine.setUserId(20);
         fine.setValue(5.0f);
-        fine.setPayment(new Date());
+        fine.setPayment(Instant.now());
 
         JSONObject json = fine.toJSONObject();
 
