@@ -867,6 +867,12 @@ var CatalogingInputClass = {
 	},
 	_updateDatabaseCountXHR: null,
 	updateDatabaseCount: function() {
+		// Skip until a cataloging module is set. jQuery 1.7 omits an undefined
+		// module from the POST, and JsonController then logs error.void.
+		if (!this.type) {
+			return;
+		}
+
 		var database = this.getCurrentDatabase();
 
 		if (this._updateDatabaseCountXHR) {
