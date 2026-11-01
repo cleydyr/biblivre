@@ -50,7 +50,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -915,7 +914,7 @@ public class LendingBO {
         return writer.toString();
     }
 
-    private boolean hasFineBeenAltered(@Nonnull LendingDTO lending, @Nonnull LendingFineDTO fine) {
+    private boolean hasFineBeenAltered(@NonNull LendingDTO lending, @NonNull LendingFineDTO fine) {
         UserDTO user = userBO.get(lending.getUserId());
 
         Integer daysLate = lendingFineBO.calculateLateDays(lending, lending.getReturnDate());
