@@ -169,7 +169,7 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
               />
             ),
           icon: (user: User) =>
-            user.status === 'inactive' ? 'trash' : 'minusInCircle',
+            user.status === 'inactive' ? 'trash' : 'minusCircle',
           type: 'icon',
           color: 'danger',
           enabled: (user) => statusChangeUserId !== user.id,
