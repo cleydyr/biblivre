@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 public class CalendarUtilsTest {
     private static final List<Integer> MONDAY_TO_FRIDAY = List.of(2, 3, 4, 5, 6);
@@ -27,6 +28,38 @@ public class CalendarUtilsTest {
                 LocalDate.of(2025, 1, 16),
                 CalendarUtils.calculateExpectedReturnDate(
                         LocalDate.of(2024, 10, 21), 50, List.of(3, 4, 5, 6)));
+    }
+
+    /**
+     * When the count ends on the last business day of the week, the expected return date must roll
+     * over to the next business day. Friday 2026-10-30 + 1 business day used to return Saturday
+     * 2026-10-31 (issue #899).
+     */
+    @Test
+    void calculateExpectedReturnDate_whenCountEndsBeforeWeekend_returnsNextBusinessDay() {
+        assertEquals(
+                LocalDate.of(2026, 11, 2),
+                CalendarUtils.calculateExpectedReturnDate(
+                        LocalDate.of(2026, 10, 30), 1, MONDAY_TO_FRIDAY));
+    }
+
+    /**
+     * Whole weeks are skipped instead of walked day by day, and the offset is a long: 7 *
+     * Integer.MAX_VALUE used to overflow into a date millions of years in the past.
+     */
+    @Test
+    @Timeout(5)
+    void calculateExpectedReturnDate_withVeryLargeLimit_isFastAndDoesNotOverflow() {
+        LocalDate monday = LocalDate.of(2026, 11, 2);
+
+        assertEquals(
+                monday.plusWeeks(400_000_000),
+                CalendarUtils.calculateExpectedReturnDate(
+                        monday, 5 * 400_000_000, MONDAY_TO_FRIDAY));
+
+        assertEquals(
+                monday.plusWeeks(Integer.MAX_VALUE),
+                CalendarUtils.calculateExpectedReturnDate(monday, Integer.MAX_VALUE, List.of(2)));
     }
 
     /**
@@ -84,33 +117,32 @@ public class CalendarUtilsTest {
     }
 
     /**
-     * Characterization of the original (pre java.time) implementation: calendar days added for 0..9
-     * business days, one row per start weekday (Monday first, starting 2026-01-05). Includes the
-     * pre-existing behavior of landing on a non-business day when the count ends on the last
-     * business day of the week (e.g. Friday + 1 business day = Saturday).
+     * Calendar days added for 0..9 business days, one row per start weekday (Monday first, starting
+     * 2026-01-05). Every non-zero offset lands on a business day (e.g. Friday + 1 business day =
+     * Monday, not Saturday).
      */
     private static final int[][] MONDAY_TO_FRIDAY_OFFSETS = {
-        {0, 1, 2, 3, 4, 5, 8, 9, 10, 11},
-        {0, 1, 2, 3, 4, 7, 8, 9, 10, 13},
-        {0, 1, 2, 3, 6, 7, 8, 9, 12, 13},
-        {0, 1, 2, 5, 6, 7, 8, 11, 12, 13},
-        {0, 1, 4, 5, 6, 7, 10, 11, 12, 13},
+        {0, 1, 2, 3, 4, 7, 8, 9, 10, 11},
+        {0, 1, 2, 3, 6, 7, 8, 9, 10, 13},
+        {0, 1, 2, 5, 6, 7, 8, 9, 12, 13},
+        {0, 1, 4, 5, 6, 7, 8, 11, 12, 13},
+        {0, 3, 4, 5, 6, 7, 10, 11, 12, 13},
         {0, 3, 4, 5, 6, 9, 10, 11, 12, 13},
         {0, 2, 3, 4, 5, 8, 9, 10, 11, 12},
     };
 
     private static final int[][] MONDAY_WEDNESDAY_FRIDAY_OFFSETS = {
-        {0, 1, 3, 5, 9, 11, 14, 16, 18, 21},
-        {0, 2, 4, 8, 10, 13, 15, 17, 20, 22},
-        {0, 1, 3, 7, 9, 12, 14, 16, 19, 21},
-        {0, 2, 6, 8, 11, 13, 15, 18, 20, 22},
-        {0, 1, 5, 7, 10, 12, 14, 17, 19, 21},
+        {0, 2, 4, 7, 9, 11, 14, 16, 18, 21},
+        {0, 3, 6, 8, 10, 13, 15, 17, 20, 22},
+        {0, 2, 5, 7, 9, 12, 14, 16, 19, 21},
+        {0, 4, 6, 8, 11, 13, 15, 18, 20, 22},
+        {0, 3, 5, 7, 10, 12, 14, 17, 19, 21},
         {0, 4, 6, 9, 11, 13, 16, 18, 20, 23},
         {0, 3, 5, 8, 10, 12, 15, 17, 19, 22},
     };
 
     @Test
-    void calculateExpectedReturnDate_matchesOriginalImplementation() {
+    void calculateExpectedReturnDate_matchesGoldenTable() {
         assertMatches(MONDAY_TO_FRIDAY, MONDAY_TO_FRIDAY_OFFSETS);
         assertMatches(List.of(2, 4, 6), MONDAY_WEDNESDAY_FRIDAY_OFFSETS);
     }

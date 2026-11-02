@@ -44,7 +44,7 @@ public class CalendarUtils {
         }
     }
 
-    private static final Map<DaysToAddKey, Integer> expectedReturnDateCache =
+    private static final Map<DaysToAddKey, Long> expectedReturnDateCache =
             new ConcurrentHashMap<>();
 
     public static boolean isMidnight(Date date) {
@@ -61,7 +61,11 @@ public class CalendarUtils {
     public static LocalDate calculateExpectedReturnDate(
             LocalDate lendingDate, int days, List<Integer> businessDays) {
 
-        int daysToAdd =
+        if (days == 0) {
+            return lendingDate;
+        }
+
+        long daysToAdd =
                 expectedReturnDateCache.computeIfAbsent(
                         new DaysToAddKey(lendingDate.getDayOfWeek(), days, businessDays),
                         key -> calculateDaysToAdd(key.startDayOfWeek(), days, businessDays));
@@ -69,12 +73,15 @@ public class CalendarUtils {
         return lendingDate.plusDays(daysToAdd);
     }
 
-    private static int calculateDaysToAdd(
+    /**
+     * Counts {@code days} business days starting on the lending day itself, then moves forward to
+     * the next business day.
+     *
+     * <p>Only invoked as the mapping function of {@link Map#computeIfAbsent} in {@link
+     * #calculateExpectedReturnDate}, so it must not mutate the cache itself.
+     */
+    private static long calculateDaysToAdd(
             DayOfWeek startDayOfWeek, int days, List<Integer> businessDays) {
-        // Only invoked from {@link Map#computeIfAbsent} below, so the key is known to be
-        // absent; the mapping function must not mutate the cache itself.
-        int remainingDays = days;
-
         // Indexed by DayOfWeek.getValue() (Monday=1 … Sunday=7). Index 0 unused.
         boolean[] isBusinessDay = new boolean[8];
 
@@ -88,41 +95,31 @@ public class CalendarUtils {
             return days;
         }
 
-        int daysToAdd = 0;
+        // Any 7 consecutive days hold exactly businessDaysPerWeek business days, so whole weeks
+        // can be skipped without changing the weekday. At least one business day is left for the
+        // loop below. The total is a long because 7 * days overflows an int for large limits.
+        int fullWeeks = days > 0 ? (days - 1) / businessDaysPerWeek : 0;
 
-        for (int i = startDayOfWeek.getValue();
-                i <= DayOfWeek.SUNDAY.getValue() && remainingDays > 0;
-                i++) {
-            daysToAdd++;
+        int remainingDays = days - fullWeeks * businessDaysPerWeek;
 
-            if (isBusinessDay[i]) {
-                remainingDays--;
-            }
-        }
+        long daysToAdd = 7L * fullWeeks;
 
-        if (remainingDays > 0) {
-            int weeks = remainingDays / businessDaysPerWeek;
+        DayOfWeek dayOfWeek = startDayOfWeek;
 
-            remainingDays -= weeks * businessDaysPerWeek;
-
-            daysToAdd += weeks * 7;
-        }
-
-        int i = DayOfWeek.MONDAY.getValue();
-        while (remainingDays > 0 || !isBusinessDay[i]) {
-            daysToAdd++;
-
-            if (isBusinessDay[i]) {
+        while (remainingDays > 0) {
+            if (isBusinessDay[dayOfWeek.getValue()]) {
                 remainingDays--;
             }
 
-            i++;
-            if (i > DayOfWeek.SUNDAY.getValue()) {
-                i = DayOfWeek.MONDAY.getValue();
-            }
+            daysToAdd++;
+            dayOfWeek = dayOfWeek.plus(1);
         }
 
-        assert remainingDays == 0;
+        // The expected return date must itself be a business day.
+        while (!isBusinessDay[dayOfWeek.getValue()]) {
+            daysToAdd++;
+            dayOfWeek = dayOfWeek.plus(1);
+        }
 
         return daysToAdd;
     }

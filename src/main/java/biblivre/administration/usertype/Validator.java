@@ -31,6 +31,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validator extends AbstractValidator {
 
+    /**
+     * Matches the {@code maxlength} of the time limit inputs in user_types.jsp, which the browser
+     * enforces but a direct request can bypass.
+     */
+    private static final int TIME_LIMIT_MAX_LENGTH = 3;
+
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
         ValidationException ex = new ValidationException("error.form_invalid_values");
@@ -46,35 +52,40 @@ public class Validator extends AbstractValidator {
         }
 
         String lendingLimit = request.getString("lending_limit");
-        if (StringUtils.isBlank(url)) {
+        if (StringUtils.isBlank(lendingLimit)) {
             ex.addError("lending_limit", "field.error.required");
         } else if (!StringUtils.isNumeric(lendingLimit)) {
             ex.addError("lending_limit", "field.error.digits_only");
         }
 
         String reservationLimit = request.getString("reservation_limit");
-        if (StringUtils.isBlank(url)) {
+        if (StringUtils.isBlank(reservationLimit)) {
             ex.addError("reservation_limit", "field.error.required");
         } else if (!StringUtils.isNumeric(reservationLimit)) {
             ex.addError("reservation_limit", "field.error.digits_only");
         }
 
         String lendingTimeLimit = request.getString("lending_time_limit");
-        if (StringUtils.isBlank(url)) {
+        if (StringUtils.isBlank(lendingTimeLimit)) {
             ex.addError("lending_time_limit", "field.error.required");
         } else if (!StringUtils.isNumeric(lendingTimeLimit)) {
             ex.addError("lending_time_limit", "field.error.digits_only");
+        } else if (lendingTimeLimit.length() > TIME_LIMIT_MAX_LENGTH) {
+            ex.addError("lending_time_limit", "field.error.max_length:::" + TIME_LIMIT_MAX_LENGTH);
         }
 
         String reservationTimeLimit = request.getString("reservation_time_limit");
-        if (StringUtils.isBlank(url)) {
+        if (StringUtils.isBlank(reservationTimeLimit)) {
             ex.addError("reservation_time_limit", "field.error.required");
         } else if (!StringUtils.isNumeric(reservationTimeLimit)) {
             ex.addError("reservation_time_limit", "field.error.digits_only");
+        } else if (reservationTimeLimit.length() > TIME_LIMIT_MAX_LENGTH) {
+            ex.addError(
+                    "reservation_time_limit", "field.error.max_length:::" + TIME_LIMIT_MAX_LENGTH);
         }
 
         String fineValue = request.getString("fine_value");
-        if (StringUtils.isBlank(url)) {
+        if (StringUtils.isBlank(fineValue)) {
             ex.addError("fine_value", "field.error.required");
         } else if (!NumberUtils.isCreatable(fineValue)) {
             ex.addError("fine_value", "field.error.digits_only");
