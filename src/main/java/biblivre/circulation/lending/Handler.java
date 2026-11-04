@@ -183,7 +183,7 @@ public class Handler extends AbstractHandler {
             Integer daysLate = lendingFineBO.calculateLateDays(lending);
             if (daysLate > 0) {
                 UserTypeDTO userType = userTypeBO.get(user.getType());
-                Float dailyFine = userType.getFineValue();
+                Float dailyFine = (userType != null) ? userType.getFineValue() : 0.0f;
 
                 lending.setDaysLate(daysLate);
                 lending.setDailyFine(dailyFine);

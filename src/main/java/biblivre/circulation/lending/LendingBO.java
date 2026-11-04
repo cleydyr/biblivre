@@ -300,7 +300,9 @@ public class LendingBO {
         UserDTO user = userBO.get(lending.getUserId());
         if (user != null) {
             UserTypeDTO userType = userTypeBO.get(user.getType());
-            user.setUsertypeName(userType.getName());
+            if (userType != null) {
+                user.setUsertypeName(userType.getName());
+            }
         }
 
         LendingBag info = new LendingBag();
@@ -426,13 +428,16 @@ public class LendingBO {
                     UserDTO user = usersMap.get(lending.getUserId());
                     if (user != null) {
                         UserTypeDTO userType = userTypeBO.get(user.getType());
-                        user.setUsertypeName(userType.getName());
+                        if (userType != null) {
+                            user.setUsertypeName(userType.getName());
+                        }
                         info.setUser(user);
 
                         if (lending.getReturnDate() == null) {
                             Integer daysLate = lendingFineBO.calculateLateDays(lending);
                             if (daysLate > 0) {
-                                Float dailyFine = userType.getFineValue();
+                                Float dailyFine =
+                                        (userType != null) ? userType.getFineValue() : 0.0f;
                                 lending.setDaysLate(daysLate);
                                 lending.setDailyFine(dailyFine);
                                 lending.setEstimatedFine(dailyFine * daysLate);

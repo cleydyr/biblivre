@@ -73,6 +73,20 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
+    public boolean hasAssociatedUser(int typeId) {
+        try (Connection connection = datasource.getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement("SELECT 1 FROM users WHERE type = ? LIMIT 1")) {
+            statement.setInt(1, typeId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (Exception exception) {
+            throw new DAOException(exception);
+        }
+    }
+
+    @Override
     public @Nonnull DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset)
             throws SearchException {
         DTOCollection<UserDTO> list = new DTOCollection<>();
