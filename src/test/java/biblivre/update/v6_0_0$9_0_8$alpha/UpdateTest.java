@@ -11,19 +11,42 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class UpdateTest extends AbstractContainerDatabaseTest {
 
-    private static final String SCHEMA = "orphan_user_types";
+    // Schema names Postgres must quote (uppercase, leading digit) come back quoted from
+    // pg_get_serial_sequence. A missing language falls back to pt-BR.
+    @ParameterizedTest
+    @CsvSource({
+        "orphan_user_types, , Tipo de usuário ausente (#15), pt-BR",
+        "Orphan_User_Types, en-US, Missing user type (#15), en-US",
+        "2orphan_user_types, es, Tipo de usuario ausente (#15), es",
+    })
+    void restoresPlaceholderTypesAndRejectsNewOrphans(
+            String schema, String configuredLanguage, String expectedName, String textLanguage)
+            throws Exception {
+        String quotedSchema = "\"" + schema + "\"";
 
-    @Test
-    void restoresPlaceholderTypesAndRejectsNewOrphans() throws Exception {
         try (Connection connection = openConnection();
                 Statement statement = connection.createStatement()) {
-            statement.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
-            statement.execute("CREATE SCHEMA " + SCHEMA);
-            statement.execute("SET search_path TO " + SCHEMA);
+            statement.execute("DROP SCHEMA IF EXISTS " + quotedSchema + " CASCADE");
+            statement.execute("CREATE SCHEMA " + quotedSchema);
+            statement.execute("SET search_path TO " + quotedSchema);
+            statement.execute(
+                    """
+                    CREATE TABLE configurations (
+                        key varchar NOT NULL,
+                        value varchar NOT NULL
+                    )
+                    """);
+            if (configuredLanguage != null) {
+                statement.execute(
+                        "INSERT INTO configurations (key, value)"
+                                + " VALUES ('general.default_language', '%s')"
+                                        .formatted(configuredLanguage));
+            }
             statement.execute(
                     """
                     CREATE TABLE users_types (
@@ -76,12 +99,14 @@ class UpdateTest extends AbstractContainerDatabaseTest {
                             WHERE id = 15
                             """)) {
                 assertTrue(resultSet.next());
-                assertEquals(Update.placeholderName(15), resultSet.getString("name"));
-                assertEquals(Update.PLACEHOLDER_DESCRIPTION, resultSet.getString("description"));
-                assertEquals(0, resultSet.getInt("lending_limit"));
-                assertEquals(0, resultSet.getInt("reservation_limit"));
-                assertEquals(0, resultSet.getInt("lending_time_limit"));
-                assertEquals(0, resultSet.getInt("reservation_time_limit"));
+                assertEquals(expectedName, resultSet.getString("name"));
+                assertEquals(
+                        Update.PLACEHOLDER_TEXTS.get(textLanguage).description(),
+                        resultSet.getString("description"));
+                assertEquals(1, resultSet.getInt("lending_limit"));
+                assertEquals(1, resultSet.getInt("reservation_limit"));
+                assertEquals(7, resultSet.getInt("lending_time_limit"));
+                assertEquals(7, resultSet.getInt("reservation_time_limit"));
                 assertEquals(0f, resultSet.getFloat("fine_value"));
                 assertFalse(resultSet.next());
             }
@@ -98,6 +123,16 @@ class UpdateTest extends AbstractContainerDatabaseTest {
                     statement.executeQuery("SELECT nextval('users_types_id_seq')")) {
                 assertTrue(resultSet.next());
                 assertEquals(16L, resultSet.getLong(1));
+            }
+
+            try (ResultSet resultSet =
+                    statement.executeQuery(
+                            """
+                            SELECT 1 FROM pg_indexes
+                            WHERE schemaname = current_schema()
+                              AND indexname = 'FKI_users_users_types'
+                            """)) {
+                assertTrue(resultSet.next());
             }
 
             SQLException insertOrphan =
@@ -124,10 +159,17 @@ class UpdateTest extends AbstractContainerDatabaseTest {
                 assertTrue(resultSet.next());
                 assertEquals(1, resultSet.getInt(1));
             }
+
+            // A rerun must not move the sequence backwards.
+            try (ResultSet resultSet =
+                    statement.executeQuery("SELECT nextval('users_types_id_seq')")) {
+                assertTrue(resultSet.next());
+                assertTrue(resultSet.getLong(1) > 16L);
+            }
         } finally {
             try (Connection connection = openConnection();
                     Statement statement = connection.createStatement()) {
-                statement.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
+                statement.execute("DROP SCHEMA IF EXISTS " + quotedSchema + " CASCADE");
             }
         }
     }

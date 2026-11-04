@@ -1,5 +1,6 @@
 package biblivre.update.v6_0_0$9_0_8$alpha;
 
+import biblivre.core.utils.Constants;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
@@ -7,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,8 +19,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class Update implements UpdateService {
 
-    static final String PLACEHOLDER_DESCRIPTION =
-            "Criado automaticamente porque ainda há leitores associados a este tipo.";
+    record PlaceholderText(String namePrefix, String description) {}
+
+    static final String DEFAULT_LANGUAGE = "pt-BR";
+
+    static final Map<String, PlaceholderText> PLACEHOLDER_TEXTS =
+            Map.of(
+                    "pt-BR",
+                    new PlaceholderText(
+                            "Tipo de usuário ausente",
+                            "Criado automaticamente porque ainda há leitores associados a este"
+                                    + " tipo."),
+                    "en-US",
+                    new PlaceholderText(
+                            "Missing user type",
+                            "Created automatically because readers are still assigned to this"
+                                    + " type."),
+                    "es",
+                    new PlaceholderText(
+                            "Tipo de usuario ausente",
+                            "Creado automáticamente porque todavía hay lectores asociados a este"
+                                    + " tipo."));
+
+    // Same limits lending and reservation already fall back to when a reader's type is missing.
+    static final int PLACEHOLDER_LENDING_LIMIT = 1;
+    static final int PLACEHOLDER_RESERVATION_LIMIT = 1;
+    static final int PLACEHOLDER_LENDING_TIME_LIMIT = 7;
+    static final int PLACEHOLDER_RESERVATION_TIME_LIMIT = 7;
 
     @Override
     public void doUpdateScopedBySchema(Connection connection) {
@@ -27,101 +54,67 @@ public class Update implements UpdateService {
 
     static void restoreMissingUserTypes(Connection connection) {
         try {
-            insertPlaceholders(connection);
+            insertPlaceholders(connection, placeholderText(connection));
             advanceUserTypeSequence(connection);
             addUserTypeForeignKey(connection);
+            addUserTypeIndex(connection);
         } catch (SQLException exception) {
             throw new UpdateException("Error restoring missing user types", exception);
         }
     }
 
-    static String placeholderName(int typeId) {
-        return "Tipo de usuário ausente (#" + typeId + ")";
+    private static PlaceholderText placeholderText(Connection connection) throws SQLException {
+        try (PreparedStatement statement =
+                connection.prepareStatement("SELECT value FROM configurations WHERE key = ?")) {
+            statement.setString(1, Constants.CONFIG_DEFAULT_LANGUAGE);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                String language = resultSet.next() ? resultSet.getString(1) : DEFAULT_LANGUAGE;
+                return PLACEHOLDER_TEXTS.getOrDefault(
+                        language, PLACEHOLDER_TEXTS.get(DEFAULT_LANGUAGE));
+            }
+        }
     }
 
-    private static void insertPlaceholders(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(
-                    """
-                    INSERT INTO users_types (
-                        id, name, description, lending_limit, reservation_limit,
-                        lending_time_limit, reservation_time_limit, fine_value, created_by)
-                    SELECT DISTINCT u.type,
-                           'Tipo de usuário ausente (#' || u.type || ')',
-                           'Criado automaticamente porque ainda há leitores associados a este tipo.',
-                           0, 0, 0, 0, 0, 1
-                    FROM users u
-                    WHERE u.type IS NOT NULL
-                      AND NOT EXISTS (SELECT 1 FROM users_types t WHERE t.id = u.type)
-                    """);
+    private static void insertPlaceholders(Connection connection, PlaceholderText text)
+            throws SQLException {
+        try (PreparedStatement statement =
+                connection.prepareStatement(
+                        """
+                        INSERT INTO users_types (
+                            id, name, description, lending_limit, reservation_limit,
+                            lending_time_limit, reservation_time_limit, fine_value, created_by)
+                        SELECT DISTINCT u.type, ?::text || ' (#' || u.type || ')', ?, ?, ?, ?, ?, 0, 1
+                        FROM users u
+                        WHERE u.type IS NOT NULL
+                          AND NOT EXISTS (SELECT 1 FROM users_types t WHERE t.id = u.type)
+                        """)) {
+            statement.setString(1, text.namePrefix());
+            statement.setString(2, text.description());
+            statement.setInt(3, PLACEHOLDER_LENDING_LIMIT);
+            statement.setInt(4, PLACEHOLDER_RESERVATION_LIMIT);
+            statement.setInt(5, PLACEHOLDER_LENDING_TIME_LIMIT);
+            statement.setInt(6, PLACEHOLDER_RESERVATION_TIME_LIMIT);
+            statement.executeUpdate();
         }
     }
 
     private static void advanceUserTypeSequence(Connection connection) throws SQLException {
-        String sequenceName = serialSequenceName(connection);
-        if (sequenceName == null) {
-            return;
-        }
-
-        long highestTypeId = highestUserTypeId(connection);
-        SequencePosition position = sequencePosition(connection, sequenceName);
-        // setval(n) makes the following nextval return n + 1. Advance only when an explicit id is
-        // already at or beyond the value the sequence would hand out next.
-        long nextValue = position.called() ? position.lastValue() + 1 : position.lastValue();
-        if (highestTypeId < nextValue) {
-            return;
-        }
-
-        try (PreparedStatement statement =
-                connection.prepareStatement("SELECT setval(?::regclass, ?)")) {
-            statement.setString(1, sequenceName);
-            statement.setLong(2, highestTypeId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                resultSet.next();
-            }
+        // Placeholders keep their original ids, which may be at or past the sequence. Move the
+        // sequence past the highest id. nextval may burn one value when the sequence is already
+        // ahead, which is harmless. The regclass cast handles quoted schema names.
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(
+                    """
+                    SELECT setval(
+                        sequence_name::regclass,
+                        GREATEST(
+                            nextval(sequence_name::regclass),
+                            (SELECT MAX(id) FROM users_types)))
+                    FROM (SELECT pg_get_serial_sequence('users_types', 'id') AS sequence_name) serial
+                    WHERE sequence_name IS NOT NULL
+                    """);
         }
     }
-
-    private static String serialSequenceName(Connection connection) throws SQLException {
-        try (PreparedStatement statement =
-                connection.prepareStatement("SELECT pg_get_serial_sequence('users_types', 'id')")) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.next()) {
-                    return null;
-                }
-                return resultSet.getString(1);
-            }
-        }
-    }
-
-    private static long highestUserTypeId(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet =
-                        statement.executeQuery("SELECT COALESCE(MAX(id), 0) FROM users_types")) {
-            resultSet.next();
-            return resultSet.getLong(1);
-        }
-    }
-
-    private static SequencePosition sequencePosition(Connection connection, String sequenceName)
-            throws SQLException {
-        if (!sequenceName.matches("[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?")) {
-            throw new SQLException("Unexpected sequence name: " + sequenceName);
-        }
-
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet =
-                        statement.executeQuery(
-                                "SELECT last_value, is_called FROM " + sequenceName)) {
-            if (!resultSet.next()) {
-                return new SequencePosition(0, true);
-            }
-            return new SequencePosition(
-                    resultSet.getLong("last_value"), resultSet.getBoolean("is_called"));
-        }
-    }
-
-    private record SequencePosition(long lastValue, boolean called) {}
 
     private static void addUserTypeForeignKey(Connection connection) throws SQLException {
         if (foreignKeyExists(connection)) {
@@ -152,6 +145,16 @@ public class Update implements UpdateService {
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
             }
+        }
+    }
+
+    // Serves the type-in-use check on deletion and the foreign key check on users_types deletes.
+    private static void addUserTypeIndex(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(
+                    """
+                    CREATE INDEX IF NOT EXISTS "FKI_users_users_types" ON users USING btree (type)
+                    """);
         }
     }
 }

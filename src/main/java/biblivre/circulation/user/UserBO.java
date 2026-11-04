@@ -28,6 +28,13 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.labels.print.LabelPrintDTO;
 import biblivre.search.SearchException;
+import jakarta.annotation.Nonnull;
+import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
@@ -41,13 +48,6 @@ import org.openpdf.text.pdf.PdfContentByte;
 import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
-import jakarta.annotation.Nonnull;
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +179,7 @@ public class UserBO extends AbstractBO {
                             new Phrase(
                                     this.getText(i18n, "circulation.user_field.short_type")
                                             + ": "
-                                            + usdto.getDescription()
+                                            + (usdto != null ? usdto.getDescription() : "")
                                             + "\n\n");
                     para.add(p1);
                     para.add(p3);

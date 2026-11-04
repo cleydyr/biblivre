@@ -116,7 +116,7 @@ public class LendingFineBO extends AbstractBO {
             return 0.0f;
         }
         UserTypeDTO userType = userTypeBO.get(user.getType());
-        Float fineValue = userType.getFineValue();
+        Float fineValue = (userType != null) ? userType.getFineValue() : 0.0f;
         return daysLate * fineValue;
     }
 
