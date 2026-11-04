@@ -9,6 +9,8 @@ public interface UserDAO {
 
     Map<Integer, UserDTO> map(Collection<Integer> ids);
 
+    boolean hasAssociatedUser(int typeId);
+
     DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) throws SearchException;
 
     UserDTO save(UserDTO user) throws SearchException;
