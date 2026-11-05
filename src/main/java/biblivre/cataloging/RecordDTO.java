@@ -23,11 +23,11 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
+import biblivre.marc.Iso2709;
 import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
-import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -37,8 +37,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.marc4j.MarcStreamWriter;
-import org.marc4j.MarcWriter;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
@@ -131,15 +129,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     private void _initIso2709() {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
-
-        writer.write(record);
-
-        writer.close();
-
-        this.iso2709 = os.toByteArray();
+        this.iso2709 = Iso2709.write(record);
     }
 
     public void setIso2709(byte[] iso2709) {
