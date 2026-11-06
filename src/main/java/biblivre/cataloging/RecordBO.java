@@ -29,6 +29,7 @@ import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.marc.Iso2709;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -136,7 +137,7 @@ public abstract class RecordBO extends AbstractBO {
                 MarcStreamWriter writer = new MarcStreamWriter(out, StandardCharsets.UTF_8.name());
 
                 for (RecordDTO dto : records.values()) {
-                    writer.write(dto.getRecord());
+                    writer.write(Iso2709.sanitize(dto.getRecord()));
                 }
 
                 writer.close();
