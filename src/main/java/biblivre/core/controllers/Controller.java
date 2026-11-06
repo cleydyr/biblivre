@@ -232,17 +232,17 @@ public abstract class Controller {
     }
 
     @Autowired
-    public final void setPermissionBO(PermissionBO permissionBO) {
+    public void setPermissionBO(PermissionBO permissionBO) {
         this.permissionBO = permissionBO;
     }
 
     @Autowired
-    public final void setHandlers(Map<String, AbstractHandler> handlersMap) {
+    public void setHandlers(Map<String, AbstractHandler> handlersMap) {
         this.handlersMap = handlersMap;
     }
 
     @Autowired
-    public final void setValidators(Map<String, AbstractValidator> validatorsMap) {
+    public void setValidators(Map<String, AbstractValidator> validatorsMap) {
         this.validatorsMap = validatorsMap;
     }
 

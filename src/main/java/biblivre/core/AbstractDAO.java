@@ -75,7 +75,7 @@ public abstract class AbstractDAO {
         }
     }
 
-    public final int getNextSerial(String sequence) {
+    public int getNextSerial(String sequence) {
         String sql = "SELECT nextval('%s') FROM %s".formatted(sequence, sequence);
 
         try (Connection con = datasource.getConnection();
@@ -131,7 +131,7 @@ public abstract class AbstractDAO {
     protected DataSource datasource;
 
     @Autowired
-    public final void setDataSource(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
         this.datasource = dataSource;
     }
 }
