@@ -25,15 +25,14 @@ import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class IndexingGroupBO {
-    private static final Logger logger = LoggerFactory.getLogger(IndexingGroupBO.class);
 
     private IndexingGroupsDAO indexingGroupDAO;
 
@@ -87,9 +86,8 @@ public class IndexingGroupBO {
 
     private List<IndexingGroupDTO> loadGroups(String schema, RecordType recordType) {
 
-        if (IndexingGroupBO.logger.isDebugEnabled()) {
-            IndexingGroupBO.logger.debug(
-                    "Loading indexing groups from " + schema + "." + recordType);
+        if (log.isDebugEnabled()) {
+            log.debug("Loading indexing groups from " + schema + "." + recordType);
         }
 
         return indexingGroupDAO.list(recordType);

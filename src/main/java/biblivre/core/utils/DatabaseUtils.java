@@ -29,13 +29,11 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class DatabaseUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
     public static File getPgDump() {
         String pgDumpPath = getPGDumpPath();
@@ -233,7 +231,7 @@ public class DatabaseUtils {
                 }
             }
         } catch (IOException e) {
-            DatabaseUtils.logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;

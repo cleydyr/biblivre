@@ -3,6 +3,12 @@ package biblivre.cataloging.labels;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.file.DiskFile;
 import biblivre.labels.print.LabelPrintDTO;
+import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
@@ -15,19 +21,11 @@ import org.openpdf.text.pdf.PdfContentByte;
 import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ITextLabelGenerator implements LabelGenerator {
-
-    private static final Logger logger = LoggerFactory.getLogger(ITextLabelGenerator.class);
 
     @Override
     public DiskFile generate(
@@ -79,7 +77,7 @@ public class ITextLabelGenerator implements LabelGenerator {
                 return new DiskFile(tempLabelsFile, "application/pdf");
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;

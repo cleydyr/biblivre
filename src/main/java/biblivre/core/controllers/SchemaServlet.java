@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.TabFieldsBO;
 import biblivre.circulation.user.UserFieldBO;
@@ -44,12 +43,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+@Slf4j
 public class SchemaServlet extends HttpServlet {
 
     @Serial private static final long serialVersionUID = 1L;
@@ -144,7 +143,7 @@ public class SchemaServlet extends HttpServlet {
                 this.processDynamicRequest(request, response);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -318,8 +317,6 @@ public class SchemaServlet extends HttpServlet {
 
         return servletContext.getContextPath() + path;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 
     @Autowired
     public void setJspController(JspController jspController) {

@@ -27,15 +27,14 @@ import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public final class TranslationsMap extends HashMap<String, TranslationDTO>
         implements IFCacheableJavascript {
-    private static final Logger logger = LoggerFactory.getLogger(TranslationsMap.class);
     @Serial private static final long serialVersionUID = 1L;
 
     private String schema;
@@ -79,7 +78,7 @@ public final class TranslationsMap extends HashMap<String, TranslationDTO>
             if (isNotGlobalSchema()) {
                 value = globalTranslationsMap.getText(key);
             } else {
-                logger.warn(
+                log.warn(
                         "Translation key not found: "
                                 + this.schema
                                 + "."

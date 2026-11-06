@@ -21,24 +21,22 @@ package biblivre.administration.setup;
 
 import biblivre.core.utils.CharPool;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class State {
     public static final AtomicBoolean LOCKED = new AtomicBoolean(false);
-    private static StringBuilder log;
+    private static StringBuilder setupLog;
     private static String lastMessage;
     private static long steps;
     private static long currentStep;
-
-    private static final Logger logger = LoggerFactory.getLogger(State.class);
 
     private static long currentSecondaryStep;
 
     public static void start() {
         State.LOCKED.set(true);
-        State.log = new StringBuilder();
+        State.setupLog = new StringBuilder();
         State.lastMessage = "";
         State.steps = 0;
         State.currentStep = 0;
@@ -54,11 +52,11 @@ public class State {
     }
 
     public static String getLog() {
-        if (State.log == null) {
+        if (State.setupLog == null) {
             return "";
         }
 
-        return State.log.toString();
+        return State.setupLog.toString();
     }
 
     public static String getLastMessage() {
@@ -106,9 +104,9 @@ public class State {
             return;
         }
 
-        State.log.append(message).append(CharPool.NEW_LINE);
+        State.setupLog.append(message).append(CharPool.NEW_LINE);
         State.lastMessage = message;
 
-        logger.debug(message);
+        log.debug(message);
     }
 }

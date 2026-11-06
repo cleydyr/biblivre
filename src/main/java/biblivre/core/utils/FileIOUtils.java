@@ -30,14 +30,13 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class FileIOUtils {
-    private static final Logger logger = LoggerFactory.getLogger(FileIOUtils.class);
 
     public static File createTempDir() throws IOException {
         final File sysTempDir = FileUtils.getTempDirectory();
@@ -153,7 +152,7 @@ public class FileIOUtils {
                     boolean isLastModifiedChanged = destination.setLastModified(entry.getTime());
 
                     if (!isLastModifiedChanged) {
-                        logger.warn(
+                        log.warn(
                                 "Setting last modified date failed for entry %s"
                                         .formatted(entryName));
                     }

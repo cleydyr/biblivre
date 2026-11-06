@@ -32,16 +32,16 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
     private DigitalMediaBO digitalMediaBO;
@@ -128,7 +128,7 @@ public class BackupBO extends AbstractBO {
                 this.move(dto);
             }
         } catch (Exception e) {
-            logger.error("error while creating backup", e);
+            log.error("error while creating backup", e);
         }
     }
 
@@ -282,7 +282,7 @@ public class BackupBO extends AbstractBO {
 
                 file.close();
             } catch (IOException ioException) {
-                logger.error("error while exporting digital media", ioException);
+                log.error("error while exporting digital media", ioException);
 
                 return;
             }
@@ -301,9 +301,9 @@ public class BackupBO extends AbstractBO {
 
                 while ((line = br.readLine()) != null) {
                     // There was a system.out.println here for the 'line' var,
-                    // with a FIX_ME tag.  So I changed it to logger.debug().
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(line);
+                    // with a FIX_ME tag.  So I changed it to log.debug().
+                    if (log.isDebugEnabled()) {
+                        log.debug(line);
                     }
                 }
 
@@ -312,7 +312,7 @@ public class BackupBO extends AbstractBO {
                 p.exitValue();
             }
         } catch (IOException | InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -393,8 +393,6 @@ public class BackupBO extends AbstractBO {
     private static boolean createBiblivreDirectoryIfNeeded(File biblivre, File home) {
         return !biblivre.exists() && home.isDirectory() && home.canWrite() && !biblivre.mkdir();
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 
     public Set<String> listDatabaseSchemas() {
         return backupDAO.listDatabaseSchemas();

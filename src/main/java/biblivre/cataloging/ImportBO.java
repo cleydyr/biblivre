@@ -33,13 +33,13 @@ import biblivre.marc.MaterialType;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
+import lombok.extern.slf4j.Slf4j;
 import org.marc4j.marc.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ImportBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
@@ -58,7 +58,7 @@ public class ImportBO extends AbstractBO {
                     break;
                 }
             } catch (Exception e) {
-                logger.debug("Error reading file", e);
+                log.debug("Error reading file", e);
             }
         }
 
@@ -98,8 +98,6 @@ public class ImportBO extends AbstractBO {
 
         return rdto;
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
 
     @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {

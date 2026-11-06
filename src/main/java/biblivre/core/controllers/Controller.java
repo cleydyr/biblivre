@@ -38,15 +38,14 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 public abstract class Controller {
 
-    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     protected ExtendedRequest xRequest;
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
@@ -147,7 +146,7 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return;
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
@@ -173,14 +172,14 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return;
 
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
             // IllegalAccessException, etc.
             this.doError("error.invalid_handler", e);
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return;
         }
 

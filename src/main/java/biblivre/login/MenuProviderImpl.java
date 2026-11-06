@@ -5,16 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class MenuProviderImpl implements MenuProvider {
     @Value("classpath:META-INF/menus/menus.json")
     private Resource menusResource;
@@ -61,7 +61,7 @@ public class MenuProviderImpl implements MenuProvider {
         try {
             menusResource.getInputStream().transferTo(byteArrayOutputStream);
         } catch (IOException ioException) {
-            logger.error("can't read menu files", ioException);
+            log.error("can't read menu files", ioException);
         }
 
         return new JSONObject(byteArrayOutputStream.toString());
@@ -84,6 +84,4 @@ public class MenuProviderImpl implements MenuProvider {
 
         return prioritizedMenus;
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(MenuProviderImpl.class);
 }

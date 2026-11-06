@@ -35,13 +35,12 @@ import java.util.*;
 import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
+@Slf4j
 public class ExtendedRequest extends HttpServletRequestWrapper {
-    private static final Logger logger = LoggerFactory.getLogger(ExtendedRequest.class);
 
     @Getter private TranslationsMap translationsMap;
 
@@ -158,7 +157,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         try {
             retValue = Integer.valueOf(parameter);
         } catch (NumberFormatException numberFormatException) {
-            logger.warn("parameter " + key + " is not a valid number");
+            log.warn("parameter " + key + " is not a valid number");
         }
 
         return retValue;

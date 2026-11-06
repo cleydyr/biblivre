@@ -1,8 +1,7 @@
 package biblivre.login.audit;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
@@ -12,10 +11,8 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @ConditionalOnProperty(name = "login-audit.enabled", havingValue = "true")
+@Slf4j
 public class SuccessfulLoginOutboxDispatcher {
-
-    private static final Logger log =
-            LoggerFactory.getLogger(SuccessfulLoginOutboxDispatcher.class);
 
     private final SuccessfulLoginOutboxDAO outboxDAO;
     private final RestClient restClient;

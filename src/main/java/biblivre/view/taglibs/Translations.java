@@ -26,11 +26,11 @@ import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Setter
+@Slf4j
 public class Translations extends SimpleTagSupport {
 
     private String key;
@@ -38,8 +38,6 @@ public class Translations extends SimpleTagSupport {
     private String param2;
     private String param3;
     private boolean escapeHTML;
-
-    private static final Logger logger = LoggerFactory.getLogger(Translations.class);
 
     @Override
     public void doTag() throws JspException {
@@ -69,7 +67,7 @@ public class Translations extends SimpleTagSupport {
 
             out.print(translation);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             throw new JspException(e.getMessage());
         }
     }

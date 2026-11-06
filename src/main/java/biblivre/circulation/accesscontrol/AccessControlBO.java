@@ -26,12 +26,12 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
@@ -57,7 +57,7 @@ public class AccessControlBO extends AbstractBO {
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
@@ -84,7 +84,7 @@ public class AccessControlBO extends AbstractBO {
             accessCardBO.update(cardDto);
             return this.accessControlDAO.save(dto);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -96,7 +96,7 @@ public class AccessControlBO extends AbstractBO {
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
@@ -135,7 +135,7 @@ public class AccessControlBO extends AbstractBO {
                 return this.accessControlDAO.update(existingAccess);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -152,8 +152,6 @@ public class AccessControlBO extends AbstractBO {
     public AccessControlDTO getByUserId(Integer userId) {
         return this.accessControlDAO.getByUserId(userId);
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);
 
     @Autowired
     public void setAccessControlDAO(AccessControlDAO accessControlDAO) {
