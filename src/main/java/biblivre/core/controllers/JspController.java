@@ -24,16 +24,15 @@ import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Component
 @RequestScope
+@Slf4j
 public class JspController extends Controller {
-    private static final Logger logger = LoggerFactory.getLogger(JspController.class);
 
     @Override
     protected void doReturn() throws ServletException, IOException {
@@ -63,7 +62,7 @@ public class JspController extends Controller {
 
     @Override
     protected void doError(String error, Throwable e) throws ServletException, IOException {
-        logger.error(error, e);
+        log.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
         this.dispatch("/WEB-INF/jsp/error.jsp", message);
@@ -71,10 +70,10 @@ public class JspController extends Controller {
 
     @Override
     protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-        if (e != null && logger.isDebugEnabled()) {
-            logger.warn(warning, e);
+        if (e != null && log.isDebugEnabled()) {
+            log.warn(warning, e);
         } else {
-            logger.warn(warning);
+            log.warn(warning);
         }
 
         Message message = new Message(ActionResult.WARNING, warning, e);

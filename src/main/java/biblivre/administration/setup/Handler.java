@@ -48,14 +48,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
@@ -106,7 +106,7 @@ public class Handler extends AbstractHandler {
         } catch (RestoreException e) {
             put("success", false);
 
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -133,7 +133,7 @@ public class Handler extends AbstractHandler {
 
             put("metadata", restoreOperation.toJSONObject());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
 
             put("success", false);
 
@@ -380,8 +380,6 @@ public class Handler extends AbstractHandler {
     public void setRestoreBO(RestoreBO restoreBO) {
         this.restoreBO = restoreBO;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     @Autowired
     public void setBackupBO(BackupBO backupBO) {

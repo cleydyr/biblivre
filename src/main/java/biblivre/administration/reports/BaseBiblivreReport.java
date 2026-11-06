@@ -22,6 +22,17 @@ package biblivre.administration.reports;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
@@ -35,22 +46,9 @@ import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfPageEventHelper;
 import org.openpdf.text.pdf.PdfWriter;
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
-
-    protected static final Logger logger = LoggerFactory.getLogger(BaseBiblivreReport.class);
 
     protected static final Float HEADER_BORDER_WIDTH = 0.8f;
     protected static final Color HEADER_BG_COLOR = new Color(239, 239, 239);
@@ -77,7 +75,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
             FOOTER_FONT = getFont(8, Font.BOLD);
         } catch (IOException e) {
-            logger.error("Can't load fonts", e);
+            log.error("Can't load fonts", e);
 
             throw new Error();
         }
@@ -120,7 +118,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
                 report.setName(file.getName());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return null;
         }
 

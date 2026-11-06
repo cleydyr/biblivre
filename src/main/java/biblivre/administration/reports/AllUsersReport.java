@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.extern.slf4j.Slf4j;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
 import org.openpdf.text.Paragraph;
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class AllUsersReport extends BaseBiblivreReport {
 
     private ReportsDAO reportsDAO;
@@ -233,7 +235,7 @@ public class AllUsersReport extends BaseBiblivreReport {
             }
             return tabelas;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return Collections.emptyList();
         }
     }

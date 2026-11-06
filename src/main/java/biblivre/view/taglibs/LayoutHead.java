@@ -24,16 +24,14 @@ import biblivre.core.utils.Constants;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import java.io.Serial;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class LayoutHead extends TagSupport {
     @Serial private static final long serialVersionUID = 1L;
 
     private String schema;
-
-    private static final Logger logger = LoggerFactory.getLogger(LayoutHead.class);
 
     public boolean isSchemaSelection() {
         return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
@@ -58,7 +56,7 @@ public class LayoutHead extends TagSupport {
         try {
             this.pageContext.include("/WEB-INF/jsp/taglib/layout/head/start.jsp");
         } catch (Exception e) {
-            logger.error("can't do start tag", e);
+            log.error("can't do start tag", e);
         }
 
         return EVAL_BODY_INCLUDE;
@@ -69,7 +67,7 @@ public class LayoutHead extends TagSupport {
         try {
             this.pageContext.include("/WEB-INF/jsp/taglib/layout/head/end.jsp");
         } catch (Exception e) {
-            logger.error("can't do end tag", e);
+            log.error("can't do end tag", e);
         }
 
         return Tag.EVAL_PAGE;

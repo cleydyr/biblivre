@@ -23,19 +23,18 @@ import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import java.io.IOException;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Component
 @RequestScope
+@Slf4j
 public class JsonController extends Controller {
-    private static final Logger logger = LoggerFactory.getLogger(JsonController.class);
 
     @Override
     protected void doReturn() throws IOException {
@@ -61,7 +60,7 @@ public class JsonController extends Controller {
 
     @Override
     protected void doError(String error, Throwable e) throws IOException {
-        logger.error(error, e);
+        log.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
         this.dispatch(null, message);
@@ -69,10 +68,10 @@ public class JsonController extends Controller {
 
     @Override
     protected void doWarning(String warning, Throwable e) throws IOException {
-        if (e != null && logger.isDebugEnabled()) {
-            logger.warn(warning, e);
+        if (e != null && log.isDebugEnabled()) {
+            log.warn(warning, e);
         } else {
-            logger.warn(warning);
+            log.warn(warning);
         }
 
         // e.printStackTrace();
@@ -122,7 +121,7 @@ public class JsonController extends Controller {
         try {
             this.xResponse.print(json.toString());
         } catch (JSONException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 }

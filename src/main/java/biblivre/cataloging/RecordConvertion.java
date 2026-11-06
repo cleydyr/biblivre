@@ -24,10 +24,10 @@ import biblivre.marc.JsonMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.lang.reflect.Constructor;
+import lombok.extern.slf4j.Slf4j;
 import org.marc4j.MarcReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public enum RecordConvertion {
     MARC(HumanReadableMarcReader.class),
     RECORD(HumanReadableMarcReader.class),
@@ -37,8 +37,6 @@ public enum RecordConvertion {
     HOLDING_FORM(JsonMarcReader.class);
 
     private final Class<? extends MarcReader> readerClass;
-
-    private static final Logger logger = LoggerFactory.getLogger(RecordConvertion.class);
 
     RecordConvertion(Class<? extends MarcReader> readerClass) {
         this.readerClass = readerClass;
@@ -54,7 +52,7 @@ public enum RecordConvertion {
 
             return constructor.newInstance(data, materialType, recordStatus);
         } catch (Exception e) {
-            logger.error("error while creating instance of reader", e);
+            log.error("error while creating instance of reader", e);
         }
 
         return null;

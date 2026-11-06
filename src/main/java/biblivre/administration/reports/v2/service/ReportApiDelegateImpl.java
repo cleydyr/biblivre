@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
-    private static final Logger logger = LoggerFactory.getLogger(ReportApiDelegateImpl.class);
 
     private ReportService reportService;
 
@@ -29,7 +28,7 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
             String name, MultipartFile file, String description) {
 
         if (file == null || file.isEmpty()) {
-            logger.warn("Report template upload rejected: empty file for template '{}'", name);
+            log.warn("Report template upload rejected: empty file for template '{}'", name);
             return errorResponse("O arquivo do modelo de relatório está vazio.");
         }
 
@@ -39,10 +38,10 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
                             name, description, file.getInputStream(), file.getSize());
             return new ResponseEntity<>(toRestReportTemplate(report), HttpStatus.CREATED);
         } catch (IOException e) {
-            logger.error("Failed to read uploaded report template '{}'", name, e);
+            log.error("Failed to read uploaded report template '{}'", name, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (ReportException e) {
-            logger.error("Failed to compile report template '{}'", name, e);
+            log.error("Failed to compile report template '{}'", name, e);
             return errorResponse(e.getMessage());
         }
     }
@@ -68,7 +67,7 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
                                     restReportTemplate.getDescription())),
                     HttpStatus.ACCEPTED);
         } catch (ReportException e) {
-            logger.error("Failed to update report template {}", reportTemplateId, e);
+            log.error("Failed to update report template {}", reportTemplateId, e);
             return errorResponse(e.getMessage());
         }
     }
@@ -79,7 +78,7 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
             reportService.deleteReport(reportTemplateId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (ReportException e) {
-            logger.error("Failed to delete report template {}", reportTemplateId, e);
+            log.error("Failed to delete report template {}", reportTemplateId, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -114,7 +113,12 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
     private static <T> ResponseEntity<T> errorResponse(String message) {
         return (ResponseEntity<T>)
                 ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("statusCode", HttpStatus.BAD_REQUEST.value(), "message", message));
+                        .body(
+                                Map.of(
+                                        "statusCode",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        "message",
+                                        message));
     }
 
     @Autowired

@@ -32,17 +32,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.LocaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Component
+@Slf4j
 public class TranslationBO {
-    private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
 
     private static final Set<String> availableJavascriptLocales = Set.of("es-US", "es", "pt-BR");
 
@@ -160,14 +159,14 @@ public class TranslationBO {
 
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
-            TranslationBO.logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
 
     private TranslationsMap loadLanguage(String schema, String language) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loading language " + schema + "." + language);
+        if (log.isDebugEnabled()) {
+            log.debug("Loading language " + schema + "." + language);
         }
 
         final TranslationsMap globalTranslationsMap =

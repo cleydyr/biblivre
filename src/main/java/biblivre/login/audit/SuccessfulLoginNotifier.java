@@ -6,8 +6,7 @@ import biblivre.login.LoginDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +15,8 @@ import org.springframework.stereotype.Component;
  * Biblivre session. Delivery is drained asynchronously by {@link SuccessfulLoginOutboxDispatcher}.
  */
 @Component
+@Slf4j
 public class SuccessfulLoginNotifier {
-
-    private static final Logger log = LoggerFactory.getLogger(SuccessfulLoginNotifier.class);
 
     private final SuccessfulLoginOutboxDAO outboxDAO;
     private final boolean enabled;
