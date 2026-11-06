@@ -515,6 +515,8 @@
 							<configOptions>
 								<dateLibrary>java8</dateLibrary>
 								<openApiNullable>false</openApiNullable>
+								<!-- Spring Framework 7 deprecates org.springframework.lang.Nullable. -->
+								<useJspecify>true</useJspecify>
 								<documentationProvider>source</documentationProvider>
 								<delegatePattern>true</delegatePattern>
 								<apiPackage>biblivre.reports.generated.api</apiPackage>
