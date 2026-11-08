@@ -3,7 +3,27 @@ import type { ParametrizedLegacyEndpointPayload } from '../types'
 type LendingSearchPayload = ParametrizedLegacyEndpointPayload<
   'circulation.lending',
   'search',
-  'search_parameters'
+  'search_parameters',
+  'page'
+>
+
+type LendingUserSearchPayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'user_search',
+  'search_parameters',
+  'page'
+>
+
+type LendingLendPayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'lend',
+  'holding_id' | 'user_id'
+>
+
+type LendingRenewPayload = ParametrizedLegacyEndpointPayload<
+  'circulation.lending',
+  'renew_lending',
+  'id'
 >
 
 type LendingReturnImmediatePayload = ParametrizedLegacyEndpointPayload<
@@ -40,6 +60,9 @@ type LendingPrintReceiptPayload = ParametrizedLegacyEndpointPayload<
 declare module '../../registry' {
   interface ParametrizedLegacyEndpointPayloadRegistry {
     LendingSearchPayload: LendingSearchPayload
+    LendingUserSearchPayload: LendingUserSearchPayload
+    LendingLendPayload: LendingLendPayload
+    LendingRenewPayload: LendingRenewPayload
     LendingReturnImmediatePayload: LendingReturnImmediatePayload
     LendingUndoReturnPayload: LendingUndoReturnPayload
     LendingPayFinePayload: LendingPayFinePayload

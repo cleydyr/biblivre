@@ -4,9 +4,13 @@ import { Route, Routes } from 'react-router-dom'
 import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
 import useCheckMenuPermission from './api-helpers/menu/hooks'
+import CirculationLendingPage from './circulation/lending'
 import CirculationReturnPage from './circulation/return'
 import FeatureFlag from './components/FeatureFlag'
-import { SEARCH_INTELLIGENT_FEATURE } from './config/features'
+import {
+  CIRCULATION_LENDING_PROTOTYPE_FEATURE,
+  SEARCH_INTELLIGENT_FEATURE,
+} from './config/features'
 import LoginPage from './login/LoginPage'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
@@ -71,6 +75,17 @@ const useAppRoutes = (): RouteObject[] => [
       element: <CirculationPage />,
     },
     ACTIONS.CIRCULATION_USER,
+  ),
+  useCheckedMenuRoute(
+    {
+      path: 'circulation_lending',
+      element: (
+        <FeatureFlag name={CIRCULATION_LENDING_PROTOTYPE_FEATURE}>
+          <CirculationLendingPage />
+        </FeatureFlag>
+      ),
+    },
+    ACTIONS.CIRCULATION_LENDING,
   ),
   useCheckedMenuRoute(
     {
