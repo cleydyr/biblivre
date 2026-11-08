@@ -121,7 +121,8 @@ public class AbstractHandler {
 
     public void put(String key, IFJson object) {
         if (object == null) {
-            put(key, null);
+            // A bare null binds to this overload, not put(String, Object).
+            put(key, (Object) null);
             return;
         }
 
@@ -137,7 +138,7 @@ public class AbstractHandler {
 
     public void append(String key, IFJson object) {
         if (object == null) {
-            append(key, null);
+            append(key, (Object) null);
             return;
         }
 
@@ -154,7 +155,7 @@ public class AbstractHandler {
 
     public void putOpt(String key, IFJson object) {
         if (object == null) {
-            putOpt(key, null);
+            putOpt(key, (Object) null);
             return;
         }
 
@@ -171,7 +172,7 @@ public class AbstractHandler {
 
     public void accumulate(String key, IFJson object) {
         if (object == null) {
-            accumulate(key, null);
+            accumulate(key, (Object) null);
             return;
         }
 
