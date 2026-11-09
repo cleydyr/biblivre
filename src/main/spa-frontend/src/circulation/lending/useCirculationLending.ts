@@ -24,6 +24,7 @@ import {
   getHoldingStatus,
   getLendBlockReason,
   getReceiptLendingIds,
+  isReservedForOtherReaders,
   sumPendingFines,
 } from './lendingState'
 
@@ -224,7 +225,8 @@ const useCirculationLending = () => {
     setHoldingEmptyMessage(undefined)
 
     // A scanned accession number that matches one available holding is lent
-    // right away, like the Return screen does for returns.
+    // right away, like the Return screen does for returns. A title reserved
+    // for other readers is left on screen so the reservation callout is seen.
     const match =
       page === 1 ? findUniqueHoldingIdentifierMatch(query, results) : null
 
@@ -232,7 +234,8 @@ const useCirculationLending = () => {
       match &&
       reader &&
       blockReason === null &&
-      getHoldingStatus(match, reader.user.id) === 'available'
+      getHoldingStatus(match, reader.user.id) === 'available' &&
+      !isReservedForOtherReaders(match, reader)
     ) {
       await lend(match)
       setHoldingQuery('')

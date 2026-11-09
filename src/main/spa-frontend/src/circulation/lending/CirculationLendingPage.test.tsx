@@ -257,6 +257,71 @@ describe('CirculationLendingPage', () => {
     })
   })
 
+  it('warns when every free copy is reserved for other readers', async () => {
+    const user = userEvent.setup()
+    const bag = availableBag(22, 'T-22')
+    api.searchHoldingsForReturn.mockResolvedValue(
+      paged([
+        {
+          ...bag,
+          biblio: {
+            ...bag.biblio!,
+            holdings_reserved: 1,
+            holdings_available: 1,
+          },
+        },
+      ]) as LendingHoldingSearchResponse,
+    )
+    renderPage()
+
+    await selectReader(user)
+    await searchHoldings(user, 'T-22')
+
+    const card = await holdingCard('Livro 22')
+
+    expect(
+      within(card).getByText('Título reservado para outros leitores'),
+    ).toBeInTheDocument()
+    expect(within(card).getByText(/Há 1 reserva ativa/)).toBeInTheDocument()
+    expect(
+      within(card).getByRole('button', { name: 'Emprestar' }),
+    ).toBeEnabled()
+    expect(api.lendHolding).not.toHaveBeenCalled()
+  })
+
+  it('does not warn the reader who reserved the title', async () => {
+    const user = userEvent.setup()
+    const bag = availableBag(23, 'T-23')
+    api.searchReadersForLending.mockResolvedValue(
+      paged([
+        { ...readerRow(), reservedRecords: [bag.biblio!.id] },
+      ]) as LendingUserSearchResponse,
+    )
+    api.searchHoldingsForReturn.mockResolvedValue(
+      paged([
+        {
+          ...bag,
+          biblio: {
+            ...bag.biblio!,
+            holdings_reserved: 1,
+            holdings_available: 1,
+          },
+        },
+      ]) as LendingHoldingSearchResponse,
+    )
+    api.lendHolding.mockResolvedValue({ success: true, data: lentBag(bag) })
+    renderPage()
+
+    await selectReader(user)
+    await searchHoldings(user, 'livro')
+
+    expect(
+      within(await holdingCard('Livro 23')).queryByText(
+        'Título reservado para outros leitores',
+      ),
+    ).not.toBeInTheDocument()
+  })
+
   it('prints the receipt with the session lendings', async () => {
     const user = userEvent.setup()
     const bag = availableBag(20, 'T-20')

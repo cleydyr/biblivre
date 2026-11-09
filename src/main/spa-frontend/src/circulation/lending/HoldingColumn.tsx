@@ -1,6 +1,7 @@
 import {
   EuiBadge,
   EuiButton,
+  EuiCallOut,
   EuiEmptyPrompt,
   EuiFieldSearch,
   EuiFlexGroup,
@@ -18,7 +19,12 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import HoldingLendingSummary from '../return/HoldingLendingSummary'
 
-import { getHoldingStatus, isOpenLending, isUserBlocked } from './lendingState'
+import {
+  getHoldingStatus,
+  isOpenLending,
+  isReservedForOtherReaders,
+  isUserBlocked,
+} from './lendingState'
 import { RenewButton } from './ReaderColumn'
 
 import type { FC } from 'react'
@@ -153,7 +159,7 @@ const HoldingResults: FC<
     return (
       <EuiText color='subdued' size='s'>
         <FormattedMessage
-          defaultMessage='Leia o código de barras ou digite o tombo: se apenas um exemplar disponível corresponder, o empréstimo é feito na hora.'
+          defaultMessage='Leia o código de barras ou digite o tombo: se apenas um exemplar disponível corresponder, o empréstimo é feito na hora (exceto quando o título está reservado para outros leitores).'
           id='circulation.lending.page.holding.search_hint'
         />
       </EuiText>
@@ -233,6 +239,14 @@ const HoldingCard: FC<
   return (
     <EuiPanel hasBorder paddingSize='m'>
       <HoldingLendingSummary holdingLendingBag={summaryBag} />
+      {status === 'available' && isReservedForOtherReaders(bag, reader) && (
+        <Fragment>
+          <EuiSpacer size='s' />
+          <ReservedForOtherReadersCallOut
+            reservationCount={bag.biblio?.holdings_reserved ?? 0}
+          />
+        </Fragment>
+      )}
       <EuiSpacer size='s' />
       <EuiFlexGroup wrap alignItems='center' gutterSize='s' responsive={false}>
         <EuiFlexItem grow={false}>
@@ -277,6 +291,31 @@ const HoldingCard: FC<
     </EuiPanel>
   )
 }
+
+const ReservedForOtherReadersCallOut: FC<{ reservationCount: number }> = ({
+  reservationCount,
+}) => (
+  <EuiCallOut
+    color='warning'
+    iconType='calendar'
+    size='s'
+    text={
+      <p>
+        <FormattedMessage
+          defaultMessage='{count, plural, one {Há # reserva ativa} other {Há # reservas ativas}} e todos os exemplares disponíveis deste título estão reservados para outros leitores. O empréstimo pode ser feito, mas confira as reservas antes.'
+          id='circulation.lending.page.reserved.body'
+          values={{ count: reservationCount }}
+        />
+      </p>
+    }
+    title={
+      <FormattedMessage
+        defaultMessage='Título reservado para outros leitores'
+        id='circulation.lending.page.reserved.title'
+      />
+    }
+  />
+)
 
 const HoldingStatusBadge: FC<{ status: HoldingStatus }> = ({ status }) => {
   switch (status) {

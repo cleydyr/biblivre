@@ -13,6 +13,7 @@ import {
   getHoldingStatus,
   getLendBlockReason,
   getReceiptLendingIds,
+  isReservedForOtherReaders,
   sumPendingFines,
 } from './lendingState'
 
@@ -101,6 +102,44 @@ describe('getHoldingStatus', () => {
         3,
       ),
     ).toBe('unavailable')
+  })
+})
+
+describe('isReservedForOtherReaders', () => {
+  const reservedBag = (reserved: number, available: number) => {
+    const bag = availableBag()
+
+    return {
+      ...bag,
+      biblio: {
+        ...bag.biblio!,
+        holdings_reserved: reserved,
+        holdings_available: available,
+      },
+    }
+  }
+
+  it('flags a title whose free copies are all reserved', () => {
+    expect(isReservedForOtherReaders(reservedBag(1, 1), readerOf())).toBe(true)
+    expect(isReservedForOtherReaders(reservedBag(3, 2), readerOf())).toBe(true)
+  })
+
+  it('ignores titles with spare copies or no reservations', () => {
+    expect(isReservedForOtherReaders(reservedBag(1, 2), readerOf())).toBe(false)
+    expect(isReservedForOtherReaders(reservedBag(0, 0), readerOf())).toBe(false)
+  })
+
+  it('does not warn the reader who holds one of the reservations', () => {
+    const bag = reservedBag(1, 1)
+    const reader = { ...readerOf(), reservedRecords: [bag.biblio.id] }
+
+    expect(isReservedForOtherReaders(bag, reader)).toBe(false)
+  })
+
+  it('ignores holdings that are currently lent', () => {
+    const bag = { ...reservedBag(1, 1), lending: openBag().lending }
+
+    expect(isReservedForOtherReaders(bag, readerOf())).toBe(false)
   })
 })
 

@@ -83,6 +83,30 @@ export const getHoldingStatus = (
 }
 
 /**
+ * Mirrors the legacy `circulation.lending.reserved.warning` (lending.jsp):
+ * every free copy of the title is claimed by other readers' reservations.
+ * Informational only; `LendingBO` lends regardless.
+ */
+export const isReservedForOtherReaders = (
+  bag: HoldingLendingBag,
+  reader: LendingReader,
+) => {
+  const { biblio } = bag
+
+  if (!biblio || isOpenLending(bag.lending)) {
+    return false
+  }
+
+  const { holdings_reserved: reserved, holdings_available: available } = biblio
+
+  return (
+    reserved > 0 &&
+    reserved >= available &&
+    !(reader.reservedRecords ?? []).includes(biblio.id)
+  )
+}
+
+/**
  * Folds a `lend`/`renew_lending`/`return_immediate` response into the selected
  * reader: open lendings are added or replaced, closed ones removed.
  */
