@@ -86,6 +86,12 @@
 				<artifactId>objenesis</artifactId>
 				<version>3.6</version>
 			</dependency>
+			<!-- poi 6.0.0 pins 1.21.0. 1.23.0 clears CVE-2026-119078 (Blake3 javadoc only). -->
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.23.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
