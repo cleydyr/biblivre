@@ -22,15 +22,13 @@ package biblivre.circulation.user;
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.SchemaThreadLocal;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class UserFieldBO {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserFieldBO.class);
 
     private final UserFieldsDAO userFieldsDAO;
 
@@ -50,8 +48,8 @@ public class UserFieldBO {
     }
 
     private JavascriptCacheableList<UserFieldDTO> loadFields() {
-        if (UserFieldBO.logger.isDebugEnabled()) {
-            UserFieldBO.logger.debug("Loading user fields from " + SchemaThreadLocal.get() + ".");
+        if (log.isDebugEnabled()) {
+            log.debug("Loading user fields from " + SchemaThreadLocal.get() + ".");
         }
 
         List<UserFieldDTO> fields = userFieldsDAO.listFields();

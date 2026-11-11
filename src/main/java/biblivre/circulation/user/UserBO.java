@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
@@ -48,12 +49,11 @@ import org.openpdf.text.pdf.PdfContentByte;
 import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class UserBO extends AbstractBO {
     private UserDAO userDAO;
     private UserTypeBO userTypeBO;
@@ -211,7 +211,7 @@ public class UserBO extends AbstractBO {
                 return new DiskFile(file, "application/pdf");
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -235,8 +235,6 @@ public class UserBO extends AbstractBO {
     public void markAsPrinted(Set<Integer> ids) throws SearchException {
         this.userDAO.markAsPrinted(ids);
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
 
     @Autowired
     public void setUserDAO(UserDAO userDAO) {

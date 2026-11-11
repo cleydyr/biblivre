@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONArray;
@@ -39,12 +40,9 @@ import org.marc4j.marc.Leader;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class MarcUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(MarcUtils.class);
 
     public static Record iso2709ToRecord(String iso2709) {
         return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
@@ -61,7 +59,7 @@ public class MarcUtils {
 
         try {
             if (Iso2709.needsLenientParse(iso2709)) {
-                MarcUtils.logger.debug("Reading malformed ISO 2709 record from directory offsets");
+                log.debug("Reading malformed ISO 2709 record from directory offsets");
 
                 return Iso2709.parseLenient(iso2709);
             }
@@ -205,11 +203,11 @@ public class MarcUtils {
                         }
                     }
                 } catch (NumberFormatException nfe) {
-                    MarcUtils.logger.error(nfe.getMessage(), nfe);
+                    log.error(nfe.getMessage(), nfe);
                 }
             }
         } catch (JSONException je) {
-            MarcUtils.logger.error(je.getMessage(), je);
+            log.error(je.getMessage(), je);
         }
 
         return record;

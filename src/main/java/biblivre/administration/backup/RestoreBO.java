@@ -44,20 +44,18 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class RestoreBO {
 
     private static final String[] ALLOWED_BACKUP_EXTENSIONS = new String[] {"b4bz", "b5bz"};
-
-    private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
     private BackupBO backupBO;
 
@@ -216,7 +214,7 @@ public class RestoreBO {
             throw toRestoreException(exception);
         }
 
-        logger.info("===== Restoring backup finished =====");
+        log.info("===== Restoring backup finished =====");
 
         return true;
     }
@@ -232,7 +230,7 @@ public class RestoreBO {
                 try {
                     restoreService.dropSchemaIfExists(sourceSchemaName);
                 } catch (Exception dropException) {
-                    logger.error(
+                    log.error(
                             "Failed to drop partial schema {} after restore failure",
                             sourceSchemaName,
                             dropException);
@@ -249,7 +247,7 @@ public class RestoreBO {
 
             restoreService.processSchemaRenames(reverseRenames);
         } catch (Exception rollbackException) {
-            logger.error(
+            log.error(
                     "Failed to revert temporary schema names after restore failure",
                     rollbackException);
             restoreFailure.addSuppressed(rollbackException);
@@ -367,7 +365,7 @@ public class RestoreBO {
                 return dto;
             }
         } catch (IOException ioException) {
-            logger.error("Can't read zip file", ioException);
+            log.error("Can't read zip file", ioException);
 
             throw new RestoreException(ioException);
         }

@@ -27,16 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class TabFieldsBO {
     private TabFieldsDAO tabFieldsDAO;
-
-    private static final Logger logger = LoggerFactory.getLogger(TabFieldsBO.class);
 
     private final Map<String, JavascriptCacheableList<FormTabDatafieldDTO>> tabFieldsCache =
             new ConcurrentHashMap<>();
@@ -121,9 +119,8 @@ public class TabFieldsBO {
         return tabFieldsCache.computeIfAbsent(
                 key,
                 __ -> {
-                    if (TabFieldsBO.logger.isDebugEnabled()) {
-                        TabFieldsBO.logger.debug(
-                                "Loading form fields from " + schema + "." + recordType);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Loading form fields from " + schema + "." + recordType);
                     }
 
                     List<FormTabDatafieldDTO> fields = tabFieldsDAO.listFields(recordType);
@@ -157,9 +154,8 @@ public class TabFieldsBO {
     private List<FormTabSubfieldDTO> loadAutocompleteSubFields(RecordType recordType) {
         String schema = SchemaThreadLocal.get();
 
-        if (TabFieldsBO.logger.isDebugEnabled()) {
-            TabFieldsBO.logger.debug(
-                    "Loading autocomplete subfields from " + schema + "." + recordType);
+        if (log.isDebugEnabled()) {
+            log.debug("Loading autocomplete subfields from " + schema + "." + recordType);
         }
 
         JavascriptCacheableList<FormTabDatafieldDTO> fields = getFormFields(recordType);

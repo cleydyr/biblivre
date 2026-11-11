@@ -36,10 +36,10 @@
 		<debug>false</debug>
 		<dockerfile.version>1.4.13</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
-		<aws.java.sdk.version>2.57.6</aws.java.sdk.version>
-		<spotless.version>3.10.4</spotless.version>
+		<aws.java.sdk.version>2.57.8</aws.java.sdk.version>
+		<spotless.version>3.11.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
-		<error-prone.version>2.51.0</error-prone.version>
+		<error-prone.version>2.52.0</error-prone.version>
 		<maven.compiler.release>25</maven.compiler.release>
 		<spring-security.version>7.1.1</spring-security.version>
 		<opentelemetry.version>1.63.0</opentelemetry.version>
@@ -85,6 +85,12 @@
 				<groupId>org.objenesis</groupId>
 				<artifactId>objenesis</artifactId>
 				<version>3.6</version>
+			</dependency>
+			<!-- poi 6.0.0 pins 1.21.0. 1.23.0 clears CVE-2026-119078 (Blake3 javadoc only). -->
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.23.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -160,7 +166,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20231013</version>
+			<version>20260814</version>
 		</dependency>
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
@@ -308,7 +314,7 @@
 		<dependency>
 			<groupId>com.flagsmith</groupId>
 			<artifactId>flagsmith-java-client</artifactId>
-			<version>8.2.0</version>
+			<version>8.3.0</version>
 		</dependency>
 
 		<dependency>
@@ -501,7 +507,7 @@
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.26.0</version>
+				<version>7.27.0</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -515,6 +521,8 @@
 							<configOptions>
 								<dateLibrary>java8</dateLibrary>
 								<openApiNullable>false</openApiNullable>
+								<!-- Spring Framework 7 deprecates org.springframework.lang.Nullable. -->
+								<useJspecify>true</useJspecify>
 								<documentationProvider>source</documentationProvider>
 								<delegatePattern>true</delegatePattern>
 								<apiPackage>biblivre.reports.generated.api</apiPackage>

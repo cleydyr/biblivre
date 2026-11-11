@@ -41,12 +41,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
@@ -145,7 +145,7 @@ public abstract class RecordBO extends AbstractBO {
                 return new DiskFile(marcFile, "x-download");
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -315,8 +315,6 @@ public abstract class RecordBO extends AbstractBO {
 
         return count(searchDTO);
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
 
     @Autowired
     public final void setRecordDAO(RecordDAO recordDAO) {

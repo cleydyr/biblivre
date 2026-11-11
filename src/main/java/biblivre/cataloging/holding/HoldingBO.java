@@ -43,23 +43,23 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import org.openpdf.text.Element;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openpdf.text.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class HoldingBO extends RecordBO {
     private HoldingDAO holdingDAO;
     private UserBO userBO;
@@ -182,7 +182,7 @@ public class HoldingBO extends RecordBO {
                 LoginDTO login = loginBO.get(dto.getCreatedBy());
                 this.holdingDAO.updateHoldingCreationCounter(udto, login);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -367,8 +367,6 @@ public class HoldingBO extends RecordBO {
     public RecordType getRecordType() {
         return RecordType.HOLDING;
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
 
     @Autowired
     public void setHoldingDAO(HoldingDAO holdingDAO) {

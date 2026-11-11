@@ -22,15 +22,14 @@ package biblivre.core.translations;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.StringPool;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class LanguageBO {
-    private static final Logger logger = LoggerFactory.getLogger(LanguageBO.class);
 
     private LanguageDAO languageDAO;
 
@@ -88,7 +87,7 @@ public class LanguageBO {
     }
 
     private Set<LanguageDTO> loadLanguages(String schema) {
-        LanguageBO.logger.debug("Loading languages from " + schema);
+        log.debug("Loading languages from " + schema);
 
         return languageDAO.list();
     }

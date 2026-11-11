@@ -38,19 +38,17 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
+@Slf4j
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
-    private static final Logger logger = LoggerFactory.getLogger(PaginableCatalogingHandler.class);
     protected final PaginableRecordBO paginableRecordBO;
 
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
@@ -308,7 +306,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
             this.setCallback(file::delete);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
 
             this.setMessage(ActionResult.ERROR, "error.runtime_error");
         }
@@ -430,5 +428,4 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     public void setFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
     }
-
 }

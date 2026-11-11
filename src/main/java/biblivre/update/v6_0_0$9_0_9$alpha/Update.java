@@ -11,9 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.marc4j.MarcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,9 +21,8 @@ import org.springframework.stereotype.Component;
  * one from its directory offsets and store it again with the long fields split.
  */
 @Component
+@Slf4j
 public class Update implements UpdateService {
-    private static final Logger log = LoggerFactory.getLogger(Update.class);
-
     private static final int BATCH_SIZE = 500;
 
     private static final Map<String, RecordType> TABLES =

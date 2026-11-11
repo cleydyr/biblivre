@@ -85,6 +85,7 @@ export type Lending = Auditable<{
   holdingId: number
   returnDate?: ISO8601Date
   daysLate?: number
+  dailyFine?: number
   estimatedFine?: number
 }>
 

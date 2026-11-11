@@ -26,6 +26,8 @@ interface ImportMetaEnv {
   /** Optional: local Vite dev only when not loading the app via Spring SPA HTML */
   readonly VITE_FLAGSMITH_ENVIRONMENT_KEY?: string
   readonly VITE_FLAGSMITH_API_URL?: string
+  /** Dev only: comma-separated feature names forced on (see config/features.ts) */
+  readonly VITE_FEATURE_FLAGS?: string
 }
 
 interface ImportMeta {

@@ -35,22 +35,20 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 
 @Component
+@Slf4j
 public class Handler extends AbstractHandler {
     private ITemplateEngine templateEngine;
     private LanguageBO languageBO;
     private TranslationBO translationBO;
-
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -96,7 +94,7 @@ public class Handler extends AbstractHandler {
         } catch (IOException e) {
             this.setMessage(ActionResult.ERROR, "error.cannot_create_file");
 
-            logger.error("Can't create temporary file", e);
+            log.error("Can't create temporary file", e);
         }
     }
 

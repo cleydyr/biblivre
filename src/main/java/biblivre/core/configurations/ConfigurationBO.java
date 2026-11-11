@@ -23,18 +23,16 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ConfigurationBO {
     private ConfigurationsDAO configurationsDAO;
-
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationBO.class);
 
     public String getString(String key) {
         return getValue(key);
@@ -77,7 +75,7 @@ public class ConfigurationBO {
         String value = getValue(key);
 
         if (StringUtils.isBlank(value)) {
-            logger.debug("Configuration is empty: {}", key);
+            log.debug("Configuration is empty: {}", key);
 
             return def;
         }
@@ -87,7 +85,7 @@ public class ConfigurationBO {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
-            logger.warn("Configuration is not an integer: {}.{} = {}", schema, key, value);
+            log.warn("Configuration is not an integer: {}.{} = {}", schema, key, value);
             return def;
         }
     }
@@ -100,7 +98,7 @@ public class ConfigurationBO {
         try {
             return Float.parseFloat(value.replace(',', '.'));
         } catch (Exception e) {
-            logger.warn("Configuration is not a float: {}.{} = {}", schema, key, value);
+            log.warn("Configuration is not a float: {}.{} = {}", schema, key, value);
             return 0.0f;
         }
     }

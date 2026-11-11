@@ -33,14 +33,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public abstract class AbstractDTO implements IFJson, Serializable {
     @Serial private static final long serialVersionUID = 1L;
 
@@ -57,8 +57,6 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     private int modifiedBy;
 
     private final transient Map<String, IFJson> _extraData = new HashMap<>();
-
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractDTO.class);
 
     public AbstractDTO() {}
 
@@ -102,7 +100,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
                 setter.invoke(this, value);
             } catch (Exception e) {
-                logger.error("error while converting to AbstractDAO", e);
+                log.error("error while converting to AbstractDAO", e);
             }
         }
     }
@@ -179,7 +177,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                 clazz = clazz.getSuperclass();
             }
         } catch (Exception e) {
-            logger.error("error while converting to JSON object", e);
+            log.error("error while converting to JSON object", e);
         }
 
         return json;
