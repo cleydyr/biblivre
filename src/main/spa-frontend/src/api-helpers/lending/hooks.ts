@@ -2,14 +2,20 @@ import { useMutation } from '@tanstack/react-query'
 
 import {
   adjustLendingFine,
+  lendHolding,
   payLendingFine,
   printLendingReceipt,
+  renewLending,
   returnLendingImmediate,
   searchHoldingsForReturn,
+  searchReadersForLending,
   undoLendingReturn,
 } from '.'
 
-import type { LendingHoldingSearchPayload } from './types'
+import type {
+  LendingHoldingSearchPayload,
+  LendingUserSearchPayload,
+} from './types'
 
 export const useLendingHoldingSearchMutation = () => {
   return useMutation({
@@ -46,5 +52,25 @@ export const useAdjustLendingFineMutation = () => {
 export const usePrintLendingReceiptMutation = () => {
   return useMutation({
     mutationFn: (lendingIds: number[]) => printLendingReceipt(lendingIds),
+  })
+}
+
+export const useLendingReaderSearchMutation = () => {
+  return useMutation({
+    mutationFn: (payload: LendingUserSearchPayload) =>
+      searchReadersForLending(payload),
+  })
+}
+
+export const useLendHoldingMutation = () => {
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof lendHolding>[0]) =>
+      lendHolding(payload),
+  })
+}
+
+export const useRenewLendingMutation = () => {
+  return useMutation({
+    mutationFn: (lendingId: number) => renewLending(lendingId),
   })
 }

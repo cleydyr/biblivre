@@ -3,12 +3,19 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { ACTIONS } from '../api-helpers/menu/constants'
 import useCheckMenuPermission from '../api-helpers/menu/hooks'
+import {
+  CIRCULATION_LENDING_PROTOTYPE_FEATURE,
+  useFeatureFlag,
+} from '../config/features'
 
 import type { EuiSideNavItemType } from '@elastic/eui'
 
 const useCirculationNavigation = (): EuiSideNavItemType<unknown> => {
   const navigate = useNavigate()
   const location = useLocation()
+  const isLendingPrototypeEnabled = useFeatureFlag(
+    CIRCULATION_LENDING_PROTOTYPE_FEATURE,
+  )
 
   const { data: isUserMenuEnabled } = useCheckMenuPermission(
     ACTIONS.CIRCULATION_USER,
@@ -40,6 +47,24 @@ const useCirculationNavigation = (): EuiSideNavItemType<unknown> => {
         isSelected: location.pathname === '/spa/circulation_user',
         disabled: !isUserMenuEnabled,
       },
+      ...(isLendingPrototypeEnabled
+        ? [
+            {
+              id: 'lending',
+              name: (
+                <FormattedMessage
+                  defaultMessage='Empréstimo'
+                  id='app.sideNav.circulation.lending'
+                />
+              ),
+              onClick: () => {
+                navigate('/spa/circulation_lending')
+              },
+              isSelected: location.pathname === '/spa/circulation_lending',
+              disabled: !isLendingMenuEnabled,
+            },
+          ]
+        : []),
       {
         id: 'return',
         name: (
