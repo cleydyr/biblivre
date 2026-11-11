@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lombok.extern.slf4j.Slf4j;
+import org.marc4j.MarcException;
 import org.marc4j.marc.Record;
 import org.springframework.stereotype.Component;
 
@@ -75,14 +76,15 @@ public class Update implements UpdateService {
         String iso2709 = rs.getString("iso2709");
 
         HoldingDTO holding = new HoldingDTO();
-        holding.setIso2709(iso2709.getBytes(Constants.DEFAULT_CHARSET));
 
-        Record record = holding.getRecord();
-
-        if (record == null) {
-            log.warn("Skipping holding {} with unreadable MARC data", id);
+        try {
+            holding.setIso2709(iso2709.getBytes(Constants.DEFAULT_CHARSET));
+        } catch (MarcException e) {
+            log.warn("Skipping holding {} with unreadable MARC data", id, e);
             return false;
         }
+
+        Record record = holding.getRecord();
 
         if (!needsControlNumberFix(record, id)) {
             return false;
