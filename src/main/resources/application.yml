@@ -18,6 +18,17 @@ biblivre:
       base-url: https://viacep.com.br
       connect-timeout: 2s
       read-timeout: 5s
+  cataloging:
+    isbn-lookup:
+      # Fills the bibliographic cataloging form from an ISBN (see docs/deployment-isbn-lookup.md).
+      # none | google-books | open-library
+      # Override with env BIBLIVRE_CATALOGING_ISBN_LOOKUP_PROVIDER
+      provider: none
+      # Optional provider credential (Google Books API key).
+      # Override with env BIBLIVRE_CATALOGING_ISBN_LOOKUP_API_KEY
+      api-key: ""
+      connect-timeout: 2s
+      read-timeout: 5s
   search:
     intelligent:
       enabled: false
