@@ -204,9 +204,9 @@
 						</div>
 						<c:if test="${requestScope.isbnLookupEnabled}">
 							<div class="field isbn_lookup">
-								<div class="label"><i18n:text key="cataloging.bibliographic.isbn_lookup.label" /></div>
+								<div class="label"><label for="isbn_lookup_input"><i18n:text key="cataloging.bibliographic.isbn_lookup.label" /></label></div>
 								<div class="value">
-									<input type="text" name="isbn_lookup" class="finput" style="width: 60%;" onkeydown="if (event.keyCode == 13) { CatalogingInput.lookupIsbn(); return false; }" />
+									<input type="text" id="isbn_lookup_input" name="isbn_lookup" class="finput" style="width: 60%;" onkeydown="if (event.keyCode == 13) { CatalogingInput.lookupIsbn(); return false; }" />
 									<a class="button center isbn_lookup_button" href="javascript:void(0);" onclick="CatalogingInput.lookupIsbn();"><i18n:text key="cataloging.bibliographic.isbn_lookup.search" /></a>
 								</div>
 								<div class="clear"></div>

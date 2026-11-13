@@ -1262,16 +1262,18 @@ var CatalogingInputClass = {
 
 			for (const indicator of ['ind1', 'ind2']) {
 				const value = datafield[indicator];
-				if (value && value.trim()) {
+				if (value?.trim()) {
 					entry[indicator] = value;
 				}
 			}
 
 			for (const subfield of datafield.subfields || []) {
-				(entry[subfield.code] = entry[subfield.code] || []).push(subfield.value);
+				entry[subfield.code] = entry[subfield.code] || [];
+				entry[subfield.code].push(subfield.value);
 			}
 
-			(json[datafield.tag] = json[datafield.tag] || []).push(entry);
+			json[datafield.tag] = json[datafield.tag] || [];
+			json[datafield.tag].push(entry);
 		}
 
 		return json;
