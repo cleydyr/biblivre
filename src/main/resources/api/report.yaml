@@ -128,6 +128,40 @@ paths:
       operationId: lookupAddressByCep
       tags:
         - Address Lookup
+  /cataloging/isbn_lookup/{isbn}:
+    get:
+      description: >
+        Looks up a book by ISBN through the configured metadata provider
+        (biblivre.cataloging.isbn-lookup.provider) and returns it as MARC21
+        datafields for autofilling the bibliographic cataloging form.
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          description: ISBN-10 or ISBN-13, with or without hyphens
+          schema:
+            type: string
+            example: "978-85-359-1484-9"
+      responses:
+        200:
+          description: The book as MARC21
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsbnLookupResult'
+        400:
+          $ref: '#/components/responses/400ApiError'
+        403:
+          $ref: '#/components/responses/403ApiError'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        503:
+          $ref: '#/components/responses/503ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: lookupBookByIsbn
+      tags:
+        - ISBN Lookup
   /indexing_groups/{recordType}:
     get:
       description: Retrieves the indexing groups for a record type
@@ -488,6 +522,64 @@ components:
         - city
         - state
         - incomplete
+    IsbnLookupResult:
+      type: object
+      properties:
+        isbn:
+          type: string
+          description: Normalized ISBN that was looked up
+          example: "9788535914849"
+        provider:
+          type: string
+          description: Name of the provider that answered
+          example: open-library
+        marc:
+          type: string
+          description: The record in Biblivre's human-readable MARC text
+        datafields:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarcDatafield'
+      required:
+        - isbn
+        - provider
+        - marc
+        - datafields
+    MarcDatafield:
+      type: object
+      properties:
+        tag:
+          type: string
+          example: "245"
+        ind1:
+          type: string
+          description: First indicator, a single character (blank is a space)
+          example: "1"
+        ind2:
+          type: string
+          description: Second indicator, a single character (blank is a space)
+          example: "0"
+        subfields:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarcSubfield'
+      required:
+        - tag
+        - ind1
+        - ind2
+        - subfields
+    MarcSubfield:
+      type: object
+      properties:
+        code:
+          type: string
+          example: a
+        value:
+          type: string
+          example: "1984"
+      required:
+        - code
+        - value
     ReportTemplateCompileRequest:
       type: object
       required:

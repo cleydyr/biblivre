@@ -8,6 +8,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
+<%
+	String contextPath = request.getContextPath();
+%>
+
 <layout:head>
 	<static:stylesheet fileName="biblivre.search.css" />
 	<static:stylesheet fileName="biblivre.cataloging.css" />
@@ -42,6 +46,9 @@
 
 		CatalogingInput.search = CatalogingSearch;
 		CatalogingInput.defaultMaterialType = 'book';
+		CatalogingInput.isbnLookupEnabled = ${requestScope.isbnLookupEnabled ? 'true' : 'false'};
+		CatalogingInput.schema = '${schema}';
+		CatalogingInput.contextPath = '<%= contextPath %>';
 
 		var HoldingSearch = CreateSearch(HoldingSearchClass, {
 			type: 'cataloging.holding',
@@ -195,6 +202,16 @@
 							</div>
 							<div class="clear"></div>
 						</div>
+						<c:if test="${requestScope.isbnLookupEnabled}">
+							<div class="field isbn_lookup">
+								<div class="label"><label for="isbn_lookup_input"><i18n:text key="cataloging.bibliographic.isbn_lookup.label" /></label></div>
+								<div class="value">
+									<input type="text" id="isbn_lookup_input" name="isbn_lookup" class="finput" style="width: 60%;" onkeydown="if (event.keyCode == 13) { CatalogingInput.lookupIsbn(); return false; }" />
+									<a class="button center isbn_lookup_button" href="javascript:void(0);" onclick="CatalogingInput.lookupIsbn();"><i18n:text key="cataloging.bibliographic.isbn_lookup.search" /></a>
+								</div>
+								<div class="clear"></div>
+							</div>
+						</c:if>
 					</div>
 				</div>
 

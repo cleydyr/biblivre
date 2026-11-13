@@ -24,7 +24,8 @@ public class SecurityConfig {
                                                 "/api/v2/report_template/**",
                                                 "/api/v2/report_fill/**",
                                                 "/api/v2/userType/**",
-                                                "/api/v2/circulation/address_lookup/**")
+                                                "/api/v2/circulation/address_lookup/**",
+                                                "/api/v2/cataloging/isbn_lookup/**")
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
