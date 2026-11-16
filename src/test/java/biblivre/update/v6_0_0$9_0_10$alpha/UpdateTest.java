@@ -1,4 +1,4 @@
-package biblivre.update.v6_0_0$9_0_9$alpha;
+package biblivre.update.v6_0_0$9_0_10$alpha;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

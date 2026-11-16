@@ -474,7 +474,7 @@ var CatalogingFormClass = {
 					combo.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 				});
 
-				root.find('.marc_repeat, .marc_remove').addClass('readonly_hidden');
+				root.find('.marc_repeat, .marc_remove, .isbn_lookup').addClass('readonly_hidden');
 				break;
 
 			case 'marc':
@@ -920,6 +920,7 @@ var CatalogingInputClass = {
 
 				root.find('fieldset.repeated, div.repeated, fieldset.autocreated, input.autocreated').remove();
 				root.find('fieldset.datafield').find(':input').not('.dont_clear').val('');
+				root.find('input[name="isbn_lookup"]').val('');
 				break;
 
 			case 'marc':
@@ -1221,6 +1222,195 @@ var CatalogingInputClass = {
 			uploadProgress: function(event, current, total, percentComplete) {
 				me.updateUploadProgress(current, total, percentComplete);
 			}
+		});
+	},
+	isbnLookupEnabled: false,
+	schema: '',
+	contextPath: '',
+	_isbnLookupInFlight: false,
+	_normalizeIsbn(rawIsbn) {
+		return String(rawIsbn ?? '').toUpperCase().replace(/[^0-9X]/g, '');
+	},
+	_looksLikeIsbn(normalizedIsbn) {
+		return /^(\d{9}[\dX]|\d{13})$/.test(normalizedIsbn);
+	},
+	_getIsbnLookupInput() {
+		return $('.biblivre_form_body input[name="isbn_lookup"]');
+	},
+	// The lookup field wins; otherwise fall back to the first ISBN (020 $a) typed in the form.
+	_readIsbnForLookup() {
+		const typed = (this._getIsbnLookupInput().val() || '').trim();
+		if (typed) {
+			return typed;
+		}
+
+		const fromForm = $(this.formElementId)
+			.find('fieldset.datafield[data="020"] :input[name="a"]')
+			.toArray()
+			.map((input) => ($(input).val() || '').trim())
+			.find((value) => value.length > 0);
+
+		return fromForm || '';
+	},
+	// REST datafields -> the form's JSON shape: { tag: [{ ind1, ind2, code: [values] }] }.
+	// Blank indicators are left out so the form keeps its own default for them.
+	_isbnLookupResultToJson(datafields) {
+		const json = {};
+
+		for (const datafield of datafields || []) {
+			const entry = {};
+
+			for (const indicator of ['ind1', 'ind2']) {
+				const value = datafield[indicator];
+				if (value?.trim()) {
+					entry[indicator] = value;
+				}
+			}
+
+			for (const subfield of datafield.subfields || []) {
+				entry[subfield.code] = entry[subfield.code] || [];
+				entry[subfield.code].push(subfield.value);
+			}
+
+			json[datafield.tag] = json[datafield.tag] || [];
+			json[datafield.tag].push(entry);
+		}
+
+		return json;
+	},
+	_formTagsWithValues(tags) {
+		const root = $(this.formElementId);
+
+		return tags.filter((tag) => {
+			return root
+				.find(`fieldset.datafield[data="${tag}"] :input`)
+				.not('[name="ind1"], [name="ind2"]')
+				.toArray()
+				.some((input) => ($(input).val() || '').trim().length > 0);
+		});
+	},
+	// Replaces every occurrence of each returned tag; tags not returned stay untouched.
+	_replaceFormDatafields(json) {
+		const root = $(this.formElementId);
+
+		for (const tag of Object.keys(json)) {
+			const fieldsets = root.find(`fieldset.datafield[data="${tag}"]`);
+			let first = fieldsets.first();
+
+			if (first.length === 0) {
+				first = $(`<fieldset class="datafield autocreated" data="${tag}"></fieldset>`).appendTo(root);
+			} else {
+				fieldsets.not(first).remove();
+				first.find('div.subfield.repeated, div.subfield.autocreated').remove();
+				first.find('input').not('.dont_clear').val('');
+				first.find('select').each(function() {
+					this.selectedIndex = 0;
+				});
+			}
+
+			let previous = first;
+
+			json[tag].forEach((datafield, index) => {
+				let fieldset = first;
+
+				if (index > 0) {
+					// Repeat from the original fieldset (repeating a clone duplicates its
+					// remove link) and keep the provider's order.
+					fieldset = this.repeatDataField(first).insertAfter(previous);
+				}
+
+				this.populateDataField(fieldset, datafield);
+				previous = fieldset;
+			});
+		}
+	},
+	lookupIsbn() {
+		if (!this.isbnLookupEnabled || this._isbnLookupInFlight) {
+			return;
+		}
+
+		const isbn = this._normalizeIsbn(this._readIsbnForLookup());
+
+		if (!this._looksLikeIsbn(isbn)) {
+			Core.msg({
+				message: Translations.get('cataloging.bibliographic.isbn_lookup.invalid_isbn'),
+				message_level: 'warning',
+			});
+			return;
+		}
+
+		const isbnInput = this._getIsbnLookupInput();
+		const lookupButton = $('.biblivre_form_body .isbn_lookup_button');
+		const headers = {
+			Accept: 'application/json',
+		};
+
+		if (this.schema) {
+			headers['X-Biblivre-Schema'] = this.schema;
+		}
+
+		this._isbnLookupInFlight = true;
+		isbnInput.prop('disabled', true);
+		lookupButton.addClass('disabled').attr('aria-disabled', 'true');
+
+		// Do not pass a local `complete` option: in jQuery 1.7 it replaces
+		// $.ajaxSetup's complete, so Core.hideLoadingTimedOverlay never runs.
+		$.ajax({
+			url: `${window.location.origin}${this.contextPath || ''}/api/v2/cataloging/isbn_lookup/${encodeURIComponent(isbn)}`,
+			type: 'GET',
+			dataType: 'json',
+			headers,
+			xhrFields: {
+				withCredentials: true,
+			},
+			loadingTimedOverlay: true,
+			success: (result) => {
+				if (!this.editing) {
+					return;
+				}
+
+				const json = this._isbnLookupResultToJson(result.datafields);
+				const apply = () => {
+					this._replaceFormDatafields(json);
+					isbnInput.val(result.isbn);
+					Core.msg({
+						message: Translations.get('cataloging.bibliographic.isbn_lookup.success'),
+						message_level: 'success',
+					});
+				};
+
+				// Sorted explicitly: object key order puts "020" after numeric-looking tags.
+				const filledTags = this._formTagsWithValues(Object.keys(json)).sort();
+
+				if (filledTags.length > 0) {
+					Core.popup({
+						title: Translations.get('cataloging.bibliographic.isbn_lookup.confirm_overwrite_title'),
+						description: `${Translations.get('cataloging.bibliographic.isbn_lookup.confirm_overwrite_message')} (${filledTags.join(', ')})`,
+						okHandler: apply,
+					});
+					return;
+				}
+
+				apply();
+			},
+			error: (xhr) => {
+				let messageKey = 'cataloging.bibliographic.isbn_lookup.error';
+
+				if (xhr?.status === 404) {
+					messageKey = 'cataloging.bibliographic.isbn_lookup.not_found';
+				} else if (xhr?.status === 400) {
+					messageKey = 'cataloging.bibliographic.isbn_lookup.invalid_isbn';
+				}
+
+				Core.msg({
+					message: Translations.get(messageKey),
+					message_level: 'error',
+				});
+			},
+		}).always(() => {
+			this._isbnLookupInFlight = false;
+			isbnInput.prop('disabled', false);
+			lookupButton.removeClass('disabled').removeAttr('aria-disabled');
 		});
 	}
 };

@@ -30,6 +30,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.isbnlookup.IsbnLookupService;
 import biblivre.circulation.addresslookup.AddressLookupProperties;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -59,6 +60,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
     private UserFieldBO userFieldBO;
     private AddressLookupProperties addressLookupProperties;
+    private IsbnLookupService isbnLookupService;
     private IndexingGroupBO indexingGroupBO;
     private TabFieldsBO tabFieldsBO;
     private LanguageBO languageBO;
@@ -156,6 +158,7 @@ public class Handler extends AbstractHandler {
                 "holdingCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+        request.setAttribute("isbnLookupEnabled", isbnLookupService.isEnabled());
 
         setJspURL("/WEB-INF/jsp/cataloging/bibliographic.jsp");
     }
@@ -455,6 +458,11 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setAddressLookupProperties(AddressLookupProperties addressLookupProperties) {
         this.addressLookupProperties = addressLookupProperties;
+    }
+
+    @Autowired
+    public void setIsbnLookupService(IsbnLookupService isbnLookupService) {
+        this.isbnLookupService = isbnLookupService;
     }
 
     @Autowired
