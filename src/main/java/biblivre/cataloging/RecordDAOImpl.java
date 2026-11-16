@@ -40,6 +40,7 @@ import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.marc4j.MarcException;
 import org.springframework.stereotype.Service;
 
 @Service("recordDAO")
@@ -494,7 +495,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 PreparedStatement pst = sqlParts.prepare(con);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                list.add(this.populateDTO(rs, recordType.getRecordClass()));
+                try {
+                    list.add(this.populateDTO(rs, recordType.getRecordClass()));
+                } catch (MarcException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
 
             return list;
@@ -538,7 +543,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 PreparedStatement pst = sqlParts.prepare(con);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                list.add(this.populateDTO(rs, recordType.getRecordClass()));
+                try {
+                    list.add(this.populateDTO(rs, recordType.getRecordClass()));
+                } catch (MarcException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
             return list;
         } catch (Exception e) {
@@ -670,7 +679,15 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
         RecordDTO dto = constructor.newInstance();
 
-        dto.setIso2709(rs.getBytes("iso2709"));
+        try {
+            dto.setIso2709(rs.getBytes("iso2709"));
+        } catch (MarcException e) {
+            throw new MarcException(
+                    "Unreadable ISO 2709 data in %s %d"
+                            .formatted(recordClass.getSimpleName(), rs.getInt("id")),
+                    e);
+        }
+
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));
         dto.setModified(rs.getTimestamp("modified"));

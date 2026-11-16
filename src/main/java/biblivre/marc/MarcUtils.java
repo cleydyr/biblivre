@@ -48,24 +48,43 @@ public class MarcUtils {
         return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
     }
 
+    /**
+     * @return the parsed record, or null only when {@code iso2709} is null
+     * @throws MarcException if the bytes can't be read as a record, even leniently
+     */
     public static Record iso2709ToRecord(byte[] iso2709) {
-        Record record = null;
+        if (iso2709 == null) {
+            return null;
+        }
+
+        try {
+            if (Iso2709.needsLenientParse(iso2709)) {
+                log.debug("Reading malformed ISO 2709 record from directory offsets");
+
+                return Iso2709.parseLenient(iso2709);
+            }
+        } catch (MarcException me) {
+            // The leader or directory is unreadable; let marc4j's permissive reader try
+        }
 
         try {
             ByteArrayInputStream is = new ByteArrayInputStream(iso2709);
             MarcReader reader = new MarcPermissiveStreamReader(is, true, true);
 
             if (reader.hasNext()) {
-                record = reader.next();
+                return reader.next();
             }
 
+            throw new MarcException("No record found in ISO 2709 data");
         } catch (MarcException me) {
-            if (log.isDebugEnabled()) {
-                log.error(me.getMessage(), me);
+            try {
+                return Iso2709.parseLenient(iso2709);
+            } catch (MarcException lenient) {
+                me.addSuppressed(lenient);
+
+                throw me;
             }
         }
-
-        return record;
     }
 
     public static Record marcToRecord(String marc, MaterialType materialType, RecordStatus status) {
