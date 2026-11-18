@@ -146,7 +146,7 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            log.error(e.getMessage(), e);
+            logInvocationFailure("Validator", module, action, handlerException, e);
             return;
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
@@ -172,14 +172,14 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            log.error(e.getMessage(), e);
+            logInvocationFailure("Handler", module, action, handlerException, e);
             return;
 
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
             // IllegalAccessException, etc.
             this.doError("error.invalid_handler", e);
-            log.error(e.getMessage(), e);
+            log.error("Invalid handler for {}.{}", module, action, e);
             return;
         }
 
@@ -199,6 +199,17 @@ public abstract class Controller {
 
     protected void doError() throws ServletException, IOException {
         this.doError("error.void", null);
+    }
+
+    private void logInvocationFailure(
+            String component,
+            String module,
+            String action,
+            Throwable handlerException,
+            InvocationTargetException invocationTargetException) {
+        Throwable loggedException =
+                handlerException != null ? handlerException : invocationTargetException;
+        log.error("{} {}.{} failed", component, module, action, loggedException);
     }
 
     private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
