@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
@@ -329,5 +330,10 @@ public abstract class RecordBO extends AbstractBO {
     @Autowired
     public void setConfigurationBO(ConfigurationBO configurationBO) {
         this.configurationBO = configurationBO;
+    }
+
+    @Autowired
+    public final void setPermissionBO(PermissionBO permissionBO) {
+        super.setPermissionBO(permissionBO);
     }
 }
