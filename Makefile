@@ -22,7 +22,7 @@ GREEN := \033[0;32m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-.PHONY: help dev dev-spa debug build test clean format check docker-up docker-down spa-dev spa-setup frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test smoke
+.PHONY: help dev dev-spa debug build test clean format check docker-up docker-down spa-dev spa-stop spa-setup frontend-dev frontend-stop frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test smoke
 
 help: ## Show this help message
 	@echo "$(GREEN)Biblivre Development Shortcuts$(NC)"
@@ -149,6 +149,27 @@ spa-dev: ## Start Vite dev server for spa-frontend HMR (use with `make dev` or `
 	@echo "$(YELLOW)Browse the SPA at http://localhost:8090/spa/ (Spring Boot must be running with BIBLIVRE_VITE_DEV_SERVER set)$(NC)"
 	@cd src/main/spa-frontend && yarn dev
 
+spa-stop: ## Stop the spa-frontend Vite dev server listening on port 5173
+	@port=5173; \
+	pids=$$(lsof -t -nP -iTCP:$$port -sTCP:LISTEN 2>/dev/null || true); \
+	if [ -z "$$pids" ]; then \
+		echo "$(YELLOW)No process is listening on port $$port$(NC)"; \
+		exit 0; \
+	fi; \
+	if ! curl -sf "http://127.0.0.1:$$port/@vite/client" >/dev/null 2>&1 \
+		&& ! curl -sf "http://[::1]:$$port/@vite/client" >/dev/null 2>&1; then \
+		echo "$(RED)Port $$port is in use, but it does not look like a Vite dev server (pid $$pids)$(NC)"; \
+		exit 1; \
+	fi; \
+	echo "$(GREEN)Stopping Vite dev server on port $$port (pid $$pids)$(NC)"; \
+	kill $$pids; \
+	sleep 1; \
+	still=$$(lsof -t -nP -iTCP:$$port -sTCP:LISTEN 2>/dev/null || true); \
+	if [ -n "$$still" ]; then \
+		echo "$(YELLOW)Process $$still did not exit; sending SIGKILL$(NC)"; \
+		kill -9 $$still; \
+	fi
+
 dev-spa: ## Run backend + spa-frontend Vite HMR together
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot and spa-frontend Vite dev server...$(NC)"
@@ -185,6 +206,8 @@ dev-spa: ## Run backend + spa-frontend Vite HMR together
 frontend-setup: spa-setup ## Alias for spa-setup
 
 frontend-dev: spa-dev ## Alias for spa-dev
+
+frontend-stop: spa-stop ## Alias for spa-stop
 
 frontend-build: ## Build spa-frontend for production
 	@echo "$(GREEN)Building spa-frontend...$(NC)"
