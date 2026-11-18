@@ -21,6 +21,7 @@ package biblivre.core.schemas;
 
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.Updates;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
@@ -40,6 +41,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SchemaBO {
     private SchemaDAO schemaDAO;
+
+    private Updates updates;
 
     private Resource databaseTemplate;
 
@@ -170,6 +173,9 @@ public class SchemaBO {
                                 new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
                                 dto.getCreatedBy());
                     });
+
+            // The SQL template stops before later schema upgrades. Run them for this library.
+            updates.schemaUpdate(dto.getSchema());
         }
 
         return success;
@@ -178,6 +184,11 @@ public class SchemaBO {
     @Autowired
     public void setSchemaDAO(SchemaDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
+    }
+
+    @Autowired
+    public void setUpdates(Updates updates) {
+        this.updates = updates;
     }
 
     @Value("classpath:META-INF/sql/biblivre-template.sql")
