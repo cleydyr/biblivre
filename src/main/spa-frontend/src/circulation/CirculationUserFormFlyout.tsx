@@ -92,6 +92,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
   const [isPhotoLoading, setIsPhotoLoading] = useState(false)
   const [pendingAddressLookup, setPendingAddressLookup] =
     useState<AddressLookupResult | null>(null)
+  const cancelEditingTitleId = useGeneratedHtmlId()
   const overwriteConfirmTitleId = useGeneratedHtmlId()
   const formValuesRef = useRef(values)
   formValuesRef.current = values
@@ -356,6 +357,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
       </EuiFlyout>
       {isCancelConfirmOpen ? (
         <EuiConfirmModal
+          aria-labelledby={cancelEditingTitleId}
           cancelButtonText={
             <FormattedMessage defaultMessage='Não' id='common.no' />
           }
@@ -368,6 +370,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
               id='circulation.user.confirm_cancel_editing_title'
             />
           }
+          titleProps={{ id: cancelEditingTitleId }}
           onCancel={() => setIsCancelConfirmOpen(false)}
           onConfirm={() => {
             setIsCancelConfirmOpen(false)

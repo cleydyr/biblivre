@@ -176,6 +176,7 @@ export default function ReportApp() {
   const screenFlyoutId = useGeneratedHtmlId({
     prefix: screen,
   })
+  const deleteReportTitleId = useGeneratedHtmlId()
 
   const downloadReportFillBanner = screen === 'fill' && reportFill && (
     <EuiCallOut announceOnMount>
@@ -310,10 +311,12 @@ export default function ReportApp() {
       </EuiPageTemplate>
       {deletingReport && (
         <EuiConfirmModal
+          aria-labelledby={deleteReportTitleId}
           buttonColor='danger'
           cancelButtonText='Cancelar'
           confirmButtonText={`Excluir ${deletingReport.name}`}
           title='Excluir modelo de relatório'
+          titleProps={{ id: deleteReportTitleId }}
           onCancel={() => setDeletingReport(undefined)}
           onConfirm={() => {
             deleteReport(deletingReport)
