@@ -21,6 +21,8 @@ import biblivre.core.configurations.ConfigurationsDAO;
 import biblivre.core.exceptions.AuthorizationException;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.PendingUploadDAO;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,6 +121,17 @@ class RecordBOPrivateDatabaseCountTest {
         @Bean
         DigitalMediaDAO digitalMediaDAO() {
             return mock(DigitalMediaDAO.class);
+        }
+
+        @Bean
+        PendingUploadDAO pendingUploadDAO() {
+            return mock(PendingUploadDAO.class);
+        }
+
+        // Spring still runs the inherited @Autowired setDataSource on the PendingUploadDAO mock.
+        @Bean
+        DataSource dataSource() {
+            return mock(DataSource.class);
         }
 
         @Bean
