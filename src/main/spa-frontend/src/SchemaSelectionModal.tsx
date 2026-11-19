@@ -8,6 +8,7 @@ import {
   EuiModalHeaderTitle,
   EuiRadioGroup,
   EuiSpacer,
+  useGeneratedHtmlId,
 } from '@elastic/eui'
 import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -47,6 +48,7 @@ const SchemaSelectionModal: FC<Props> = ({
   const [selectedId, setSelectedId] = useState(() =>
     resolveSelectedSchemaId(initialSchemaId, schemas),
   )
+  const modalTitleId = useGeneratedHtmlId()
 
   useEffect(() => {
     if (isOpen) {
@@ -59,9 +61,9 @@ const SchemaSelectionModal: FC<Props> = ({
   }
 
   return (
-    <EuiModal onClose={onClose}>
+    <EuiModal aria-labelledby={modalTitleId} onClose={onClose}>
       <EuiModalHeader>
-        <EuiModalHeaderTitle>
+        <EuiModalHeaderTitle id={modalTitleId}>
           <FormattedMessage
             defaultMessage='Selecionar biblioteca'
             id='app.schema.modal.title'

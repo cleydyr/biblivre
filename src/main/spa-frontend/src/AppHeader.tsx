@@ -9,6 +9,7 @@ import {
   EuiIcon,
   EuiLink,
   EuiText,
+  EuiToolTip,
 } from '@elastic/eui'
 import { Fragment, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -61,6 +62,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   })
 
   const loggedIn = isLoggedInSession(session)
+  const darkModeButtonLabel = formatMessage(messages.darkButtonDescription)
 
   const activeSchema = schemas?.find((s) => s.schema === activeSchemaId)
 
@@ -151,11 +153,13 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
             </EuiFlexGroup>
           </EuiHeaderSectionItem>
           <EuiHeaderSectionItem>
-            <EuiButtonIcon
-              aria-label={formatMessage(messages.darkButtonDescription)}
-              iconType={isDarkMode ? 'sun' : 'moon'}
-              onClick={() => setIsDarkMode(!isDarkMode)}
-            />
+            <EuiToolTip disableScreenReaderOutput content={darkModeButtonLabel}>
+              <EuiButtonIcon
+                aria-label={darkModeButtonLabel}
+                iconType={isDarkMode ? 'sun' : 'moon'}
+                onClick={() => setIsDarkMode(!isDarkMode)}
+              />
+            </EuiToolTip>
           </EuiHeaderSectionItem>
         </EuiHeaderSection>
       </EuiHeader>

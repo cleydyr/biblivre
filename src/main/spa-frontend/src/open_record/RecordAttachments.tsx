@@ -7,7 +7,7 @@ import {
   EuiSpacer,
   EuiText,
 } from '@elastic/eui'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
 
@@ -23,6 +23,7 @@ type Props = {
 }
 
 const RecordAttachments: FC<Props> = ({ record }) => {
+  const { formatMessage } = useIntl()
   const attachments = record.attachments
 
   if (attachments.length === 0) {
@@ -79,7 +80,15 @@ const RecordAttachments: FC<Props> = ({ record }) => {
         </h4>
       </EuiText>
       <EuiSpacer size='m' />
-      <EuiBasicTable columns={columns} items={attachments} rowHeader='name' />
+      <EuiBasicTable
+        columns={columns}
+        items={attachments}
+        rowHeader='name'
+        tableCaption={formatMessage({
+          defaultMessage: 'Arquivos digitais',
+          id: 'bibliographic-record.attachments.table.caption',
+        })}
+      />
     </EuiFlexGroup>
   )
 }

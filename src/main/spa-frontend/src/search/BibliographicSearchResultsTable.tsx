@@ -29,6 +29,7 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
   onChange,
   onRecordDetailsClick,
 }) => {
+  const { formatMessage } = useIntl()
   const [selectedRecords, setSelectedRecords] = useState<BibliographicRecord[]>(
     [],
   )
@@ -63,6 +64,10 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
         }
         pagination={pagination}
         selection={selection}
+        tableCaption={formatMessage({
+          defaultMessage: 'Resultados da busca bibliográfica',
+          id: 'search.bibliographic.table.caption',
+        })}
         tableLayout='auto'
         onChange={onChange}
       />

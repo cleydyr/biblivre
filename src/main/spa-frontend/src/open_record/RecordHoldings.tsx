@@ -1,5 +1,5 @@
 import { EuiBadge, EuiFlexGroup, EuiInMemoryTable, EuiStat } from '@elastic/eui'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import type { FC } from 'react'
 
@@ -10,6 +10,8 @@ type Props = {
 }
 
 const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
+  const { formatMessage } = useIntl()
+
   return (
     <EuiFlexGroup direction='column'>
       <div />
@@ -112,6 +114,10 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
           },
         ]}
         items={record.holdings ?? []}
+        tableCaption={formatMessage({
+          defaultMessage: 'Exemplares do registro',
+          id: 'bibliographic-record.holdings.table.caption',
+        })}
       />
     </EuiFlexGroup>
   )
