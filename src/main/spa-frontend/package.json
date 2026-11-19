@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "bash scripts/dev.sh",
-    "build": "yarn add-ts-nocheck && tsc -b && vite build",
+    "build": "yarn lint && yarn add-ts-nocheck && tsc -b && vite build",
     "lint": "eslint . --cache --max-warnings 0",
     "lint:fix": "eslint . --fix --cache --max-warnings 0",
     "format": "prettier --write .",
