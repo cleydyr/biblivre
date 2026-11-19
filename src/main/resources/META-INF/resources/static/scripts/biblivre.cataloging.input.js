@@ -1210,7 +1210,7 @@ var CatalogingInputClass = {
 	// prepare_upload -> PUT to the signed URL -> complete_upload. Tomcat only signs and confirms.
 	_uploadDirect: function(button, description) {
 		var input = $(button).closest('.upload').find('input[type="file"]')[0];
-		var file = input && input.files && input.files[0];
+		var file = input?.files?.[0];
 
 		if (!file) {
 			Core.msg({
@@ -1220,15 +1220,13 @@ var CatalogingInputClass = {
 			return;
 		}
 
-		var me = this;
-
-		var fail = function() {
-			me.hideUploadProgress();
-			me._uploadError();
+		var fail = () => {
+			this.hideUploadProgress();
+			this._uploadError();
 		};
 
-		me.showUploadProgress();
-		me._continuousUploadProgressTimeout = setTimeout(me.continuousUploadProgress, 500);
+		this.showUploadProgress();
+		this._continuousUploadProgressTimeout = setTimeout(this.continuousUploadProgress, 500);
 
 		$.ajax({
 			url: window.location.pathname,
@@ -1242,9 +1240,9 @@ var CatalogingInputClass = {
 				content_type: file.type,
 				size: file.size
 			}
-		}).done(function(prepared) {
+		}).done((prepared) => {
 			if (!prepared.success || !prepared.upload_id) {
-				me.hideUploadProgress();
+				this.hideUploadProgress();
 				Core.msg(prepared);
 				return;
 			}
@@ -1255,15 +1253,15 @@ var CatalogingInputClass = {
 			// The signature covers this header: it must match what the server signed.
 			xhr.setRequestHeader('Content-Type', prepared.content_type);
 
-			xhr.upload.onprogress = function(event) {
+			xhr.upload.onprogress = (event) => {
 				if (event.lengthComputable) {
-					me.updateUploadProgress(event.loaded, event.total, Math.round(event.loaded / event.total * 100));
+					this.updateUploadProgress(event.loaded, event.total, Math.round(event.loaded / event.total * 100));
 				}
 			};
 
 			xhr.onerror = fail;
 
-			xhr.onload = function() {
+			xhr.onload = () => {
 				if (xhr.status < 200 || xhr.status >= 300) {
 					fail();
 					return;
@@ -1279,11 +1277,11 @@ var CatalogingInputClass = {
 						action: 'complete_upload',
 						upload_id: prepared.upload_id
 					}
-				}).done(function(completed) {
-					me.hideUploadProgress();
+				}).done((completed) => {
+					this.hideUploadProgress();
 
 					if (completed.success && completed.id) {
-						me._addAttachment(description, completed.id);
+						this._addAttachment(description, completed.id);
 					} else {
 						Core.msg(completed);
 					}
@@ -1294,27 +1292,25 @@ var CatalogingInputClass = {
 		}).fail(fail);
 	},
 	_addAttachment: function(description, mediaId) {
-		var me = this;
-
 		$.ajax({
 			url: window.location.pathname,
 			type: 'POST',
 			dataType: 'json',
 			data: {
 				controller: 'json',
-				module: me.type,
+				module: this.type,
 				action: 'add_attachment',
-				id: me.search.selectedRecord.id,
+				id: this.search.selectedRecord.id,
 				description: description,
 				uri: 'DigitalMediaController/?id=' + mediaId
 			},
 			loadingTimedOverlay: true,
-			context: me
+			context: this
 		}).done(function(response) {
 			Core.msg(response);
 
 			if (response.success) {
-				me.search.reloadResult();
+				this.search.reloadResult();
 			}
 		});
 	},
