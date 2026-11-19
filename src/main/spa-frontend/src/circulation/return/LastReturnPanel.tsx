@@ -65,7 +65,7 @@ const LastReturnPanel: FC<Props> = ({
           <EuiButtonEmpty
             color='danger'
             disabled={isBusy}
-            iconType='editorUndo'
+            iconType='undo'
             onClick={onUndo}
           >
             <FormattedMessage

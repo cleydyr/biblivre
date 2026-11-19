@@ -91,7 +91,7 @@ const ReportFillForm = ({
       {parameters.length === 0 && (
         <EuiCallOut
           announceOnMount
-          iconType='iInCircle'
+          iconType='info'
           size='s'
           title={
             <FormattedMessage
@@ -118,7 +118,7 @@ const ReportFillForm = ({
             <EuiCallOut
               announceOnMount
               color='danger'
-              iconType='alert'
+              iconType='warning'
               title={
                 <FormattedMessage
                   defaultMessage='Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface.'

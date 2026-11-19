@@ -321,11 +321,11 @@ const getStatusIcon = (status: User['status']) => {
     case 'active':
       return 'check'
     case 'inactive':
-      return 'crossInCircle'
+      return 'crossCircle'
     case 'blocked':
       return 'lock'
     case 'pending_issues':
-      return 'alert'
+      return 'warning'
     default:
       return 'default'
   }

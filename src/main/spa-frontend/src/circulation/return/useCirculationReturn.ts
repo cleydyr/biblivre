@@ -114,7 +114,7 @@ const useCirculationReturn = () => {
       id: `circulation-return-${Date.now()}`,
       title: message ?? fallbackError ?? '',
       color: 'danger',
-      iconType: 'alert',
+      iconType: 'warning',
     })
   }
 
@@ -288,7 +288,7 @@ const useCirculationReturn = () => {
           id: 'circulation.return.error.invalid_fine_value',
         }),
         color: 'danger',
-        iconType: 'alert',
+        iconType: 'warning',
       })
       return
     }

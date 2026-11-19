@@ -63,7 +63,7 @@ export function ReportParameterField({
       <EuiCallOut
         announceOnMount
         color='danger'
-        iconType='alert'
+        iconType='warning'
         size='s'
         title={`Parâmetro "${name}" usa um tipo não suportado (${type ?? 'desconhecido'})`}
       />

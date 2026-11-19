@@ -64,7 +64,7 @@ const FinesList: FC<{ fines: LendingFine[] }> = ({ fines }) => {
             id='circulation.user.no_fines'
           />
         }
-        iconType='documents'
+        iconType='document'
       />
     )
   }

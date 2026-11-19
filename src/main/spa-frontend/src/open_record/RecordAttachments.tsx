@@ -36,7 +36,7 @@ const RecordAttachments: FC<Props> = ({ record }) => {
             />
           </p>
         }
-        icon={<EuiIcon aria-hidden size='xl' type='documents' />}
+        icon={<EuiIcon aria-hidden size='xl' type='document' />}
         title={
           <h3>
             <FormattedMessage
