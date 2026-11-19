@@ -35,8 +35,8 @@ const ReportFillForm = ({
   const parameters = report.parameters ?? []
 
   const initialValues = useMemo(
-    () => createInitialParameterValues(parameters),
-    [report.id, parameters],
+    () => createInitialParameterValues(report.parameters),
+    [report.parameters],
   )
 
   const [parameterValues, setParameterValues] =
