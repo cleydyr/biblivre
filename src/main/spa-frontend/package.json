@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "bash scripts/dev.sh",
     "build": "yarn add-ts-nocheck && tsc -b && vite build",
-    "lint": "eslint . --cache",
-    "lint:fix": "eslint . --fix --cache",
+    "lint": "eslint . --cache --max-warnings 0",
+    "lint:fix": "eslint . --fix --cache --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "yarn add-ts-nocheck && tsc --noEmit --project tsconfig.app.json",
