@@ -10,6 +10,8 @@ import {
 import { Fragment } from 'react'
 import { FormattedMessage } from 'react-intl'
 
+import PrinterIcon from '../../components/icons/PrinterIcon'
+
 import type { FC } from 'react'
 
 import type { ReturnSlipItem } from './useCirculationReturn'
@@ -50,7 +52,7 @@ const ReturnSlipPanel: FC<Props> = ({
         </EuiButtonEmpty>
         <EuiButton
           disabled={slip.length === 0 || isBusy}
-          iconType='printer'
+          iconType={PrinterIcon}
           onClick={onPrintSlip}
         >
           <FormattedMessage

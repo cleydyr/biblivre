@@ -19,7 +19,10 @@ describe('ReturnSlipPanel', () => {
       </IntlProvider>,
     )
 
-    expect(screen.getByRole('button', { name: /Imprimir/i })).toBeDisabled()
+    const printButton = screen.getByRole('button', { name: /Imprimir/i })
+    expect(printButton).toBeDisabled()
+    expect(printButton.querySelector('svg')).toBeInTheDocument()
+    expect(printButton.querySelector('img')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Limpar/i })).toBeDisabled()
     expect(
       screen.getByText(/As devoluções desta visita aparecem aqui/i),
