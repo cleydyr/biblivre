@@ -27,7 +27,7 @@ export type CirculationUserFormValues = {
 
 export const USER_STATUS_OPTIONS: Array<{
   value: User['status']
-  labelKey: string
+  labelKey: keyof typeof translations
 }> = [
   { value: 'active', labelKey: 'circulation.user_status.active' },
   { value: 'inactive', labelKey: 'circulation.user_status.inactive' },
