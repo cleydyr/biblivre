@@ -60,4 +60,37 @@ class FileIOUtilsTest {
             fail(e);
         }
     }
+
+    @Test
+    void contentDisposition_imagesAndTextOpenInline() {
+        assertEquals(
+                "inline;filename=\"photo.png\"",
+                FileIOUtils.contentDisposition("image/png", "photo.png", null));
+        assertEquals(
+                "inline;filename=\"notes.txt\"",
+                FileIOUtils.contentDisposition("text/plain", "notes.txt", null));
+    }
+
+    @Test
+    void contentDisposition_otherTypesFollowTheAcceptHeader() {
+        assertEquals(
+                "inline;filename=\"book.pdf\"",
+                FileIOUtils.contentDisposition(
+                        "application/pdf", "book.pdf", "text/html,application/pdf"));
+        assertEquals(
+                "inline;filename=\"book.pdf\"",
+                FileIOUtils.contentDisposition("application/pdf", "book.pdf", "*/*"));
+        assertEquals(
+                "attachment;filename=\"book.pdf\"",
+                FileIOUtils.contentDisposition("application/pdf", "book.pdf", "text/html"));
+        assertEquals(
+                "attachment;filename=\"book.pdf\"",
+                FileIOUtils.contentDisposition("application/pdf", "book.pdf", null));
+    }
+
+    @Test
+    void responseContentType_addsCharsetToTextOnly() {
+        assertEquals("text/plain;charset=UTF-8", FileIOUtils.responseContentType("text/plain"));
+        assertEquals("image/png", FileIOUtils.responseContentType("image/png"));
+    }
 }

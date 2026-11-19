@@ -110,6 +110,8 @@ public class AuthorizationPoints implements Serializable {
 
     private void setupDigitalMediaAuthorization() {
         this.addAuthPoint("digitalmedia", "upload", DIGITALMEDIA_UPLOAD);
+        this.addAuthPoint("digitalmedia", "prepare_upload", DIGITALMEDIA_UPLOAD);
+        this.addAuthPoint("digitalmedia", "complete_upload", DIGITALMEDIA_UPLOAD);
         this.addAuthPoint("digitalmedia", "download", DIGITALMEDIA_DOWNLOAD);
     }
 

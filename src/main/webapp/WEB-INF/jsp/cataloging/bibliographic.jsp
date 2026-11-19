@@ -47,6 +47,7 @@
 		CatalogingInput.search = CatalogingSearch;
 		CatalogingInput.defaultMaterialType = 'book';
 		CatalogingInput.isbnLookupEnabled = ${requestScope.isbnLookupEnabled ? 'true' : 'false'};
+		CatalogingInput.directUpload = ${requestScope.digitalMediaDirectUpload ? 'true' : 'false'};
 		CatalogingInput.schema = '${schema}';
 		CatalogingInput.contextPath = '<%= contextPath %>';
 

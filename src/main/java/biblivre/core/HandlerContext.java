@@ -1,6 +1,7 @@
 package biblivre.core;
 
 import biblivre.core.file.BiblivreFile;
+import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ public class HandlerContext {
     private BiblivreFile file;
     private int returnCode;
     private HttpCallback callback;
+    private URI redirect;
 
     public HandlerContext() {
         json = new JSONObject();

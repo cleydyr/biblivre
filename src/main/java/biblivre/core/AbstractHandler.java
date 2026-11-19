@@ -22,6 +22,7 @@ package biblivre.core;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
+import java.net.URI;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,15 @@ public class AbstractHandler {
 
     public void setFile(BiblivreFile file) {
         getHandlerContext().setFile(file);
+    }
+
+    /** Where a download controller should send the browser instead of streaming a file. */
+    public URI getRedirect() {
+        return getHandlerContext().getRedirect();
+    }
+
+    public void setRedirect(URI redirect) {
+        getHandlerContext().setRedirect(redirect);
     }
 
     public int getReturnCode() {

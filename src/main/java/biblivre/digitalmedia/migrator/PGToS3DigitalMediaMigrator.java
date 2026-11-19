@@ -9,6 +9,7 @@ import biblivre.digitalmedia.postgres.DatabaseFile;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -95,6 +96,8 @@ public class PGToS3DigitalMediaMigrator implements DigitalMediaStoreMigrator {
 
                             log.info("Removing {}, (id: {})", media.getName(), media.getId());
 
+                            _pointAtObject(databaseFile, media.getId());
+
                             _delete(databaseFile);
 
                             _cleanUp(databaseFile);
@@ -103,6 +106,23 @@ public class PGToS3DigitalMediaMigrator implements DigitalMediaStoreMigrator {
                         }
                     }
                 });
+    }
+
+    // The object keeps the large object id as its key; the row stops pointing at a large object.
+    private void _pointAtObject(DatabaseFile databaseFile, int mediaId) throws SQLException {
+        long oid = databaseFile.getLargeObject().getLongOID();
+
+        try (PreparedStatement pst =
+                databaseFile
+                        .getConnection()
+                        .prepareStatement(
+                                "UPDATE digital_media SET storage_key = ?, blob = NULL"
+                                        + " WHERE id = ?")) {
+            pst.setString(1, String.valueOf(oid));
+            pst.setInt(2, mediaId);
+
+            pst.executeUpdate();
+        }
     }
 
     private void _cleanUp(DatabaseFile databaseFile) throws SQLException {

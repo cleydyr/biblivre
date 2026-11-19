@@ -28,6 +28,7 @@ import biblivre.core.utils.FileIOUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,16 @@ public class DownloadController extends Controller {
             } else {
                 this.xResponse.setStatus(returnCode);
             }
+
+            return;
+        }
+
+        URI redirect = this.handler.getRedirect();
+
+        if (redirect != null) {
+            // The location is a short-lived capability: no shared cache may keep it.
+            this.xResponse.setHeader("Cache-Control", "private, no-store");
+            this.xResponse.sendRedirect(redirect.toString());
 
             return;
         }

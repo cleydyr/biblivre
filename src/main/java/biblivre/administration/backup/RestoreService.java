@@ -26,6 +26,8 @@ import biblivre.administration.setup.State;
 import biblivre.core.utils.CharPool;
 import biblivre.database.util.PostgreSQLStatementIterable;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.DigitalMediaSchema;
+import biblivre.digitalmedia.StorageLocation;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -244,11 +246,22 @@ public class RestoreService {
                         .formatted(schemaToBeDeleted));
     }
 
-    private String buildUpdateDigitalMediaQuery(String mediaId, long oid) {
-        return "UPDATE digital_media SET blob = '%d' WHERE id = '%s';".formatted(oid, mediaId);
+    private static String buildUpdateDigitalMediaQuery(String mediaId, StorageLocation location) {
+        String blob = location.blob() != null ? "'%d'".formatted(location.blob()) : "NULL";
+        String storageKey = location.storageKey().replace("'", "''");
+
+        return "UPDATE digital_media SET blob = %s, storage_key = '%s' WHERE id = '%s';"
+                .formatted(blob, storageKey, mediaId);
     }
 
-    private void processMediaRestoreFolder(File path) throws RestoreException {
+    // A backup taken before storage_key existed brings a digital_media table without it.
+    private void ensureStorageKeyColumn() throws RestoreException {
+        for (String sql : DigitalMediaSchema.STORAGE_KEY_COLUMN) {
+            writeLine(sql + ";");
+        }
+    }
+
+    private void processMediaRestoreFolder(File path, String schema) throws RestoreException {
         if (path == null) {
             log.info("===== Skipping File 'null' =====");
             return;
@@ -258,6 +271,10 @@ public class RestoreService {
             log.info("===== Skipping File '{}' =====", path.getName());
             return;
         }
+
+        setPGSearchPath(schema);
+
+        ensureStorageKeyColumn();
 
         for (File file : Objects.requireNonNull(path.listFiles())) {
             Matcher fileMatcher = DIGITAL_MEDIA_FILE_PATTERN.matcher(file.getName());
@@ -270,11 +287,11 @@ public class RestoreService {
 
             String mediaId = fileMatcher.group(1);
 
-            long oid = digitalMediaDAO.importFile(file);
+            StorageLocation location = digitalMediaDAO.importFile(file, schema);
 
             State.incrementCurrentStep();
 
-            String newLine = buildUpdateDigitalMediaQuery(mediaId, oid);
+            String newLine = buildUpdateDigitalMediaQuery(mediaId, location);
 
             writeLine(newLine);
         }
@@ -295,7 +312,7 @@ public class RestoreService {
 
         processMediaRestore(new File(path, schema + ".media." + extension), schema);
 
-        processMediaRestoreFolder(new File(path, schema));
+        processMediaRestoreFolder(new File(path, schema), schema);
     }
 
     public void processSchemaRenames(Map<String, String> preRenameSchemas) throws RestoreException {
@@ -381,10 +398,15 @@ public class RestoreService {
 
             setPGSearchPath(schema);
 
+            if (!oidMap.isEmpty()) {
+                ensureStorageKeyColumn();
+            }
+
             for (Map.Entry<Long, Long> entry : oidMap.entrySet()) {
                 String query =
                         buildUpdateDigitalMediaQuery(
-                                String.valueOf(entry.getKey()), entry.getValue());
+                                String.valueOf(entry.getKey()),
+                                StorageLocation.largeObject(entry.getValue()));
 
                 writeLine(query);
             }

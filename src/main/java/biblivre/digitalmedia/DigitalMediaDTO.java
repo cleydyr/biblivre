@@ -29,6 +29,7 @@ public class DigitalMediaDTO extends AbstractDTO {
     private int id;
     private Long blob;
     private String name;
+    private String storageKey;
 
     public int getId() {
         return this.id;
@@ -52,5 +53,13 @@ public class DigitalMediaDTO extends AbstractDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getStorageKey() {
+        return this.storageKey;
+    }
+
+    public void setStorageKey(String storageKey) {
+        this.storageKey = storageKey;
     }
 }

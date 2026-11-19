@@ -26,7 +26,9 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,22 +42,61 @@ public class Handler extends AbstractHandler {
 
         String id = request.getString("id").replaceAll("_", "\\\\");
 
-        Optional<BiblivreFile> file = digitalMediaBO.parseFromBase64(id);
+        Optional<MediaDownload> download =
+                digitalMediaBO.resolveDownload(id, request.getHeader("Accept"));
 
-        if (file.isEmpty()) {
+        if (download.isEmpty()) {
             this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        file.ifPresentOrElse(
-                f -> {
-                    this.setFile(f);
+        switch (download.get()) {
+            case MediaDownload.Streamed(BiblivreFile file) -> {
+                this.setFile(file);
+                this.setCallback(file::close);
+            }
+            case MediaDownload.Redirected(URI location) -> this.setRedirect(location);
+        }
+    }
 
-                    this.setCallback(f::close);
-                },
-                () -> {
-                    this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
-                });
+    public void prepareUpload(ExtendedRequest request, ExtendedResponse response) {
+        String name = request.getString("name");
+        String contentType = request.getString("content_type");
+        String size = request.getString("size");
+
+        if (!StringUtils.isNumeric(size)) {
+            this.setMessage(ActionResult.WARNING, "digitalmedia.error.no_file_uploaded");
+            return;
+        }
+
+        try {
+            DigitalMediaBO.PreparedUpload upload =
+                    digitalMediaBO.prepareUpload(
+                            name, contentType, Long.parseLong(size), request.getLoggedUserId());
+
+            put("upload_id", upload.uploadId().toString());
+            put("url", upload.url().toString());
+            put("content_type", upload.contentType());
+        } catch (DirectUploadException e) {
+            this.setMessage(ActionResult.WARNING, e.getMessage());
+        }
+    }
+
+    public void completeUpload(ExtendedRequest request, ExtendedResponse response) {
+        UUID uploadId;
+
+        try {
+            uploadId = UUID.fromString(request.getString("upload_id"));
+        } catch (IllegalArgumentException e) {
+            this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_not_found");
+            return;
+        }
+
+        try {
+            put("id", digitalMediaBO.completeUpload(uploadId, request.getLoggedUserId()));
+        } catch (DirectUploadException e) {
+            this.setMessage(ActionResult.WARNING, e.getMessage());
+        }
     }
 
     public void upload(ExtendedRequest request, ExtendedResponse response) {
