@@ -30,11 +30,15 @@ export const GenerateReportForm = ({
   )
 
   function getGenerateReportButtonLabel(): string {
-    return reportStatus === 'GENERATING'
-      ? 'Gerando relatório'
-      : reportStatus === 'PENDING'
-        ? 'Gerar relatório'
-        : 'Baixar relatório'
+    if (reportStatus === 'GENERATING') {
+      return 'Gerando relatório'
+    }
+
+    if (reportStatus === 'PENDING') {
+      return 'Gerar relatório'
+    }
+
+    return 'Baixar relatório'
   }
 
   function getCurrentDateAndHour() {
@@ -59,6 +63,17 @@ export const GenerateReportForm = ({
     a.href = pdfUrl
     a.download = `${selectedReport.name}_${getCurrentDateAndHour()}.pdf`
     a.click()
+  }
+
+  function onGenerateReportButtonClick(): void {
+    if (reportStatus === 'PENDING') {
+      onSubmit(selectedReport as Report)
+      return
+    }
+
+    if (reportStatus === 'READY') {
+      downloadPDFFile()
+    }
   }
 
   return (
@@ -89,13 +104,7 @@ export const GenerateReportForm = ({
           aria-disabled={!selectedReport || reportStatus === 'GENERATING'}
           aria-label={getGenerateReportButtonLabel()}
           isLoading={reportStatus === 'GENERATING'}
-          onClick={
-            reportStatus === 'PENDING'
-              ? () => onSubmit(selectedReport as Report)
-              : reportStatus === 'READY'
-                ? downloadPDFFile
-                : () => {}
-          }
+          onClick={onGenerateReportButtonClick}
         >
           {getGenerateReportButtonLabel()}
         </EuiButton>

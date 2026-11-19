@@ -129,13 +129,14 @@ const useCirculationUsersControlsAndTable = () => {
       })
   }, [users, userStatusOverrides, removedUserIds, savedUsersById, createdUsers])
 
-  const statusChangeUserId = isBlockingUser
-    ? blockingUserId
-    : isUnblockingUser
-      ? unblockingUserId
-      : isDeletingUser
-        ? deletingUserId
-        : null
+  let statusChangeUserId: number | null | undefined = null
+  if (isBlockingUser) {
+    statusChangeUserId = blockingUserId
+  } else if (isUnblockingUser) {
+    statusChangeUserId = unblockingUserId
+  } else if (isDeletingUser) {
+    statusChangeUserId = deletingUserId
+  }
 
   const applyUserStatusChange = useCallback(
     (userId: number, status: User['status']) => {
