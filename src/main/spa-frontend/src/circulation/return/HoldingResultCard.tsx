@@ -53,26 +53,27 @@ const HoldingResultCard: FC<Props> = ({
           announceOnMount
           color='warning'
           size='s'
+          text={
+            closedLending && user ? (
+              <EuiText size='s'>
+                <FormattedMessage
+                  defaultMessage='Última devolução: {user} em {date}'
+                  id='circulation.return.last_closed_hint'
+                  values={{
+                    user: user.name,
+                    date: formatCirculationDateTime(closedLending.returnDate),
+                  }}
+                />
+              </EuiText>
+            ) : undefined
+          }
           title={
             <FormattedMessage
               defaultMessage='Exemplar não está emprestado'
               id='circulation.return.not_on_loan'
             />
           }
-        >
-          {closedLending && user && (
-            <EuiText size='s'>
-              <FormattedMessage
-                defaultMessage='Última devolução: {user} em {date}'
-                id='circulation.return.last_closed_hint'
-                values={{
-                  user: user.name,
-                  date: formatCirculationDateTime(closedLending.returnDate),
-                }}
-              />
-            </EuiText>
-          )}
-        </EuiCallOut>
+        />
       )}
     </EuiPanel>
   )

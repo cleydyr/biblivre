@@ -178,14 +178,17 @@ export default function ReportApp() {
   })
 
   const downloadReportFillBanner = screen === 'fill' && reportFill && (
-    <EuiCallOut announceOnMount>
-      <p>
-        O relatório foi gerado com sucesso.{' '}
-        <a href={`${BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
-          Clique para baixar o relatório gerado.
-        </a>
-      </p>
-    </EuiCallOut>
+    <EuiCallOut
+      announceOnMount
+      text={
+        <p>
+          O relatório foi gerado com sucesso.{' '}
+          <a href={`${BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
+            Clique para baixar o relatório gerado.
+          </a>
+        </p>
+      }
+    />
   )
 
   let flyout
@@ -284,10 +287,9 @@ export default function ReportApp() {
               key={error}
               color='danger'
               iconType='error'
+              text={<p>{error}</p>}
               title='Desculpe. Aconteceu um erro.'
-            >
-              <p>{error}</p>
-            </EuiCallOut>
+            />
           ))}
           <ReportTemplateTable
             reports={reports ?? []}
