@@ -26,7 +26,7 @@ import {
 } from './queries'
 import { getRestApiErrorMessage } from './reportApiErrors'
 import ReportFillForm from './ReportFillForm'
-import { getShortTypeName } from './reportParameterFields'
+import { getShortTypeName } from './reportParameterLogic'
 import ReportTemplateTable from './ReportTemplateTable'
 import UploadReportForm from './UploadReportForm'
 
