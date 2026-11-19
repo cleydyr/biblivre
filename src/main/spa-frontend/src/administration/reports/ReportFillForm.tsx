@@ -8,12 +8,12 @@ import {
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
+import { ReportParameterField } from './reportParameterFields'
 import {
   areParameterValuesValid,
   createInitialParameterValues,
   hasUnsupportedParameterTypes,
-  ReportParameterField,
-} from './reportParameterFields'
+} from './reportParameterLogic'
 
 import type { FormEvent } from 'react'
 
