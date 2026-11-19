@@ -40,10 +40,7 @@ describe('addressLookupLogic', () => {
     ).toBe(true)
 
     expect(
-      hasAddressFieldsToOverwrite(
-        { address: 'Rua A' },
-        { address: 'Rua A' },
-      ),
+      hasAddressFieldsToOverwrite({ address: 'Rua A' }, { address: 'Rua A' }),
     ).toBe(true)
 
     expect(
