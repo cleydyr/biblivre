@@ -43,7 +43,7 @@ export function addressLookupToFieldValues(
  * has a value — staff must confirm before replacing filled address data.
  */
 export function hasAddressFieldsToOverwrite(
-  currentFields: Record<string, string>,
+  currentFields: Partial<Record<string, string>>,
   lookupValues: Partial<Record<AddressLookupFieldKey, string>>,
 ): boolean {
   return ADDRESS_LOOKUP_FIELD_KEYS.some((key) => {
@@ -57,9 +57,9 @@ export function hasAddressFieldsToOverwrite(
 }
 
 export function applyAddressLookupValues(
-  currentFields: Record<string, string>,
+  currentFields: Partial<Record<string, string>>,
   lookupValues: Partial<Record<AddressLookupFieldKey, string>>,
-): Record<string, string> {
+): Partial<Record<string, string>> {
   return {
     ...currentFields,
     ...lookupValues,

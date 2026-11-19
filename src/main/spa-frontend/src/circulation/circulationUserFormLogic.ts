@@ -20,7 +20,7 @@ export type CirculationUserFormValues = {
   enrollment: string
   type: number | null
   status: User['status']
-  fields: Record<string, string>
+  fields: Partial<Record<string, string>>
   photoData: string | null
   photoPreviewUrl: string | null
 }
@@ -54,7 +54,7 @@ export function createEmptyUserFormValues(
 }
 
 export function userToFormValues(user: User): CirculationUserFormValues {
-  const fields: Record<string, string> = {}
+  const fields: Partial<Record<string, string>> = {}
 
   for (const [key, value] of Object.entries(user.fields)) {
     if (value === '') {
@@ -91,8 +91,10 @@ export function buildSavePayload(
     payload.photo_data = values.photoData
   }
 
-  for (const [key, value] of Object.entries(values.fields)) {
-    payload[key] = value
+  for (const [key, fieldValue] of Object.entries(values.fields)) {
+    if (fieldValue !== undefined) {
+      payload[key] = fieldValue
+    }
   }
 
   return payload

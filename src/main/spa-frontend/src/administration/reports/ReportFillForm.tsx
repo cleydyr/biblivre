@@ -107,7 +107,7 @@ const ReportFillForm = ({
             <ReportParameterField
               key={parameter.name}
               parameter={parameter}
-              value={parameterValues[parameter.name] ?? ''}
+              value={parameterValues[parameter.name]}
               onChange={handleParameterChange}
             />
           ) : null,
