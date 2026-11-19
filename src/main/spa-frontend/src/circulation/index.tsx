@@ -21,7 +21,7 @@ const CirculationPage = () => {
       rightSideItems={[
         <EuiButton
           key='new-user'
-          iconType='plusInCircle'
+          iconType='plusCircle'
           onClick={controlsAndTable.onCreateUserClick}
         >
           <FormattedMessage

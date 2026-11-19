@@ -23,7 +23,7 @@ const SearchResults: FC<Props> = ({ results, isBusy, onReturn }) => {
             id='circulation.return.search.empty'
           />
         }
-        iconType='search'
+        iconType='magnify'
       />
     )
   }

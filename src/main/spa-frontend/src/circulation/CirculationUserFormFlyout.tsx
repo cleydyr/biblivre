@@ -168,7 +168,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
           'circulation.user.address_lookup.incomplete',
         ),
         color: 'warning',
-        iconType: 'alert',
+        iconType: 'warning',
       })
     }
   }
@@ -183,7 +183,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
           'circulation.user.address_lookup.invalid_cep',
         ),
         color: 'warning',
-        iconType: 'alert',
+        iconType: 'warning',
       })
       return
     }
@@ -220,7 +220,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
           id: `circulation-user-address-error-${Date.now()}`,
           title,
           color: 'danger',
-          iconType: 'alert',
+          iconType: 'warning',
         })
       },
     })
@@ -241,7 +241,7 @@ const CirculationUserFormFlyout: FC<Props> = ({
         id: `circulation-user-photo-error-${Date.now()}`,
         title: 'Extensão de foto inválida',
         color: 'warning',
-        iconType: 'alert',
+        iconType: 'warning',
       })
       return
     }

@@ -71,7 +71,7 @@ const LendingsList: FC<{ lendingBags: LendingBag[] }> = ({ lendingBags }) => {
             id='circulation.user.no_lendings'
           />
         }
-        iconType='documents'
+        iconType='document'
       />
     )
   }

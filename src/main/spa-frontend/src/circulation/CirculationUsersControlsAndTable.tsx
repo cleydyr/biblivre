@@ -76,7 +76,7 @@ const CirculationUsersControlsAndTable = ({
         <EuiEmptyPrompt
           actions={
             <EuiButton
-              iconType='search'
+              iconType='magnify'
               onClick={() => {
                 onSearchUsers()
               }}

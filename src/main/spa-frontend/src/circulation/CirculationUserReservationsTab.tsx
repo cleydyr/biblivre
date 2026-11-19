@@ -75,7 +75,7 @@ const ReservationsList: FC<{
             id='circulation.user.no_reserves'
           />
         }
-        iconType='documents'
+        iconType='document'
       />
     )
   }

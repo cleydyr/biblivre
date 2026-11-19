@@ -152,7 +152,7 @@ const ExpandIcon: FC = () => {
         width: euiTheme.size.l,
       }}
     >
-      <EuiIcon aria-hidden color='ghost' size='s' type='expand' />
+      <EuiIcon aria-hidden color='ghost' size='s' type='maximize' />
     </span>
   )
 }

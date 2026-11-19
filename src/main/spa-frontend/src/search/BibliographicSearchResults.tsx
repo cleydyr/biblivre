@@ -195,7 +195,7 @@ const BibliographicSearchResults: FC<Props> = ({
           <EuiFlexItem grow={false}>
             <EuiButton
               color='primary'
-              iconType='exportAction'
+              iconType='upload'
               isDisabled={searchResults.search.data.length === 0}
               isLoading={isExportingExcel}
               onClick={async () => {

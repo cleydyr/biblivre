@@ -23,7 +23,7 @@ const ExperimentalAppBadge: FC = () => {
         tabIndex={0}
       >
         <EuiFlexItem grow={false}>
-          <EuiBadge color='accent' iconType='beaker'>
+          <EuiBadge color='accent' iconType='flask'>
             <FormattedMessage
               defaultMessage='Experimental'
               id='app.experimental.label'

@@ -78,7 +78,7 @@ const useCirculationUsersControlsAndTable = () => {
         id: `user-status-change-${userId}-${Date.now()}`,
         title: response.message ?? '',
         color: response.success ? 'success' : 'warning',
-        iconType: response.success ? 'check' : 'alert',
+        iconType: response.success ? 'check' : 'warning',
       })
     },
     [showToast],
