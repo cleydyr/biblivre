@@ -33,7 +33,7 @@ const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
 
   return (
     <EuiPageTemplate paddingSize='xl' restrictWidth={euiTheme.breakpoint.xl}>
-      <EuiPageTemplate.Sidebar>
+      <EuiPageTemplate.Sidebar minWidth='max-content'>
         <AppSideNavigation />
       </EuiPageTemplate.Sidebar>
       <AppHeader isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
