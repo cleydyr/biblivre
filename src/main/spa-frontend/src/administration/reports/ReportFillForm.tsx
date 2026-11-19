@@ -78,15 +78,14 @@ const ReportFillForm = ({
           announceOnMount
           color='danger'
           iconType='error'
+          text={<p>{errorMessage}</p>}
           title={
             <FormattedMessage
               defaultMessage='Erro ao gerar relatório'
               id='app.reports.fill.submit.error'
             />
           }
-        >
-          <p>{errorMessage}</p>
-        </EuiCallOut>
+        />
       )}
       {parameters.length === 0 && (
         <EuiCallOut

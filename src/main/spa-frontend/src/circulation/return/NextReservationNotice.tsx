@@ -19,23 +19,24 @@ const NextReservationNotice: FC<Props> = ({ reservation }) => {
       <EuiCallOut
         color='primary'
         iconType='calendar'
+        text={
+          <EuiText size='s'>
+            <FormattedMessage
+              defaultMessage='Próximo na fila: {name}'
+              id='circulation.return.reservation.next'
+              values={{
+                name: user?.name ?? reservationInfo.userId,
+              }}
+            />
+          </EuiText>
+        }
         title={
           <FormattedMessage
             defaultMessage='Título reservado'
             id='circulation.return.reservation.title'
           />
         }
-      >
-        <EuiText size='s'>
-          <FormattedMessage
-            defaultMessage='Próximo na fila: {name}'
-            id='circulation.return.reservation.next'
-            values={{
-              name: user?.name ?? reservationInfo.userId,
-            }}
-          />
-        </EuiText>
-      </EuiCallOut>
+      />
     </Fragment>
   )
 }
