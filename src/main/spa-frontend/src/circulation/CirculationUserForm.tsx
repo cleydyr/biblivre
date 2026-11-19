@@ -127,12 +127,11 @@ const CirculationUserForm: FC<Props> = ({
         isInvalid={Boolean(fieldErrors.status)}
         label={getLegacyUserFieldTranslation('status')}
       >
-        {/* TODO: fix this when we have a proper type for the options */}
         <TypedEuiSelect
           isInvalid={Boolean(fieldErrors.status)}
           options={USER_STATUS_OPTIONS.map((option) => ({
             value: option.value,
-            text: getLegacyTranslation(option.labelKey as any),
+            text: getLegacyTranslation(option.labelKey),
           }))}
           value={values.status}
           onChange={(event) =>
