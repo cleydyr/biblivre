@@ -84,7 +84,7 @@ class DigitalMediaBOTest {
                 .presignDownload(
                         StorageLocation.key("single/abc"),
                         "application/pdf",
-                        "attachment;filename=\"book.pdf\"");
+                        "attachment; filename=\"book.pdf\"");
         verify(dao, never()).load(3, "book.pdf");
     }
 

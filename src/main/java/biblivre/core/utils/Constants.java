@@ -78,7 +78,6 @@ public class Constants {
     // Media server
     public static final int DEFAULT_BUFFER_SIZE = 10240; // 10 KB
     public static final long DEFAULT_EXPIRE_TIME = 9676800000L; // 16 weeks
-    public static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
 
     public static final String GLOBAL_SCHEMA = "global";
 

@@ -30,10 +30,10 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.DiskFile;
+import biblivre.core.file.HttpFileSender;
 import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.FileIOUtils;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -275,7 +275,7 @@ public class SchemaServlet extends HttpServlet {
             if (cacheFile != null) {
                 DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
 
-                FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
+                HttpFileSender.send(diskFile, request, response, headerOnly);
             } else {
                 response.getOutputStream().print(javascript.toJavascriptString());
             }
