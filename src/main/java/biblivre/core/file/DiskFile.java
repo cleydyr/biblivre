@@ -63,4 +63,19 @@ public class DiskFile extends BiblivreFile {
     public boolean delete() {
         return this.file != null && this.file.delete();
     }
+
+    /** A file channel stream: each call opens the file again, and skip seeks. */
+    @Override
+    public InputStream openStream() throws IOException {
+        if (this.file == null) {
+            throw new FileNotFoundException("DiskFile has no file");
+        }
+
+        return Files.newInputStream(this.file.toPath());
+    }
+
+    @Override
+    public boolean isSeekable() {
+        return true;
+    }
 }

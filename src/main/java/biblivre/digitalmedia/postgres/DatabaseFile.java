@@ -22,9 +22,11 @@ package biblivre.digitalmedia.postgres;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.utils.Constants;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 import org.postgresql.largeobject.LargeObject;
 
 public final class DatabaseFile extends BiblivreFile {
@@ -120,6 +122,89 @@ public final class DatabaseFile extends BiblivreFile {
             }
         } catch (SQLException sqlException) {
             throw new IOException(sqlException);
+        }
+    }
+
+    /**
+     * A stream over the large object, rewound to its first byte. Skipping seeks on the server.
+     * Closing the stream leaves the large object open; {@link #close()} closes it.
+     */
+    @Override
+    public InputStream openStream() throws IOException {
+        LargeObject input = this.getLargeObject();
+
+        if (input == null) {
+            throw new IOException("DatabaseFile has no large object");
+        }
+
+        try {
+            return new LargeObjectInputStream(input);
+        } catch (SQLException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public boolean isSeekable() {
+        return true;
+    }
+
+    private static final class LargeObjectInputStream extends InputStream {
+
+        private final LargeObject largeObject;
+        private final long size;
+
+        LargeObjectInputStream(LargeObject largeObject) throws SQLException {
+            this.largeObject = largeObject;
+            this.size = largeObject.size64();
+            largeObject.seek64(0, LargeObject.SEEK_SET);
+        }
+
+        @Override
+        public int read() throws IOException {
+            byte[] single = new byte[1];
+
+            return this.read(single, 0, 1) == -1 ? -1 : single[0] & 0xFF;
+        }
+
+        @Override
+        public int read(byte[] buffer, int offset, int length) throws IOException {
+            Objects.checkFromIndexSize(offset, length, buffer.length);
+
+            if (length == 0) {
+                return 0;
+            }
+
+            try {
+                int read = this.largeObject.read(buffer, offset, length);
+
+                return read > 0 ? read : -1;
+            } catch (SQLException e) {
+                throw new IOException(e);
+            }
+        }
+
+        @Override
+        public long skip(long count) throws IOException {
+            if (count <= 0) {
+                return 0;
+            }
+
+            try {
+                long position = this.largeObject.tell64();
+                long target = Math.min(this.size, position + count);
+
+                this.largeObject.seek64(target, LargeObject.SEEK_SET);
+
+                return target - position;
+            } catch (SQLException e) {
+                throw new IOException(e);
+            }
+        }
+
+        @Override
+        public void close() {
+            // DatabaseFile.close() closes the large object and its connection.
         }
     }
 }
