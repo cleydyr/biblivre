@@ -103,7 +103,8 @@ class RestoreBOTest {
         }
 
         @Override
-        public void processSchemaRestores(File path, String extension, String schema)
+        public void processSchemaRestores(
+                File path, String extension, String schema, String targetSchema)
                 throws RestoreException {
             throw new RestoreException("simulated restore failure");
         }
