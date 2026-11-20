@@ -21,6 +21,7 @@ package biblivre.core.file;
 
 import java.io.*;
 import java.nio.file.Files;
+import org.apache.commons.io.IOUtils;
 
 public class DiskFile extends BiblivreFile {
     private final File file;
@@ -50,13 +51,13 @@ public class DiskFile extends BiblivreFile {
         }
 
         try (InputStream input = Files.newInputStream(this.file.toPath())) {
-            long skipped = input.skip(start);
+            long skipped = IOUtils.skip(input, start);
 
             if (skipped != start) {
                 throw new IOException("premature end of file when skipping to " + start);
             }
 
-            input.transferTo(out);
+            IOUtils.copyLarge(input, out, 0, size);
         }
     }
 
