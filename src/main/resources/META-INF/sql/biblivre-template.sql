@@ -698,15 +698,36 @@ ALTER TABLE bib4template.configurations OWNER TO biblivre;
 CREATE TABLE bib4template.digital_media (
     id integer NOT NULL,
     name character varying,
-    blob oid NOT NULL,
+    blob oid,
     content_type character varying,
     size bigint,
     created timestamp without time zone DEFAULT now() NOT NULL,
-    created_by integer
+    created_by integer,
+    storage_key character varying
 );
 
 
 ALTER TABLE bib4template.digital_media OWNER TO biblivre;
+
+--
+-- Name: digital_media_pending_upload; Type: TABLE; Schema: bib4template; Owner: biblivre
+--
+
+CREATE TABLE bib4template.digital_media_pending_upload (
+    id uuid NOT NULL PRIMARY KEY,
+    storage_key character varying NOT NULL,
+    name character varying NOT NULL,
+    content_type character varying NOT NULL,
+    size bigint NOT NULL,
+    created timestamp without time zone DEFAULT now() NOT NULL,
+    created_by integer,
+    expires_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE bib4template.digital_media_pending_upload OWNER TO biblivre;
+
+CREATE INDEX "IX_digital_media_pending_upload_expires_at" ON bib4template.digital_media_pending_upload USING btree (expires_at);
 
 --
 -- Name: digital_media_id_seq; Type: SEQUENCE; Schema: bib4template; Owner: biblivre

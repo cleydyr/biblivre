@@ -21,6 +21,7 @@ package biblivre.digitalmedia.postgres;
 
 import biblivre.core.file.BiblivreFile;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
+import biblivre.digitalmedia.StorageLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +44,15 @@ import org.springframework.stereotype.Service;
 public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
 
     @Override
-    public void persist(InputStream is, long oid, long size) throws SQLException, IOException {
+    protected StorageLocation allocate(String schema) {
+        return StorageLocation.largeObject(createOID());
+    }
+
+    @Override
+    public void persist(InputStream is, StorageLocation location, long size)
+            throws SQLException, IOException {
+        long oid = location.oid();
+
         withTransactionContext(
                 con -> {
                     PGConnection pgcon = con.unwrap(PGConnection.class);
@@ -59,7 +68,9 @@ public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
     }
 
     @Override
-    protected void deleteBlob(long oid) {
+    protected void deleteBlob(StorageLocation location) {
+        long oid = location.oid();
+
         withTransactionContext(
                 con -> {
                     PGConnection pgcon = con.unwrap(PGConnection.class);
@@ -71,7 +82,9 @@ public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
     }
 
     @Override
-    protected BiblivreFile getFile(long oid) throws Exception {
+    protected BiblivreFile getFile(StorageLocation location) throws Exception {
+        long oid = location.oid();
+
         Connection con = datasource.getConnection();
 
         con.setAutoCommit(false);

@@ -284,35 +284,25 @@ public class FileIOUtils {
 
             String contentType = file.getContentType();
             boolean acceptsGzip = false;
-            String disposition = "inline";
 
             if (contentType.startsWith("text")) {
                 // If content type is text, then determine whether GZIP content encoding is
-                // supported by
-                // the browser and expand content type with the one and right character encoding.
-
+                // supported by the browser.
                 String acceptEncoding = request.getHeader("Accept-Encoding");
                 acceptsGzip = acceptEncoding != null && FileIOUtils.accepts(acceptEncoding, "gzip");
-                contentType += ";charset=UTF-8";
                 response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-            } else if (!contentType.startsWith("image")) {
-                // Else, expect for images, determine content disposition. If content type is
-                // supported by
-                // the browser, then set to inline, else attachment which will pop a 'save as'
-                // dialogue.
-
-                String accept = request.getHeader("Accept");
-                disposition =
-                        accept != null && FileIOUtils.accepts(accept, contentType)
-                                ? "inline"
-                                : "attachment";
             }
+
+            String disposition =
+                    FileIOUtils.contentDisposition(
+                            contentType, fileName, request.getHeader("Accept"));
+
+            contentType = FileIOUtils.responseContentType(contentType);
 
             // Initialize response.
             response.reset();
             response.setBufferSize(Constants.DEFAULT_BUFFER_SIZE);
-            response.setHeader(
-                    "Content-Disposition", disposition + ";filename=\"" + fileName + "\"");
+            response.setHeader("Content-Disposition", disposition);
             response.setHeader("Accept-Ranges", "bytes");
             response.setHeader("ETag", eTag);
             response.setDateHeader("Last-Modified", lastModified);
@@ -386,6 +376,39 @@ public class FileIOUtils {
                 }
             }
         }
+    }
+
+    /**
+     * The content type a media response is served with: text gets an explicit UTF-8 charset.
+     *
+     * @param contentType The stored content type.
+     * @return The content type to send.
+     */
+    public static String responseContentType(String contentType) {
+        return contentType.startsWith("text") ? contentType + ";charset=UTF-8" : contentType;
+    }
+
+    /**
+     * The Content-Disposition a media response is served with. Text and images open inline; any
+     * other type opens inline only when the browser's Accept header takes it, else it downloads.
+     *
+     * @param contentType The stored content type.
+     * @param fileName The file name offered to the browser.
+     * @param acceptHeader The request's Accept header, possibly null.
+     * @return The Content-Disposition header value.
+     */
+    public static String contentDisposition(
+            String contentType, String fileName, String acceptHeader) {
+        String disposition = "inline";
+
+        if (!contentType.startsWith("text") && !contentType.startsWith("image")) {
+            disposition =
+                    acceptHeader != null && FileIOUtils.accepts(acceptHeader, contentType)
+                            ? "inline"
+                            : "attachment";
+        }
+
+        return disposition + ";filename=\"" + fileName + "\"";
     }
 
     /**

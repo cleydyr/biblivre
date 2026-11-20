@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import biblivre.administration.setup.State;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.StorageLocation;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -83,7 +85,8 @@ class RestoreServiceTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.createStatement()).thenReturn(statement);
-        when(digitalMediaDAO.importFile(any(File.class))).thenReturn(42L);
+        when(digitalMediaDAO.importFile(any(File.class), eq("single")))
+                .thenReturn(StorageLocation.key("single/abc"));
 
         RestoreService service = new RestoreService();
         service.setDataSource(dataSource);
@@ -96,9 +99,43 @@ class RestoreServiceTest {
 
         assertDoesNotThrow(() -> service.processSchemaRestores(tempDir.toFile(), "b5b", "single"));
 
-        verify(digitalMediaDAO).importFile(any(File.class));
+        verify(digitalMediaDAO).importFile(any(File.class), eq("single"));
+        verify(statement).execute(contains("ADD COLUMN IF NOT EXISTS storage_key"));
         verify(statement)
-                .execute(contains("UPDATE digital_media SET blob = '42' WHERE id = '123'"));
+                .execute(
+                        contains(
+                                "UPDATE digital_media SET blob = NULL, storage_key = 'single/abc'"
+                                        + " WHERE id = '123'"));
+    }
+
+    @Test
+    void processSchemaRestores_keepsLargeObjectIdAsStorageKey() throws Exception {
+        DigitalMediaDAO digitalMediaDAO = mock(DigitalMediaDAO.class);
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        Statement statement = mock(Statement.class);
+
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+        when(digitalMediaDAO.importFile(any(File.class), eq("single")))
+                .thenReturn(StorageLocation.largeObject(42L));
+
+        RestoreService service = new RestoreService();
+        service.setDataSource(dataSource);
+        service.setDigitalMediaDAO(digitalMediaDAO);
+
+        Path schemaDir = Files.createDirectory(tempDir.resolve("single"));
+        Files.writeString(schemaDir.resolve("123_photo.jpg"), "fake-media-content");
+
+        State.start();
+
+        service.processSchemaRestores(tempDir.toFile(), "b5b", "single");
+
+        verify(statement)
+                .execute(
+                        contains(
+                                "UPDATE digital_media SET blob = '42', storage_key = '42'"
+                                        + " WHERE id = '123'"));
     }
 
     @Test

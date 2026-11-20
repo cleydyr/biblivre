@@ -1167,6 +1167,11 @@ var CatalogingInputClass = {
 			return;
 		}
 
+		if (this.directUpload) {
+			this._uploadDirect(button, description);
+			return;
+		}
+
 		var me = this;
 
 		$('#page_submit').ajaxSubmit({
@@ -1186,42 +1191,133 @@ var CatalogingInputClass = {
 				me.hideUploadProgress();
 			},
 			success: function(response) {
-
 				if (response.success && response.id) {
-					$.ajax({
-						url: window.location.pathname,
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							controller: 'json',
-							module: me.type,
-							action: 'add_attachment',
-							id: me.search.selectedRecord.id,
-							description: description,
-							uri: 'DigitalMediaController/?id=' + response.id
-						},
-						loadingTimedOverlay: true,
-						context: me
-					}).done(function(response) {
-						Core.msg(response);
-
-						if (response.success) {
-							me.search.reloadResult();
-						}
-					});
+					me._addAttachment(description, response.id);
 				} else {
 					Core.msg(response);
 				}
 			},
 			error: function() {
-				Core.msg({
-					message_level: 'warning',
-					message:Translations.get('cataloging.import.error.file_upload_error')
-				});
+				me._uploadError();
 			},
 			uploadProgress: function(event, current, total, percentComplete) {
 				me.updateUploadProgress(current, total, percentComplete);
 			}
+		});
+	},
+	// Set by the page when the media store takes the file straight from the browser.
+	directUpload: false,
+	// prepare_upload -> PUT to the signed URL -> complete_upload. Tomcat only signs and confirms.
+	_uploadDirect: function(button, description) {
+		var input = $(button).closest('.upload').find('input[type="file"]')[0];
+		var file = input?.files?.[0];
+
+		if (!file) {
+			Core.msg({
+				message_level: 'warning',
+				message: Translations.get('digitalmedia.error.no_file_uploaded')
+			});
+			return;
+		}
+
+		var fail = () => {
+			this.hideUploadProgress();
+			this._uploadError();
+		};
+
+		this.showUploadProgress();
+		this._continuousUploadProgressTimeout = setTimeout(this.continuousUploadProgress, 500);
+
+		$.ajax({
+			url: window.location.pathname,
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				controller: 'json',
+				module: 'digitalmedia',
+				action: 'prepare_upload',
+				name: file.name,
+				content_type: file.type,
+				size: file.size
+			}
+		}).done((prepared) => {
+			if (!prepared.success || !prepared.upload_id) {
+				this.hideUploadProgress();
+				Core.msg(prepared);
+				return;
+			}
+
+			var xhr = new XMLHttpRequest();
+
+			xhr.open('PUT', prepared.url);
+			// The signature covers this header: it must match what the server signed.
+			xhr.setRequestHeader('Content-Type', prepared.content_type);
+
+			xhr.upload.onprogress = (event) => {
+				if (event.lengthComputable) {
+					this.updateUploadProgress(event.loaded, event.total, Math.round(event.loaded / event.total * 100));
+				}
+			};
+
+			xhr.onerror = fail;
+
+			xhr.onload = () => {
+				if (xhr.status < 200 || xhr.status >= 300) {
+					fail();
+					return;
+				}
+
+				$.ajax({
+					url: window.location.pathname,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						controller: 'json',
+						module: 'digitalmedia',
+						action: 'complete_upload',
+						upload_id: prepared.upload_id
+					}
+				}).done((completed) => {
+					this.hideUploadProgress();
+
+					if (completed.success && completed.id) {
+						this._addAttachment(description, completed.id);
+					} else {
+						Core.msg(completed);
+					}
+				}).fail(fail);
+			};
+
+			xhr.send(file);
+		}).fail(fail);
+	},
+	_addAttachment: function(description, mediaId) {
+		$.ajax({
+			url: window.location.pathname,
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				controller: 'json',
+				module: this.type,
+				action: 'add_attachment',
+				id: this.search.selectedRecord.id,
+				description: description,
+				uri: 'DigitalMediaController/?id=' + mediaId
+			},
+			loadingTimedOverlay: true,
+			context: this
+		}).done(function(response) {
+			Core.msg(response);
+
+			if (response.success) {
+				this.search.reloadResult();
+			}
+		});
+	},
+	_uploadError: function() {
+		Core.msg({
+			message_level: 'warning',
+			message:Translations.get('cataloging.import.error.file_upload_error')
 		});
 	},
 	isbnLookupEnabled: false,

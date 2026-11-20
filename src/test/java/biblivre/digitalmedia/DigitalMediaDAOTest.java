@@ -13,7 +13,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +33,8 @@ import org.testcontainers.shaded.com.google.common.io.Files;
 @ActiveProfiles("test")
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
     @Autowired private BaseDigitalMediaDAO dao;
+
+    @Autowired private DataSource dataSource;
 
     private static final String DEFAULT_SCHEMA = "single";
 
@@ -84,9 +89,11 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 
             Files.write(content, file, Charset.defaultCharset());
 
-            long oid = dao.importFile(file);
+            StorageLocation location = dao.importFile(file, DEFAULT_SCHEMA);
 
-            BiblivreFile retrievedFile = dao.getFile(oid);
+            assertEquals(String.valueOf(location.blob()), location.storageKey());
+
+            BiblivreFile retrievedFile = dao.getFile(location);
 
             retrievedFile.setSize(content.length());
 
@@ -177,6 +184,35 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
             assertEquals(fileContent1, outputStream.toString());
         } catch (Exception e) {
             fail(e);
+        }
+    }
+
+    @Test
+    public void testSaveRecordsStorageKey() {
+        MemoryFile file = _createMemoryFile("keyed.txt", "foobar");
+
+        Integer id = dao.save(file);
+
+        StoredMedia media = dao.find(id, "keyed.txt").orElseThrow();
+
+        assertEquals(String.valueOf(media.location().blob()), media.location().storageKey());
+        assertEquals("text/plain", media.contentType());
+        assertEquals(6, media.size());
+    }
+
+    @Test
+    public void testRowWithoutStorageKeyStillResolvesThroughBlob() throws Exception {
+        MemoryFile file = _createMemoryFile("legacy.txt", "foobar");
+
+        Integer id = dao.save(file);
+
+        try (Connection con = dataSource.getConnection();
+                Statement st = con.createStatement()) {
+            st.execute("UPDATE digital_media SET storage_key = NULL WHERE id = " + id);
+        }
+
+        try (BiblivreFile retrievedFile = dao.load(id, "legacy.txt")) {
+            assertEquals("foobar", _getContent(retrievedFile));
         }
     }
 

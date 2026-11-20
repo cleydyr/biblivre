@@ -44,6 +44,7 @@ import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.LanguageDTO;
 import biblivre.core.utils.Constants;
+import biblivre.digitalmedia.DigitalMediaBO;
 import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +62,7 @@ public class Handler extends AbstractHandler {
     private UserFieldBO userFieldBO;
     private AddressLookupProperties addressLookupProperties;
     private IsbnLookupService isbnLookupService;
+    private DigitalMediaBO digitalMediaBO;
     private IndexingGroupBO indexingGroupBO;
     private TabFieldsBO tabFieldsBO;
     private LanguageBO languageBO;
@@ -159,6 +161,7 @@ public class Handler extends AbstractHandler {
                 tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
         request.setAttribute("isbnLookupEnabled", isbnLookupService.isEnabled());
+        request.setAttribute("digitalMediaDirectUpload", digitalMediaBO.supportsDirectUpload());
 
         setJspURL("/WEB-INF/jsp/cataloging/bibliographic.jsp");
     }
@@ -458,6 +461,11 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setAddressLookupProperties(AddressLookupProperties addressLookupProperties) {
         this.addressLookupProperties = addressLookupProperties;
+    }
+
+    @Autowired
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
     }
 
     @Autowired
