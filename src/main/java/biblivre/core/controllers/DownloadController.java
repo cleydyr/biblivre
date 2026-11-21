@@ -24,7 +24,7 @@ import biblivre.core.HttpCallback;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
-import biblivre.core.utils.FileIOUtils;
+import biblivre.core.file.HttpFileSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class DownloadController extends Controller {
             return;
         }
 
-        FileIOUtils.sendHttpFile(file, this.xRequest, this.xResponse, this.headerOnly);
+        HttpFileSender.send(file, this.xRequest, this.xResponse, this.headerOnly);
 
         HttpCallback callback = this.handler.getCallback();
 
