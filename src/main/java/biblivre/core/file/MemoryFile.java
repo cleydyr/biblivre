@@ -22,6 +22,7 @@ package biblivre.core.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.apache.commons.io.IOUtils;
 
 public class MemoryFile extends BiblivreFile {
 
@@ -58,7 +59,7 @@ public class MemoryFile extends BiblivreFile {
                         "MemoryFile doesn't implement seek. Start parameter must be 0");
             }
 
-            input.transferTo(out);
+            IOUtils.copyLarge(input, out, 0, size);
         }
     }
 
