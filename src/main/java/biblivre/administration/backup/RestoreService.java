@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.copy.CopyManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +262,8 @@ public class RestoreService {
         }
     }
 
-    private void processMediaRestoreFolder(File path, String schema) throws RestoreException {
+    private void processMediaRestoreFolder(File path, String schema, String targetSchema)
+            throws RestoreException {
         if (path == null) {
             log.info("===== Skipping File 'null' =====");
             return;
@@ -287,7 +289,7 @@ public class RestoreService {
 
             String mediaId = fileMatcher.group(1);
 
-            StorageLocation location = digitalMediaDAO.importFile(file, schema);
+            StorageLocation location = digitalMediaDAO.importFile(file, targetSchema);
 
             State.incrementCurrentStep();
 
@@ -297,7 +299,13 @@ public class RestoreService {
         }
     }
 
-    public void processSchemaRestores(File path, String extension, String schema)
+    /**
+     * Restores one library under its name in the backup. The library is renamed to {@code
+     * targetSchema} only afterwards, but media keys already carry the target name, so their prefix
+     * names the library that owns them.
+     */
+    public void processSchemaRestores(
+            File path, String extension, String schema, String targetSchema)
             throws RestoreException {
 
         State.writeLog("Processing schema for '" + schema + "'");
@@ -312,7 +320,8 @@ public class RestoreService {
 
         processMediaRestore(new File(path, schema + ".media." + extension), schema);
 
-        processMediaRestoreFolder(new File(path, schema), schema);
+        processMediaRestoreFolder(
+                new File(path, schema), schema, StringUtils.defaultIfBlank(targetSchema, schema));
     }
 
     public void processSchemaRenames(Map<String, String> preRenameSchemas) throws RestoreException {
