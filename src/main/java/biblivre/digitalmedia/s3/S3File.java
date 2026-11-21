@@ -2,6 +2,7 @@ package biblivre.digitalmedia.s3;
 
 import biblivre.core.file.BiblivreFile;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -28,5 +29,11 @@ public class S3File extends BiblivreFile {
     @Override
     public void copy(OutputStream out, long start, long size) throws IOException {
         IOUtils.copyLarge(inputStream, out, start, size);
+    }
+
+    /** The single GetObject stream this file wraps; it can be read only once. */
+    @Override
+    public InputStream openStream() {
+        return inputStream;
     }
 }

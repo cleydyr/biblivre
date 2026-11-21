@@ -21,6 +21,7 @@ package biblivre.core.file;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
@@ -93,4 +94,28 @@ public abstract class BiblivreFile implements Closeable {
     public abstract boolean exists();
 
     public abstract void copy(OutputStream out, long start, long size) throws IOException;
+
+    /**
+     * Opens a stream over the content, positioned at its first byte. The file still has to be
+     * closed after the stream is done with.
+     *
+     * <p>When {@link #isSeekable()} is true, every call returns a new stream at the first byte
+     * whose {@code skip} moves the read position without reading the skipped bytes; streams from
+     * earlier calls must no longer be read. Otherwise the file wraps a single stream that can be
+     * read only once.
+     *
+     * @return A stream over the content.
+     * @throws IOException If the content cannot be opened.
+     */
+    public abstract InputStream openStream() throws IOException;
+
+    /**
+     * Whether {@link #openStream()} may be called repeatedly and skips cheaply, which is what
+     * serving byte ranges requires.
+     *
+     * @return True if the content can be read again from any position.
+     */
+    public boolean isSeekable() {
+        return false;
+    }
 }

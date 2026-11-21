@@ -22,9 +22,9 @@ package biblivre.digitalmedia;
 import biblivre.core.AbstractBO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.BiblivreFile;
+import biblivre.core.file.MediaHeaders;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.FileIOUtils;
 import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.net.URI;
@@ -104,8 +104,8 @@ public class DigitalMediaBO extends AbstractBO {
                     URI location =
                             directMediaStore.presignDownload(
                                     found.location(),
-                                    FileIOUtils.responseContentType(contentType),
-                                    FileIOUtils.contentDisposition(
+                                    MediaHeaders.responseContentType(contentType),
+                                    MediaHeaders.contentDisposition(
                                             contentType, found.name(), acceptHeader));
 
                     return new MediaDownload.Redirected(location);

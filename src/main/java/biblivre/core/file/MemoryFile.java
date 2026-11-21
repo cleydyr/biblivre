@@ -69,4 +69,14 @@ public class MemoryFile extends BiblivreFile {
             this.inputStream.close();
         }
     }
+
+    /** The single stream this file wraps; it can be read only once. */
+    @Override
+    public InputStream openStream() throws IOException {
+        if (this.inputStream == null) {
+            throw new IOException("MemoryFile has no content");
+        }
+
+        return this.inputStream;
+    }
 }
