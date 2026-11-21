@@ -19,144 +19,138 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
-import jakarta.annotation.Nonnull;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileTime;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class FileIOUtils {
 
     public static File createTempDir() throws IOException {
-        final File sysTempDir = FileUtils.getTempDirectory();
-        final int maxAttempts = 9;
-        int attemptCount = 0;
-
-        File newTempDir;
-
-        do {
-            attemptCount++;
-            if (attemptCount > maxAttempts) {
-                throw new IOException(
-                        "The highly improbable has occurred! Failed to create a unique temporary directory after "
-                                + maxAttempts
-                                + " attempts.");
-            }
-            String dirName = UUID.randomUUID().toString();
-            newTempDir = new File(sysTempDir, dirName);
-        } while (newTempDir.exists());
-
-        if (newTempDir.mkdirs()) {
-            return newTempDir;
-        } else {
-            throw new IOException(
-                    "Failed to create temp dir named " + newTempDir.getAbsolutePath());
-        }
+        return Files.createTempDirectory("biblivre_").toFile();
     }
 
     public static boolean doesNotExists(String path) {
+        if (path == null) {
+            return true;
+        }
+
         try {
-            File file = new File(path);
-            return !file.exists();
-        } catch (Exception e) {
+            return Files.notExists(Path.of(path));
+        } catch (InvalidPathException e) {
             return true;
         }
     }
 
+    /**
+     * Zips the contents of a folder. Entry names are relative to {@code src} (the folder itself is
+     * not part of them), nested folders keep their full relative path, and empty folders are stored
+     * as {@code name/} entries.
+     *
+     * @param src the folder to zip.
+     * @param dest the zip file to create.
+     * @throws IOException if the folder can't be read or the zip file can't be written.
+     */
     public static void zipFolder(File src, File dest) throws IOException {
-        try (OutputStream fileWriter = Files.newOutputStream(dest.toPath());
-                ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
-            FileIOUtils.addFolderToZip("", src, zip);
-        }
-    }
+        Path root = src.toPath();
 
-    private static void addFileToZip(String path, File src, ZipOutputStream zip, boolean flag)
-            throws IOException {
-        if (flag) {
-            zip.putNextEntry(new ZipEntry(src.getName() + "/"));
-        } else {
-            if (src.isDirectory()) {
-                FileIOUtils.addFolderToZip(src.getName(), src, zip);
-            } else {
-                byte[] buf = new byte[1024];
-                int len;
-
-                try (InputStream in = Files.newInputStream(src.toPath())) {
-                    if (path.isEmpty()) {
-                        zip.putNextEntry(new ZipEntry(src.getName()));
-                    } else {
-                        zip.putNextEntry(new ZipEntry(path + "/" + src.getName()));
-                    }
-
-                    while ((len = in.read(buf)) > 0) {
-                        zip.write(buf, 0, len);
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addFolderToZip(
-            @Nonnull String path, @Nonnull File src, @Nonnull ZipOutputStream zip)
-            throws IOException {
-        // check the empty folder
-
-        String[] list = src.list();
-
-        if (!src.isDirectory() || list == null) {
+        if (!Files.isDirectory(root)) {
             throw new IllegalArgumentException("The file %s is not a folder.".formatted(src));
         }
 
-        if (list.length == 0) {
-            FileIOUtils.addFileToZip(path, src, zip, true);
-        } else {
-            // list the files in the folder
-            for (String fileName : list) {
-                FileIOUtils.addFileToZip(path, new File(src, fileName), zip, false);
+        try (Stream<Path> paths = Files.walk(root);
+                ZipArchiveOutputStream zip = new ZipArchiveOutputStream(dest.toPath())) {
+            for (Path path : (Iterable<Path>) paths.sorted()::iterator) {
+                if (path.equals(root)) {
+                    continue;
+                }
+
+                String name = root.relativize(path).toString().replace(File.separatorChar, '/');
+
+                if (Files.isDirectory(path)) {
+                    if (isEmptyDirectory(path)) {
+                        zip.putArchiveEntry(zip.createArchiveEntry(path, name + "/"));
+                        zip.closeArchiveEntry();
+                    }
+                } else {
+                    zip.putArchiveEntry(zip.createArchiveEntry(path, name));
+                    Files.copy(path, zip);
+                    zip.closeArchiveEntry();
+                }
             }
         }
     }
 
+    private static boolean isEmptyDirectory(Path directory) throws IOException {
+        try (Stream<Path> children = Files.list(directory)) {
+            return children.findAny().isEmpty();
+        }
+    }
+
+    /**
+     * Extracts a zip file into a new temporary folder. Each extracted file gets the last modified
+     * time stored in its entry. Entries that would resolve outside the temporary folder (Zip Slip)
+     * are rejected.
+     *
+     * @param zip the zip file to extract.
+     * @return the temporary folder holding the extracted contents.
+     * @throws IOException if the zip file can't be read, holds an entry that resolves outside the
+     *     target folder, or the contents can't be written.
+     */
     public static File unzip(File zip) throws IOException {
         File tmpDir = FileIOUtils.createTempDir();
-        try (ZipFile zipFile = new ZipFile(zip)) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        Path target = tmpDir.toPath().toAbsolutePath().normalize();
 
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-
-                String entryName = entry.getName();
-
-                File destination = new File(tmpDir, entryName);
+        try (ZipFile zipFile = ZipFile.builder().setFile(zip).get()) {
+            for (ZipArchiveEntry entry : Collections.list(zipFile.getEntries())) {
+                // resolveIn normalizes the entry path and throws if it leaves the target folder
+                Path destination = entry.resolveIn(target);
 
                 if (entry.isDirectory()) {
-                    FileUtils.forceMkdir(destination);
-                } else {
-
-                    try (InputStream is = zipFile.getInputStream(entry);
-                            FileOutputStream os = FileUtils.openOutputStream(destination)) {
-                        IOUtils.copy(is, os);
-                    }
-
-                    boolean isLastModifiedChanged = destination.setLastModified(entry.getTime());
-
-                    if (!isLastModifiedChanged) {
-                        log.warn(
-                                "Setting last modified date failed for entry %s"
-                                        .formatted(entryName));
-                    }
+                    Files.createDirectories(destination);
+                    continue;
                 }
+
+                Files.createDirectories(destination.getParent());
+
+                try (InputStream is = zipFile.getInputStream(entry)) {
+                    Files.copy(is, destination, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                setLastModifiedTime(destination, entry);
             }
+        } catch (IOException | RuntimeException e) {
+            FileUtils.deleteQuietly(tmpDir);
+
+            throw e;
         }
 
         return tmpDir;
+    }
+
+    private static void setLastModifiedTime(Path destination, ZipArchiveEntry entry) {
+        long time = entry.getTime();
+
+        if (time == -1) {
+            return;
+        }
+
+        try {
+            Files.setLastModifiedTime(destination, FileTime.fromMillis(time));
+        } catch (IOException e) {
+            log.warn("Setting last modified date failed for entry {}", entry.getName(), e);
+        }
     }
 
     public static File getWritablePath(String path) {
@@ -164,17 +158,19 @@ public class FileIOUtils {
             return null;
         }
 
-        File file = new File(path);
+        Path directory;
 
-        if (!file.isDirectory()) {
+        try {
+            directory = Path.of(path);
+        } catch (InvalidPathException e) {
             return null;
         }
 
-        if (!file.canWrite()) {
+        if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             return null;
         }
 
-        return file;
+        return directory.toFile();
     }
 
     public static boolean isWritablePath(String path) {
