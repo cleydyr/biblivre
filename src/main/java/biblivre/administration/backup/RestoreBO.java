@@ -192,7 +192,10 @@ public class RestoreBO {
                         schema,
                         () ->
                                 restoreService.processSchemaRestores(
-                                        explodedBackupDirectory, extension, schema));
+                                        explodedBackupDirectory,
+                                        extension,
+                                        schema,
+                                        restoreSchemas.get(schema)));
             }
 
             dataRestoreCompleted = true;

@@ -97,7 +97,8 @@ class RestoreServiceTest {
 
         State.start();
 
-        assertDoesNotThrow(() -> service.processSchemaRestores(tempDir.toFile(), "b5b", "single"));
+        assertDoesNotThrow(
+                () -> service.processSchemaRestores(tempDir.toFile(), "b5b", "single", "single"));
 
         verify(digitalMediaDAO).importFile(any(File.class), eq("single"));
         verify(statement).execute(contains("ADD COLUMN IF NOT EXISTS storage_key"));
@@ -129,12 +130,45 @@ class RestoreServiceTest {
 
         State.start();
 
-        service.processSchemaRestores(tempDir.toFile(), "b5b", "single");
+        service.processSchemaRestores(tempDir.toFile(), "b5b", "single", "single");
 
         verify(statement)
                 .execute(
                         contains(
                                 "UPDATE digital_media SET blob = '42', storage_key = '42'"
+                                        + " WHERE id = '123'"));
+    }
+
+    @Test
+    void processSchemaRestores_keysMediaUnderTheTargetLibrary() throws Exception {
+        DigitalMediaDAO digitalMediaDAO = mock(DigitalMediaDAO.class);
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        Statement statement = mock(Statement.class);
+
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+        when(digitalMediaDAO.importFile(any(File.class), eq("renamed")))
+                .thenReturn(StorageLocation.key("renamed/abc"));
+
+        RestoreService service = new RestoreService();
+        service.setDataSource(dataSource);
+        service.setDigitalMediaDAO(digitalMediaDAO);
+
+        Path schemaDir = Files.createDirectory(tempDir.resolve("single"));
+        Files.writeString(schemaDir.resolve("123_photo.jpg"), "fake-media-content");
+
+        State.start();
+
+        service.processSchemaRestores(tempDir.toFile(), "b5b", "single", "renamed");
+
+        // Data still loads under the backup's name; only the key uses the target library.
+        verify(statement).execute(contains("SET search_path = \"single\""));
+        verify(digitalMediaDAO).importFile(any(File.class), eq("renamed"));
+        verify(statement)
+                .execute(
+                        contains(
+                                "UPDATE digital_media SET blob = NULL, storage_key = 'renamed/abc'"
                                         + " WHERE id = '123'"));
     }
 
