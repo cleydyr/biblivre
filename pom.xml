@@ -41,14 +41,14 @@
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.52.0</error-prone.version>
 		<maven.compiler.release>25</maven.compiler.release>
-		<spring-security.version>7.1.1</spring-security.version>
+		<spring-security.version>7.1.3</spring-security.version>
 		<opentelemetry.version>1.63.0</opentelemetry.version>
 		<openpdf.version>2.4.0</openpdf.version>
 		<logback.version>1.6.5</logback.version>
 		<jackson-2-bom.version>2.21.8</jackson-2-bom.version>
 		<jackson-bom.version>3.1.8</jackson-bom.version>
 		<log4j2.version>2.25.5</log4j2.version>
-		<tomcat.version>11.0.26</tomcat.version>
+		<tomcat.version>11.0.29</tomcat.version>
 		<skip.yarn>false</skip.yarn>
 	</properties>
 	<dependencyManagement>
@@ -458,9 +458,9 @@
 						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>
 						<!-- jasperreports 6.21.5; fixed in 7.0.7 (major 6→7 deferred) -->
 						<excludeVulnerabilityId>CVE-2026-47838</excludeVulnerabilityId>
-						<!-- Sonatype false positive on spring-security-web 7.1.1; advisory is 6.5.x only -->
+						<!-- Sonatype false positive on spring-security-web 7.1.x; advisory is 6.5.x only -->
 						<excludeVulnerabilityId>CVE-2026-47842</excludeVulnerabilityId>
-						<!-- OSS Index residual on spring-security-crypto 7.1.1 (OSS fix); AesBytesEncryptor unused -->
+						<!-- OSS Index residual on spring-security-crypto 7.1.x (OSS fix); AesBytesEncryptor unused -->
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
