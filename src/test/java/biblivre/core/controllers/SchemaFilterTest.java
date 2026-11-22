@@ -27,12 +27,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class SchemaFilterTest {
+
+    @BeforeEach
+    void setUp() {
+        // github-ci runs test classes in parallel and reuses threads. Another class can
+        // leave a schema bound; the filter restores that value, so start from a clean thread.
+        SchemaThreadLocal.remove();
+    }
 
     @AfterEach
     void tearDown() {
