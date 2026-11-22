@@ -161,10 +161,12 @@ public class SchemaServlet extends HttpServlet {
     protected void processDynamicRequest(
             HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
             throws ServletException, IOException {
-        // A 403 from SchemaFilter is forwarded by the error page after that filter has cleared
-        // the schema. Rendering this request would read configuration with a null schema.
+        // Error-page forwards can arrive after SchemaFilter has cleared the schema and
+        // could not rebind the original library. Refuse instead of reading configuration:
+        // a null schema crashes the configuration cache, and substituting another schema
+        // would show the wrong library.
         if (SchemaThreadLocal.get() == null) {
-            return;
+            throw new IllegalStateException("No schema is bound to the current thread");
         }
 
         ExtendedRequest xRequest = (ExtendedRequest) request;

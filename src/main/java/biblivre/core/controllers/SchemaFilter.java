@@ -26,12 +26,15 @@ import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchemaFilter implements Filter {
+    static final String RESOLVED_SCHEMA_ATTRIBUTE = "biblivre.resolvedSchema";
+
     private SchemaBO schemaBO;
     private ConfigurationBO configurationBO;
     private FlagsProvider flagsProvider;
@@ -39,31 +42,69 @@ public class SchemaFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String boundSchema = SchemaUtil.extractBoundSchema(request);
-        String pathSchema = SchemaUtil.extractPathSchema(request);
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (StringUtils.isNotBlank(boundSchema)
-                && (schemaBO.isNotLoaded(boundSchema)
-                        || SchemaUtil.isForbiddenPathForBoundSchema(boundSchema, pathSchema))) {
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+        String schema = (String) httpRequest.getAttribute(RESOLVED_SCHEMA_ATTRIBUTE);
+        if (schema == null) {
+            schema = resolveSchema(httpRequest, response);
+            if (schema == null) {
+                if (isErrorDispatch(httpRequest)) {
+                    // The original library is not loaded. Do not substitute global/single.
+                    continueWithoutSchema(request, response, chain);
+                }
+                return;
+            }
+            httpRequest.setAttribute(RESOLVED_SCHEMA_ATTRIBUTE, schema);
+        }
+
+        bindSchema(httpRequest, request, response, chain, schema);
+    }
+
+    private String resolveSchema(HttpServletRequest request, ServletResponse response)
+            throws IOException {
+        HttpServletRequest schemaRequest = requestWithOriginalUri(request);
+        String boundSchema = SchemaUtil.extractBoundSchema(schemaRequest);
+        String pathSchema = SchemaUtil.extractPathSchema(schemaRequest);
+        boolean rejected =
+                StringUtils.isNotBlank(boundSchema)
+                        && (schemaBO.isNotLoaded(boundSchema)
+                                || SchemaUtil.isForbiddenPathForBoundSchema(
+                                        boundSchema, pathSchema));
+
+        if (rejected) {
+            if (!isErrorDispatch(request)) {
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+                return null;
+            }
+            if (schemaBO.isNotLoaded(boundSchema)) {
+                return null;
+            }
+            return boundSchema;
         }
 
         String schema =
                 StringUtils.isNotBlank(boundSchema)
                         ? boundSchema
-                        : SchemaUtil.extractSchema(request);
+                        : SchemaUtil.extractSchema(schemaRequest);
 
-        if (schemaBO.isNotLoaded(schema)) {
+        if (StringUtils.isBlank(schema) || schemaBO.isNotLoaded(schema)) {
             schema =
                     configurationBO.isMultipleSchemasEnabled()
                             ? Constants.GLOBAL_SCHEMA
                             : Constants.SINGLE_SCHEMA;
         }
 
-        SchemaThreadLocal.setSchema(schema);
+        return schema;
+    }
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
+    private void bindSchema(
+            HttpServletRequest httpRequest,
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain,
+            String schema)
+            throws IOException, ServletException {
+        String boundSchema = SchemaUtil.extractBoundSchema(httpRequest);
 
         request.setAttribute(
                 "schemas", SchemaUtil.visibleSchemas(boundSchema, schemaBO.getSchemas()));
@@ -75,11 +116,55 @@ public class SchemaFilter implements Filter {
         request.setAttribute(
                 "spaHref", SchemaUtil.buildSpaSearchHref(httpRequest.getContextPath(), schema));
 
+        String previousSchema = SchemaThreadLocal.get();
+        SchemaThreadLocal.setSchema(schema);
         try {
             chain.doFilter(request, response);
         } finally {
-            SchemaThreadLocal.remove();
+            restoreSchema(previousSchema);
         }
+    }
+
+    private static void continueWithoutSchema(
+            ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        String previousSchema = SchemaThreadLocal.get();
+        SchemaThreadLocal.remove();
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            restoreSchema(previousSchema);
+        }
+    }
+
+    private static void restoreSchema(String previousSchema) {
+        if (previousSchema == null) {
+            SchemaThreadLocal.remove();
+        } else {
+            SchemaThreadLocal.setSchema(previousSchema);
+        }
+    }
+
+    private static boolean isErrorDispatch(HttpServletRequest request) {
+        return request.getDispatcherType() == DispatcherType.ERROR
+                || request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE) != null
+                || request.getAttribute(RequestDispatcher.ERROR_EXCEPTION) != null;
+    }
+
+    private static HttpServletRequest requestWithOriginalUri(HttpServletRequest request) {
+        Object errorRequestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
+        if (!(errorRequestUri instanceof String originalRequestUri)
+                || StringUtils.isBlank(originalRequestUri)
+                || originalRequestUri.equals(request.getRequestURI())) {
+            return request;
+        }
+
+        return new HttpServletRequestWrapper(request) {
+            @Override
+            public String getRequestURI() {
+                return originalRequestUri;
+            }
+        };
     }
 
     @Autowired

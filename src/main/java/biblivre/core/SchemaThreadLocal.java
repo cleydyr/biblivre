@@ -15,6 +15,25 @@ public class SchemaThreadLocal {
         return threadLocal.get();
     }
 
+    /**
+     * Schema bound to this thread.
+     *
+     * <p>A missing schema is not replaced with the global or single schema. That would read or
+     * write another library, and a null schema cannot be used as a {@code ConcurrentHashMap} key.
+     *
+     * @return the bound schema, never {@code null}
+     * @throws IllegalStateException if no schema is bound to this thread
+     */
+    public static String requireSchema() {
+        String schema = threadLocal.get();
+
+        if (schema == null) {
+            throw new IllegalStateException("No schema is bound to the current thread");
+        }
+
+        return schema;
+    }
+
     public static String remove() {
         String value = threadLocal.get();
 

@@ -81,10 +81,14 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
+        // FORWARD: ErrorPageFilter forwards to the error page after this filter's
+        // request dispatch has already cleared the thread-local schema. ERROR covers
+        // the container's own error dispatch. The filter rebinds the original schema.
         return createFilterRegistration(
                 SchemaFilter.class,
                 SecurityFilterProperties.DEFAULT_FILTER_ORDER - 1,
                 DispatcherType.REQUEST,
+                DispatcherType.FORWARD,
                 DispatcherType.ERROR);
     }
 
