@@ -145,7 +145,11 @@ public class SchemaFilter implements Filter {
         }
     }
 
-    private static boolean isErrorDispatch(HttpServletRequest request) {
+    /**
+     * Whether this dispatch is rendering an error for an earlier dispatch of the same request,
+     * either the container's own {@code ERROR} dispatch or an {@code ErrorPageFilter} forward.
+     */
+    static boolean isErrorDispatch(HttpServletRequest request) {
         return request.getDispatcherType() == DispatcherType.ERROR
                 || request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE) != null
                 || request.getAttribute(RequestDispatcher.ERROR_EXCEPTION) != null;

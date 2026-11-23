@@ -1,5 +1,6 @@
 package biblivre.core.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,6 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import biblivre.administration.setup.State;
@@ -18,11 +20,14 @@ import biblivre.core.RequestParserHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.utils.Constants;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +80,52 @@ class SchemaServletTest {
                 assertThrows(ServletException.class, () -> servlet.service(request, response));
 
         assertTrue(exception.getMessage().contains("dispatcherServlet"));
+    }
+
+    @Test
+    void service_rendersErrorPageInsteadOfRerunningTheFailedAction() throws Exception {
+        SchemaThreadLocal.setSchema("mylibrary");
+        JsonController jsonController = mock(JsonController.class);
+        ConfigurationBO configurationBO = mock(ConfigurationBO.class);
+        SchemaServlet servlet = new SchemaServlet();
+        servlet.setJsonController(jsonController);
+        servlet.setConfigurationBO(configurationBO);
+        servlet.init(new MockServletConfig(new MockServletContext()));
+
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/error");
+        request.setServletPath("/error");
+        request.setDispatcherType(DispatcherType.FORWARD);
+        request.setParameter("controller", "json");
+        request.setParameter("module", "circulation.lending");
+        request.setParameter("action", "lend");
+        request.setAttribute(RequestDispatcher.ERROR_REQUEST_URI, "/mylibrary/");
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, HttpServletResponse.SC_FORBIDDEN);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(SchemaServlet.ERROR_PAGE, response.getForwardedUrl());
+        verifyNoInteractions(jsonController, configurationBO);
+    }
+
+    @Test
+    void service_rendersErrorPageWhenTheLibraryIsUnknown() throws Exception {
+        SchemaThreadLocal.remove();
+        SchemaServlet servlet = new SchemaServlet();
+        servlet.init(new MockServletConfig(new MockServletContext()));
+
+        for (String method : List.of("GET", "HEAD", "POST", "DELETE")) {
+            MockHttpServletRequest request = new MockHttpServletRequest(method, "/error");
+            request.setServletPath("/error");
+            request.setDispatcherType(DispatcherType.ERROR);
+            request.setAttribute(
+                    RequestDispatcher.ERROR_STATUS_CODE, HttpServletResponse.SC_FORBIDDEN);
+            MockHttpServletResponse response = new MockHttpServletResponse();
+
+            servlet.service(request, response);
+
+            assertEquals(SchemaServlet.ERROR_PAGE, response.getForwardedUrl(), method);
+        }
     }
 
     @Test
