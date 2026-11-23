@@ -13,6 +13,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.RequestParserHelper;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.TranslationBO;
 import biblivre.loggingfixture.Validator;
@@ -70,6 +71,24 @@ class ControllerProcessRequestLoggingTest {
         assertEquals("error.runtime_error", controller.errorKey);
         assertInstanceOf(IllegalStateException.class, controller.error);
         assertEquals("holding id missing", controller.error.getMessage());
+    }
+
+    @Test
+    void handlerValidationFailureIsLoggedAsWarningWithoutStackTrace() throws Exception {
+        RecordingController controller =
+                controllerFor(HANDLER_MODULE, "reject", new ExplodingHandler(), Map.of());
+
+        controller.processRequest();
+
+        assertEquals(1, appender.list.size());
+        ILoggingEvent event = appender.list.getFirst();
+        assertEquals(Level.WARN, event.getLevel());
+        assertEquals(
+                "Handler loggingprobe.reject rejected: cataloging.lending.error.limit_exceeded",
+                event.getFormattedMessage());
+        assertNull(event.getThrowableProxy());
+        assertEquals("cataloging.lending.error.limit_exceeded", controller.errorKey);
+        assertInstanceOf(ValidationException.class, controller.error);
     }
 
     @Test
@@ -169,6 +188,10 @@ class ControllerProcessRequestLoggingTest {
     public static final class ExplodingHandler extends AbstractHandler {
         public void explode(ExtendedRequest request, ExtendedResponse response) {
             throw new IllegalStateException("holding id missing");
+        }
+
+        public void reject(ExtendedRequest request, ExtendedResponse response) {
+            throw new ValidationException("cataloging.lending.error.limit_exceeded");
         }
     }
 }
