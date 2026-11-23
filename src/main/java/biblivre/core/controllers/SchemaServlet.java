@@ -186,9 +186,7 @@ public class SchemaServlet extends HttpServlet {
         // Refuse instead of reading configuration:
         // a null schema crashes the configuration cache, and substituting another schema
         // would show the wrong library.
-        if (SchemaThreadLocal.get() == null) {
-            throw new IllegalStateException("No schema is bound to the current thread");
-        }
+        SchemaThreadLocal.requireSchema();
 
         ExtendedRequest xRequest = (ExtendedRequest) request;
         ExtendedResponse xResponse = (ExtendedResponse) response;
