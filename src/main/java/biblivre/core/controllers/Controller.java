@@ -169,6 +169,14 @@ public abstract class Controller {
                 this.doAuthorizationError();
             } else if (handlerException instanceof ValidationException) {
                 this.doWarning(handlerException.getMessage(), handlerException);
+                // Business-rule rejections (e.g. lending limit reached) are expected outcomes
+                // reported to the operator as warnings, not server failures.
+                log.warn(
+                        "Handler {}.{} rejected: {}",
+                        module,
+                        action,
+                        handlerException.getMessage());
+                return;
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
