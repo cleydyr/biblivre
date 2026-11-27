@@ -475,6 +475,14 @@
 				<configuration>
 					<excludeDevtools>true</excludeDevtools>
 				</configuration>
+				<executions>
+					<execution>
+						<!-- Exposes BuildProperties; its version tags browser errors with a release -->
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
