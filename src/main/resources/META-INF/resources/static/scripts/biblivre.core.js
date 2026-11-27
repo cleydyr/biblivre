@@ -1452,8 +1452,8 @@ PageHelp.show = function () {
 		}
 
 		if (typeof data == 'string') {
-			var match = new RegExp('(?:^|&)' + name + '=([^&]*)').exec(data);
-			return match ? decodeURIComponent(match[1].split('+').join(' ')) : undefined;
+			var value = new URLSearchParams(data).get(name);
+			return value === null ? undefined : value;
 		}
 
 		return typeof data[name] == 'string' ? data[name] : undefined;
