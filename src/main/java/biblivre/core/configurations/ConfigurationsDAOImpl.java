@@ -38,11 +38,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
 
     @Override
     public List<ConfigurationsDTO> list() {
-        String schema = SchemaThreadLocal.get();
-
-        if (schema == null) {
-            return List.of();
-        }
+        String schema = SchemaThreadLocal.requireSchema();
 
         if (this.cache.get(schema) != null) {
             return this.cache.get(schema);
@@ -73,6 +69,8 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
 
     @Override
     public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
+        String schema = SchemaThreadLocal.requireSchema();
+
         String update =
                 "UPDATE configurations SET value = ?, modified = now(), modified_by = ? WHERE key = ?;";
         String insert =
@@ -106,7 +104,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
                         }
                     }
 
-                    this.cache.remove(SchemaThreadLocal.get());
+                    this.cache.remove(schema);
 
                     return true;
                 });

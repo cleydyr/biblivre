@@ -53,6 +53,8 @@ public class SchemaServlet extends HttpServlet {
 
     @Serial private static final long serialVersionUID = 1L;
 
+    static final String ERROR_PAGE = "/WEB-INF/jsp/error_fatal.jsp";
+
     private JspController jspController;
 
     private DownloadController downloadController;
@@ -92,6 +94,15 @@ public class SchemaServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // An error dispatch still carries the failed request's method and its
+        // controller/module/action parameters. Routing it would run that action again, so
+        // it only ever renders the error page.
+        if (SchemaFilter.isErrorDispatch(request)) {
+            renderErrorPage(request, response);
+
+            return;
+        }
+
         // Detour to the MVC controllers, i.e., Spring's DispatcherServlet if the request path
         // starts with /api
         if (request.getServletPath().startsWith("/api")
@@ -104,6 +115,15 @@ public class SchemaServlet extends HttpServlet {
         wireUpControllers(request, response);
 
         super.service(request, response);
+    }
+
+    private static void renderErrorPage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+
+        // This page reads no schema, configuration or translations, so it also renders when
+        // the original library could not be determined.
+        request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
     }
 
     private void wireUpControllers(HttpServletRequest request, HttpServletResponse response) {
@@ -161,11 +181,12 @@ public class SchemaServlet extends HttpServlet {
     protected void processDynamicRequest(
             HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
             throws ServletException, IOException {
-        // A 403 from SchemaFilter is forwarded by the error page after that filter has cleared
-        // the schema. Rendering this request would read configuration with a null schema.
-        if (SchemaThreadLocal.get() == null) {
-            return;
-        }
+        // Error dispatches, the only ones SchemaFilter lets through without a schema, are
+        // answered in service(). Anything else arriving here without a schema is a bug.
+        // Refuse instead of reading configuration:
+        // a null schema crashes the configuration cache, and substituting another schema
+        // would show the wrong library.
+        SchemaThreadLocal.requireSchema();
 
         ExtendedRequest xRequest = (ExtendedRequest) request;
         ExtendedResponse xResponse = (ExtendedResponse) response;

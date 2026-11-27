@@ -258,13 +258,13 @@ public class ConfigurationBO {
     }
 
     private ConfigurationsDTO get(String key) {
+        String schema = SchemaThreadLocal.requireSchema();
+
         Map<String, ConfigurationsDTO> map = getMap();
 
         ConfigurationsDTO config = map.get(key);
 
         if (config == null) {
-            String schema = SchemaThreadLocal.get();
-
             if (schema.equals(Constants.GLOBAL_SCHEMA)) {
                 return null;
             }
