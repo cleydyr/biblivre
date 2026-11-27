@@ -23,6 +23,7 @@ src/main/spa-frontend/node_modules/
 src/main/spa-frontend/node/
 src/main/spa-frontend/dist/
 src/main/resources/META-INF/resources/static/spa/
+src/main/resources/META-INF/resources/static/scripts/biblivre.monitoring.js
 src/main/webapp/WEB-INF/templates/spa.template
 
 CLAUDE.local.md

@@ -22,6 +22,7 @@ package biblivre.core.controllers;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.FlagsProvider;
+import biblivre.core.monitoring.ClientMonitoringService;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.*;
@@ -35,6 +36,7 @@ public class SchemaFilter implements Filter {
     private SchemaBO schemaBO;
     private ConfigurationBO configurationBO;
     private FlagsProvider flagsProvider;
+    private ClientMonitoringService clientMonitoringService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -72,6 +74,8 @@ public class SchemaFilter implements Filter {
 
         request.setAttribute("flagsProvider", flagsProvider);
 
+        request.setAttribute("clientMonitoring", clientMonitoringService);
+
         request.setAttribute(
                 "spaHref", SchemaUtil.buildSpaSearchHref(httpRequest.getContextPath(), schema));
 
@@ -95,5 +99,10 @@ public class SchemaFilter implements Filter {
     @Autowired
     public void setFlagsProvider(FlagsProvider flagsProvider) {
         this.flagsProvider = flagsProvider;
+    }
+
+    @Autowired
+    public void setClientMonitoringService(ClientMonitoringService clientMonitoringService) {
+        this.clientMonitoringService = clientMonitoringService;
     }
 }

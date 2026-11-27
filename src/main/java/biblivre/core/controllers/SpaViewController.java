@@ -1,15 +1,22 @@
 package biblivre.core.controllers;
 
+import biblivre.core.monitoring.ClientMonitoringService;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.HtmlSafeJson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class SpaViewController {
+
+    private final ClientMonitoringService clientMonitoringService;
+
+    public SpaViewController(ClientMonitoringService clientMonitoringService) {
+        this.clientMonitoringService = clientMonitoringService;
+    }
 
     @GetMapping("/spa/**")
     public String spaPage(Model model, HttpServletRequest request) {
@@ -28,6 +35,8 @@ public class SpaViewController {
             apiUrl = "";
         }
         model.addAttribute("flagsmithApiUrlJson", jsonQuoteForHtml(apiUrl));
+        model.addAttribute(
+                "monitoringConfigJson", clientMonitoringService.clientConfigJson(request));
 
         String viteDevServer = System.getenv(Constants.VITE_DEV_SERVER);
         if (StringUtils.isNotBlank(viteDevServer)) {
@@ -39,9 +48,6 @@ public class SpaViewController {
     }
 
     private static String jsonQuoteForHtml(String value) {
-        return JSONObject.quote(value)
-                .replace("<", "\\u003C")
-                .replace(">", "\\u003E")
-                .replace("&", "\\u0026");
+        return HtmlSafeJson.quote(value);
     }
 }

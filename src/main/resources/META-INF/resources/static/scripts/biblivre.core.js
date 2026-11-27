@@ -391,6 +391,10 @@ Core.msg = function (o, level) {
 		config.message = Translations.get(config.message);
 	}
 
+	if (config.message_level == 'error' && window.BiblivreMonitoring) {
+		window.BiblivreMonitoring.breadcrumb('ui.message', config.message);
+	}
+
 	$('#messages .message:not(.sticky)').remove();
 
 	var message = $('<div class="message"></div>');
@@ -1438,6 +1442,43 @@ PageHelp.show = function () {
 				Core.hideLoadingTimedOverlay();
 			}
 		}
+	});
+
+	// Report server failures (HTTP 5xx) and network errors to error monitoring.
+	// success:false JSON answers and 4xx are expected outcomes and are not reported.
+	var readParam = function (data, name) {
+		if (!data) {
+			return undefined;
+		}
+
+		if (typeof data == 'string') {
+			var value = new URLSearchParams(data).get(name);
+			return value === null ? undefined : value;
+		}
+
+		return typeof data[name] == 'string' ? data[name] : undefined;
+	};
+
+	$(document).ajaxError(function (event, xhr, settings, thrownError) {
+		if (!window.BiblivreMonitoring || !xhr || xhr.statusText == 'abort') {
+			return;
+		}
+
+		var status = xhr.status || 0;
+
+		if (status > 0 && status < 500) {
+			return;
+		}
+
+		window.BiblivreMonitoring.captureAjaxFailure({
+			url: settings.url,
+			method: settings.type,
+			status: status,
+			statusText: xhr.statusText,
+			error: thrownError ? String(thrownError) : undefined,
+			module: readParam(settings.data, 'module'),
+			action: readParam(settings.data, 'action')
+		});
 	});
 })(jQuery);
 

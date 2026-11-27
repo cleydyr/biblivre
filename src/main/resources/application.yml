@@ -46,6 +46,13 @@ biblivre:
         connect-timeout: 2s
         read-timeout: 30s
 
+  client-monitoring:
+    # Browser error monitoring via a self-hosted GlitchTip (see docs/client-error-monitoring.md).
+    # Leave the DSN empty to disable it.
+    dsn: ${BIBLIVRE_CLIENT_MONITORING_DSN:}
+    environment: ${BIBLIVRE_CLIENT_MONITORING_ENVIRONMENT:production}
+    sample-rate: ${BIBLIVRE_CLIENT_MONITORING_SAMPLE_RATE:1.0}
+
 login-audit:
   enabled: ${LOGIN_AUDIT_ENABLED:false}
   ingest-url: ${LOGIN_AUDIT_INGEST_URL:http://localhost:8091/internal/v1/successful-logins}

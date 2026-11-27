@@ -475,6 +475,14 @@
 				<configuration>
 					<excludeDevtools>true</excludeDevtools>
 				</configuration>
+				<executions>
+					<execution>
+						<!-- Exposes BuildProperties; its version tags browser errors with a release -->
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
@@ -607,6 +615,10 @@
 						<configuration>
 							<arguments>yarn build</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
+							<environmentVariables>
+								<!-- Release name for source map uploads; matches ClientMonitoringService -->
+								<BIBLIVRE_RELEASE>biblivre@${project.version}</BIBLIVRE_RELEASE>
+							</environmentVariables>
 						</configuration>
 					</execution>
 				</executions>

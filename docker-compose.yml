@@ -17,6 +17,8 @@ services:
       - "SPRING_MAIL_PORT=$SPRING_MAIL_PORT"
       - "SPRING_MAIL_USERNAME=$SPRING_MAIL_USERNAME"
       - "SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD"
+      - "BIBLIVRE_CLIENT_MONITORING_DSN=$BIBLIVRE_CLIENT_MONITORING_DSN"
+      - "BIBLIVRE_CLIENT_MONITORING_ENVIRONMENT=$BIBLIVRE_CLIENT_MONITORING_ENVIRONMENT"
     depends_on:
       - database
   database:
@@ -37,3 +39,39 @@ services:
       - "./nginx/conf.d/:/etc/nginx/conf.d/"
     depends_on:
       - app
+
+  # Browser error monitoring (docs/client-error-monitoring.md).
+  # Start with: docker compose --profile monitoring up -d
+  glitchtip-database:
+    profiles: ["monitoring"]
+    image: postgres:18
+    # GlitchTip's partitioned tables need more locks than the Postgres default.
+    command: -c max_locks_per_transaction=512
+    environment:
+      - "POSTGRES_USER=glitchtip"
+      - "POSTGRES_PASSWORD=$GLITCHTIP_DATABASE_PASSWORD"
+      - "POSTGRES_DB=glitchtip"
+    volumes:
+      - "glitchtip-pg-data:/var/lib/postgresql"
+  glitchtip:
+    profiles: ["monitoring"]
+    image: glitchtip/glitchtip:6
+    ports:
+      - "$GLITCHTIP_HOST_PORT:8000"
+    environment:
+      - "SERVER_ROLE=all_in_one"
+      - "DATABASE_URL=postgres://glitchtip:$GLITCHTIP_DATABASE_PASSWORD@glitchtip-database:5432/glitchtip"
+      # Blank disables Valkey; Postgres then backs the task queue and cache.
+      - "VALKEY_URL="
+      - "SECRET_KEY=$GLITCHTIP_SECRET_KEY"
+      - "GLITCHTIP_DOMAIN=$GLITCHTIP_DOMAIN"
+      - "EMAIL_URL=$GLITCHTIP_EMAIL_URL"
+      - "DEFAULT_FROM_EMAIL=$GLITCHTIP_DEFAULT_FROM_EMAIL"
+    volumes:
+      - "glitchtip-uploads:/code/uploads"
+    depends_on:
+      - glitchtip-database
+
+volumes:
+  glitchtip-pg-data:
+  glitchtip-uploads:

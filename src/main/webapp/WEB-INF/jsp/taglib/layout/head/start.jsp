@@ -1,6 +1,7 @@
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.ConfigurationBO"%>
+<%@page import="biblivre.core.monitoring.ClientMonitoringService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -13,6 +14,7 @@
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 	String schema = SchemaThreadLocal.get();
 	String contextPath = request.getContextPath();
+	ClientMonitoringService clientMonitoring = (ClientMonitoringService) request.getAttribute("clientMonitoring");
 %>
 
 <!doctype html>
@@ -26,6 +28,10 @@
 				<static:stylesheet fileName="biblivre.core.css" />
 				<static:stylesheet media="print" fileName="biblivre.print.css" />
 
+				<% if (clientMonitoring != null && clientMonitoring.isEnabled()) { %>
+				<script type="text/javascript">window.__BIBLIVRE_MONITORING__ = <%= clientMonitoring.clientConfigJson(request) %>;</script>
+				<static:script fileName="biblivre.monitoring.js" />
+				<% } %>
 				<static:script fileName="jquery.js" />
 				<static:script fileName="jquery.extras.js" />
 				<static:script fileName="lodash.js" />
