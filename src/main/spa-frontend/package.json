@@ -17,8 +17,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "extract": "formatjs extract",
-    "compile": "formatjs compile",
+    "extract": "node scripts/formatjs-cli.mjs extract",
+    "compile": "node scripts/formatjs-cli.mjs compile",
     "i18n:extract-compile": "yarn extract \"src/**/*.{ts,tsx}\" --out-file lang.json --ignore \"src/**/*.d.ts\" && yarn compile lang.json --out-file lang-compiled.json"
   },
   "dependencies": {
