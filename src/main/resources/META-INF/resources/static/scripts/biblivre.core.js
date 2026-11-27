@@ -1453,7 +1453,7 @@ PageHelp.show = function () {
 
 		if (typeof data == 'string') {
 			var match = new RegExp('(?:^|&)' + name + '=([^&]*)').exec(data);
-			return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : undefined;
+			return match ? decodeURIComponent(match[1].split('+').join(' ')) : undefined;
 		}
 
 		return typeof data[name] == 'string' ? data[name] : undefined;

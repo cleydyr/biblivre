@@ -26,7 +26,9 @@ export function scrubUrl(url: string): string {
     })
     .join('&')
 
-  return `${url.slice(0, queryStart)}?${scrubbed}${hash ? `#${hash}` : ''}`
+  const fragment = hash ? `#${hash}` : ''
+
+  return `${url.slice(0, queryStart)}?${scrubbed}${fragment}`
 }
 
 export function scrubEvent(event: ErrorEvent): ErrorEvent {
