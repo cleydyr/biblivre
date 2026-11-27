@@ -1,9 +1,9 @@
 package biblivre.core.controllers;
 
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.HtmlSafeJson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +39,6 @@ public class SpaViewController {
     }
 
     private static String jsonQuoteForHtml(String value) {
-        return JSONObject.quote(value)
-                .replace("<", "\\u003C")
-                .replace(">", "\\u003E")
-                .replace("&", "\\u0026");
+        return HtmlSafeJson.quote(value);
     }
 }
