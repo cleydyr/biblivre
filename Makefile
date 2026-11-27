@@ -144,7 +144,7 @@ spa-setup: ## Install spa-frontend dependencies
 	@echo "$(GREEN)Installing spa-frontend dependencies...$(NC)"
 	@cd src/main/spa-frontend && yarn install
 
-spa-dev: ## Start Vite dev server for spa-frontend HMR (use with `make dev` or `make dev-spa`)
+spa-dev: spa-setup ## Start Vite dev server for spa-frontend HMR (use with `make dev` or `make dev-spa`)
 	@echo "$(GREEN)Starting spa-frontend Vite dev server on http://localhost:5173$(NC)"
 	@echo "$(YELLOW)Browse the SPA at http://localhost:8090/spa/ (Spring Boot must be running with BIBLIVRE_VITE_DEV_SERVER set)$(NC)"
 	@cd src/main/spa-frontend && yarn dev
@@ -170,7 +170,7 @@ spa-stop: ## Stop the spa-frontend Vite dev server listening on port 5173
 		kill -9 $$still; \
 	fi
 
-dev-spa: ## Run backend + spa-frontend Vite HMR together
+dev-spa: spa-setup ## Run backend + spa-frontend Vite HMR together
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot and spa-frontend Vite dev server...$(NC)"
 	@echo "$(YELLOW)Browse the SPA at http://localhost:8090/spa/$(NC)"
@@ -209,7 +209,7 @@ frontend-dev: spa-dev ## Alias for spa-dev
 
 frontend-stop: spa-stop ## Alias for spa-stop
 
-frontend-build: ## Build spa-frontend for production
+frontend-build: spa-setup ## Build spa-frontend for production
 	@echo "$(GREEN)Building spa-frontend...$(NC)"
 	@cd src/main/spa-frontend && yarn build
 
