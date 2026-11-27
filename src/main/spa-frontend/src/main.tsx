@@ -4,7 +4,12 @@ import './moment/locale/pt-br'
 import { EuiContext } from '@elastic/eui'
 import flagsmith from '@flagsmith/flagsmith'
 import { FlagsmithProvider } from '@flagsmith/flagsmith/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -18,11 +23,21 @@ import {
   getFlagsmithApiUrl,
   getFlagsmithEnvironmentId,
 } from './config/flagsmith-env.ts'
+import { initSpaMonitoring, reportQueryError } from './monitoring/spa.ts'
 import AppWithTheme from './AppWithTheme.tsx'
 import { i18n } from './i18n.ts'
 
+initSpaMonitoring()
+
 // Create a client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => reportQueryError(error, 'query'),
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => reportQueryError(error, 'mutation'),
+  }),
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

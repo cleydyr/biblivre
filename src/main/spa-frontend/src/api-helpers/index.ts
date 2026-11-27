@@ -41,7 +41,23 @@ export async function fetchJSONFromLegacyEndpoint({
     }).toString(),
   })
 
+  // Legacy endpoints answer expected failures with HTTP 200 and success:false;
+  // a 5xx is a server fault, so surface it instead of parsing an error page.
+  if (response.status >= 500) {
+    throw new LegacyEndpointError(module, action, response.status)
+  }
+
   return response.json()
+}
+
+export class LegacyEndpointError extends Error {
+  readonly status: number
+
+  constructor(module: string, action: string, status: number) {
+    super(`Legacy endpoint ${module}.${action} failed with HTTP ${status}`)
+    this.name = 'LegacyEndpointError'
+    this.status = status
+  }
 }
 
 export async function downloadFromLegacyEndpoint({

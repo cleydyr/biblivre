@@ -1,6 +1,8 @@
 import { EuiProvider } from '@elastic/eui'
+import { ErrorBoundary } from '@sentry/react'
 import { useState } from 'react'
 
+import AppErrorFallback from './monitoring/AppErrorFallback'
 import { ToastProvider } from './toasts/ToastProvider'
 import App from './App'
 
@@ -9,9 +11,11 @@ const AppWithTheme = () => {
 
   return (
     <EuiProvider colorMode={isDarkMode ? 'dark' : 'light'}>
-      <ToastProvider>
-        <App isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-      </ToastProvider>
+      <ErrorBoundary fallback={<AppErrorFallback />}>
+        <ToastProvider>
+          <App isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+        </ToastProvider>
+      </ErrorBoundary>
     </EuiProvider>
   )
 }
