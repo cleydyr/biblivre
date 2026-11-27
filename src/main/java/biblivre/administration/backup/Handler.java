@@ -31,12 +31,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class Handler extends AbstractHandler {
     private BackupBO backupBO;
     private SchemaBO schemaBO;
@@ -102,7 +104,16 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        backupBO.backup(dto);
+        try {
+            backupBO.backup(dto);
+        } catch (BackupException exception) {
+            log.error("error while creating backup", exception);
+            this.setMessage(
+                    ActionResult.ERROR,
+                    "administration.maintenance.backup.error.couldnt_create_backup");
+            return;
+        }
+
         request.setScopedSessionAttribute("system_warning_backup", false);
     }
 

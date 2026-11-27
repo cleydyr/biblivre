@@ -48,7 +48,7 @@ public class BackupBO extends AbstractBO {
     private SchemaBO schemaBO;
     private ConfigurationBO configurationBO;
 
-    public void simpleBackup() {
+    public void simpleBackup() throws BackupException {
         BackupType backupType = BackupType.FULL;
         BackupScope backupScope = this.getBackupScope(SchemaThreadLocal.get());
 
@@ -120,27 +120,23 @@ public class BackupBO extends AbstractBO {
         }
     }
 
-    public void backup(BackupDTO dto) {
-        try {
-            this.createBackup(dto);
+    public void backup(BackupDTO dto) throws BackupException {
+        this.createBackup(dto);
 
-            if (dto.getBackup() != null) {
-                this.move(dto);
-            }
-        } catch (Exception e) {
-            log.error("error while creating backup", e);
+        if (dto.getBackup() != null) {
+            this.move(dto);
         }
     }
 
     public void createBackup(BackupDTO dto) throws BackupException {
-        File pgdump = DatabaseUtils.getPgDump();
-
-        if (pgdump == null) {
-            return;
+        if (pgDumpExecutable() == null) {
+            throw new BackupException("pg_dump not found");
         }
 
+        File tmpDir = null;
+
         try {
-            File tmpDir = Files.createTempDirectory("biblivre_backup").toFile();
+            tmpDir = Files.createTempDirectory("biblivre_backup").toFile();
 
             Map<String, Pair<String, String>> schemas = dto.getSchemas();
             BackupType type = dto.getType();
@@ -164,15 +160,21 @@ public class BackupBO extends AbstractBO {
 
             FileIOUtils.zipFolder(tmpDir, tmpZip);
 
-            FileUtils.deleteQuietly(tmpDir);
-
             dto.increaseCurrentStep();
             this.save(dto);
 
             dto.setBackup(tmpZip);
         } catch (IOException e) {
             throw new BackupException("can't create temp dir", e);
+        } finally {
+            if (tmpDir != null) {
+                FileUtils.deleteQuietly(tmpDir);
+            }
         }
+    }
+
+    File pgDumpExecutable() {
+        return DatabaseUtils.getPgDump();
     }
 
     private static boolean shouldDumpMedia(String schema, BackupType type) {
@@ -215,7 +217,7 @@ public class BackupBO extends AbstractBO {
         return this.backupDAO.save(dto);
     }
 
-    public void move(BackupDTO dto) {
+    public void move(BackupDTO dto) throws BackupException {
         File destination = this.getServerBackupDestination();
         File backup = dto.getBackup();
 
@@ -234,12 +236,11 @@ public class BackupBO extends AbstractBO {
 
         File movedBackup = new File(destination, sb.toString());
 
-        boolean success = backup.renameTo(movedBackup);
-
-        if (success) {
-            dto.setBackup(movedBackup);
+        if (!backup.renameTo(movedBackup)) {
+            throw new BackupException("can't move backup to " + movedBackup.getAbsolutePath());
         }
 
+        dto.setBackup(movedBackup);
         this.save(dto);
     }
 
@@ -266,57 +267,92 @@ public class BackupBO extends AbstractBO {
         return FileIOUtils.getWritablePath(path);
     }
 
-    private void exportDigitalMedia(String schema, File path) {
+    void exportDigitalMedia(String schema, File path) throws BackupException {
         List<DigitalMediaDTO> list = digitalMediaBO.list();
 
         for (DigitalMediaDTO dto : list) {
             BiblivreFile file = digitalMediaBO.load(dto.getId(), dto.getName());
+
+            if (file == null) {
+                throw new BackupException(
+                        "digital media "
+                                + dto.getId()
+                                + " ("
+                                + dto.getName()
+                                + ") was not found in schema "
+                                + schema);
+            }
+
             File destination =
                     new File(
                             path,
                             dto.getId()
                                     + "_"
                                     + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
-            try (OutputStream writer = Files.newOutputStream(destination.toPath())) {
+
+            try (file;
+                    OutputStream writer = Files.newOutputStream(destination.toPath())) {
                 file.copy(writer);
-
-                file.close();
             } catch (IOException ioException) {
-                log.error("error while exporting digital media", ioException);
-
-                return;
+                throw new BackupException(
+                        "can't export digital media " + dto.getId() + " from schema " + schema,
+                        ioException);
             }
         }
     }
 
-    private void dumpDatabase(ProcessBuilder pb) {
-        pb.redirectErrorStream(true);
+    void dumpDatabase(ProcessBuilder processBuilder) throws BackupException {
+        processBuilder.redirectErrorStream(true);
+
+        Process process;
 
         try {
-            Process p = pb.start();
+            process = processBuilder.start();
+        } catch (IOException ioException) {
+            throw new BackupException("can't start pg_dump", ioException);
+        }
 
-            try (InputStreamReader isr = new InputStreamReader(p.getInputStream());
-                    BufferedReader br = new BufferedReader(isr)) {
-                String line;
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> output = new ArrayList<>();
+            String line;
 
-                while ((line = br.readLine()) != null) {
-                    // There was a system.out.println here for the 'line' var,
-                    // with a FIX_ME tag.  So I changed it to log.debug().
-                    if (log.isDebugEnabled()) {
-                        log.debug(line);
-                    }
+            while ((line = reader.readLine()) != null) {
+                output.add(line);
+
+                if (log.isDebugEnabled()) {
+                    log.debug(line);
                 }
-
-                p.waitFor();
-
-                p.exitValue();
             }
-        } catch (IOException | InterruptedException e) {
-            log.error(e.getMessage(), e);
+
+            int exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                throw new BackupException(pgDumpFailure(exitCode, output));
+            }
+        } catch (IOException ioException) {
+            throw new BackupException("can't read pg_dump output", ioException);
+        } catch (InterruptedException interruptedException) {
+            Thread.currentThread().interrupt();
+            throw new BackupException("pg_dump was interrupted", interruptedException);
+        } finally {
+            if (process.isAlive()) {
+                process.destroyForcibly();
+            }
         }
     }
 
-    private void dumpDatabase(PgDumpCommand command) {
+    private static String pgDumpFailure(int exitCode, List<String> output) {
+        String message = "pg_dump exited with status " + exitCode;
+
+        if (output.isEmpty()) {
+            return message;
+        }
+
+        return message + ": " + String.join(System.lineSeparator(), output);
+    }
+
+    private void dumpDatabase(PgDumpCommand command) throws BackupException {
         this.dumpDatabase(new ProcessBuilder(command.getCommands()));
     }
 
@@ -327,9 +363,14 @@ public class BackupBO extends AbstractBO {
             boolean isSchemaOnly,
             boolean isDataOnly,
             String excludeTablePattern,
-            String includeTablePattern) {
+            String includeTablePattern)
+            throws BackupException {
 
-        File pgdump = DatabaseUtils.getPgDump();
+        File pgdump = pgDumpExecutable();
+
+        if (pgdump == null) {
+            throw new BackupException("pg_dump not found");
+        }
 
         InetSocketAddress defaultAddress =
                 new InetSocketAddress(
@@ -355,7 +396,7 @@ public class BackupBO extends AbstractBO {
         this.save(dto);
     }
 
-    private void dumpData(BackupDTO dto, File tmpDir, String schema) {
+    private void dumpData(BackupDTO dto, File tmpDir, String schema) throws BackupException {
         File dataBackup = new File(tmpDir, schema + ".data.b5b");
         boolean isSchemaOnly = false;
         boolean isDataOnly = true;
@@ -364,7 +405,7 @@ public class BackupBO extends AbstractBO {
         dump(dto, schema, dataBackup, isSchemaOnly, isDataOnly, excludeTablePattern, null);
     }
 
-    private void dumpSchema(BackupDTO dto, File tmpDir, String schema) {
+    private void dumpSchema(BackupDTO dto, File tmpDir, String schema) throws BackupException {
         File schemaBackup = new File(tmpDir, schema + ".schema.b5b");
         boolean isSchemaOnly = true;
         boolean isDataOnly = false;
